@@ -1,0 +1,78 @@
+.center-wrapper
+  .searchbar.sticky
+    .pure-g
+      .pure-u-5-6
+        .main-search-wrapper
+          input#main-search
+      .pure-u-1-12.search-control
+        .fa.fa-search(tabindex=2,title='start searching')
+      .pure-u-1-12
+        .fa.fa-gear.toggle-advanced-search(title='advanced search')
+.advanced-search-back
+  .center-wrapper
+    form
+      .searchbar-advanced.pure-g-r
+        .pure-u-1-6.label Filters:
+        .pure-u-1-6
+          select
+        .pure-u-1-6
+          select
+        .pure-u-1-6
+          select
+        .pure-u-1-6
+          select
+        .pure-u-1-6
+          input
+        .pure-u-1-6
+          select
+        //
+        //<div class="searchbar-advanced pure-g-r">
+        //    <div class="pure-u-1-6 label">
+        //        Filters:
+        //    </div>
+        //    <div class="pure-u-1-6">
+        //        {{view Ember.Select
+        //            name="type"
+        //            classBinding="advancedSearchOptions.type:has-value"
+        //            prompt="Type"
+        //            valueBinding="advancedSearchOptions.type"
+        //            contentBinding="GLOBE.static.searchParams.type"}}
+        //    </div>
+        //    <div class="pure-u-1-6">
+        //        {{view Ember.Select
+        //            name="running"
+        //            classBinding="advancedSearchOptions.running:has-value"
+        //            prompt="Running"
+        //            valueBinding="advancedSearchOptions.running"
+        //            contentBinding="GLOBE.static.searchParams.running"}}
+        //    </div>
+        //    <div class="pure-u-1-6">
+        //        {{view Ember.Select
+        //            name="country"
+        //            classBinding="advancedSearchOptions.country:has-value"
+        //            prompt="Country"
+        //            valueBinding="advancedSearchOptions.country"
+        //            optionValuePath="content.key"
+        //            optionLabelPath="content.value"
+        //            contentBinding="GLOBE.static.countriesArray"}}
+        //    </div>
+        //    <div class="pure-u-1-6">
+        //        {{input
+        //            name="as"
+        //            type="text"
+        //            placeholder="AS"
+        //            classBinding="advancedSearchOptions.as:has-value"
+        //            valueBinding="advancedSearchOptions.as"
+        //        }}
+        //    </div>
+        //    <div class="pure-u-1-6">
+        //        {{view Ember.Select
+        //            name="flag"
+        //            classBinding="advancedSearchOptions.flag:has-value"
+        //            prompt="Flag"
+        //            valueBinding="advancedSearchOptions.flag"
+        //            optionValuePath="content.key"
+        //            optionLabelPath="content.key"
+        //            contentBinding="GLOBE.static.iconsArray"}}
+        //    </div>
+        //    </div>
