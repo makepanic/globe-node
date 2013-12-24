@@ -1,0 +1,50 @@
+extends layout
+block content
+
+    .pure-g.help
+        .pure-u-1
+            .text-content
+                h2.styled Help (WIP)
+            .text-content
+                h3 Flags
+                // via https://gitweb.torproject.org/torspec.git/blob/HEAD:/dir-spec.txt#l1522
+                ul
+                    li
+                        strong Authority
+                        | if the router is a directory authority
+                    li
+                        strong BadExit
+                        | if the router is believed to be useless as an exit node (because its ISP censors it, because it is behind a restrictive proxy, or for some similar reason)
+                    li
+                        strong BadDirectory
+                        | if the router is believed to be useless as a directory cache (because its directory port isn't working, its bandwidth is always throttled, or for some similar reason)
+                    li
+                        strong Exit
+                        | if the router is more useful for building general-purpose exit circuits than for relay circuits. The path building algorithm uses this flag; see path-spec.txt
+                    li
+                        strong Fast
+                        | if the router is suitable for high-bandwidth circuits
+                    li
+                        strong Guard
+                        | if the router is suitable for use as an entry guard
+                    li
+                        strong HSDir
+                        | if the router is considered a v2 hidden service directory
+                    li
+                        strong Named
+                        | if the router's identity-nickname mapping is canonical and this authority binds names
+                    li
+                        strong Stable
+                        | if the router is suitable for long-lived circuits
+                    li
+                        strong Running
+                        | if the router is currently usable
+                    li
+                        strong Unnamed
+                        | if another router has bound the name used by this router, and this authority binds names
+                    li
+                        strong Valid
+                        | if the router has been 'validated'
+                    li
+                        strong V2Dir
+                        | if the router implements the v2 directory protocol

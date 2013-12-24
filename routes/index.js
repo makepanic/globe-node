@@ -8,3 +8,8 @@ exports.index = function(req, res){
       title: 'Express'
   });
 };
+exports.help = function(req, res){
+  res.render('help', {
+      title: 'Express'
+  });
+};
