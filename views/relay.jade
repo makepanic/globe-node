@@ -1,0 +1,110 @@
+extends layout
+
+block content
+    .pure-g
+        .pure-u-1
+            .text-content
+                .fast-look.pure-g-r
+                    .pure-u-1-3
+                        .text-content
+                            h4 nickname
+                            p: =nickname
+                    .pure-u-1-3
+                        .text-content
+                        if running
+                            h4 uptime
+                            p: =last_restarted
+                        else
+                            h4 downtime
+                            p: =last_seen
+                    .pure-u-1-3
+                        .text-content
+                            h4 running
+                            p: =running
+            .page-properties
+                .text-content
+                    .property
+                        h5 Fingerprint
+                        p.align-center.no-width-limit
+                            =fingerprint
+
+                // flag-list
+                .pure-g-r
+                    .pure-u-1-2
+                        .text-content
+                            .property
+                                h5 OR address
+                                // each or_adresses
+                                ul.property-content.item-list
+                                    li foo
+                            .property
+                                h5 Exit Policy Summary
+                                if exit_policy_summary.accept
+                                    strong.true accept
+                                else
+                                    strong.false reject
+                                if exit_policy_summary.accept
+                                    ul.property-content.item-list
+                                        // each exit_policy_summary.accept
+                                        li foo
+                                if exit_policy_summary.reject
+                                    ul.property-content.item-list
+                                        li foo
+                            .property
+                                h5 Exit Policy
+                                .property-content
+                                    ul.item-list
+                                        // each exit_policy
+                                        li foo
+                                        // else none
+                            .property
+                                h5 Advertised Bandwidth
+                                p.property-content
+                                    = advertised_bandwith
+                                // bandwidth
+                            .property
+                                h5 Last Restarted
+                                p.property-content
+                                    = last_restarted
+                    .pure-u-1-2
+                        .text-content
+                            .property
+                                h5 Contact
+                                p.property-content
+                                    = contact
+                            .property
+                                h5 Platform
+                                p.property-content
+                                    = platform
+                            .property
+                                h5 Country
+                                // flaggify country, fullCountry
+                                p.property-content
+                                    = country
+                                    = country
+                            .property
+                                h5 Dir Address
+                                p.property-content
+                                    = dir_address
+                            .property
+                                h5 AS Number
+                                p.property-content
+                                    = as_number
+                            .property
+                                h5 AS Name
+                                p.property-content
+                                    = as_name
+                            .property
+                                h5 Family Members
+                                p.property-content
+                                    ul.item-list
+                                        // each family
+                                        li
+                                            i.button.fa.fa-external-link-square familyToFingerprint
+                .pure-g-r
+                    .pure-u-1-2
+                        .text-content
+                            // RelayBandwithView
+                    .pure-u-1-2
+                        .text-content
+                            // RelayWeightView

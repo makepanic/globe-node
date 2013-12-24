@@ -5,9 +5,11 @@
 
 var express = require('express')
   , routes = require('./routes')
+  , detail = require('./routes/detail')
   , user = require('./routes/user')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+    , store = require('./lib/storage');
 
 var app = express();
 
@@ -30,6 +32,9 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/help', routes.help);
 app.get('/users', user.list);
+
+app.get('/relay/:fingerprint', detail.relay(store));
+app.get('/bridge/:fingerprint', detail.bridge);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
