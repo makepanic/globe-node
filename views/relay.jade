@@ -3,108 +3,122 @@ extends layout
 block content
     .pure-g
         .pure-u-1
-            .text-content
-                .fast-look.pure-g-r
+            if model
+                .text-content
+                .fast-look.pure-g-r(class=model.running?'true':'false')
                     .pure-u-1-3
                         .text-content
                             h4 nickname
-                            p: =nickname
+                            p= model.nickname
                     .pure-u-1-3
                         .text-content
-                        if running
+                        if model.running
                             h4 uptime
-                            p: =last_restarted
+                            p !{model.formattedUptimeRestarted}
                         else
                             h4 downtime
-                            p: =last_seen
+                            p !{model.formattedUptimeRestarted}
                     .pure-u-1-3
                         .text-content
                             h4 running
-                            p: =running
-            .page-properties
-                .text-content
-                    .property
-                        h5 Fingerprint
-                        p.align-center.no-width-limit
-                            =fingerprint
+                            p(class=model.running?'true':'false')= model.running
+                .page-properties
+                    .text-content
+                        .property
+                            h5 Fingerprint
+                            p.align-center.no-width-limit
+                                =model.fingerprint
+                                    // flag-list
+                    .pure-g-r
+                        .pure-u-1-2
+                            .text-content
+                                .property
+                                    h5 OR address
+                                    ul.property-content.item-list
+                                        if model.or_addresses
+                                            each or_address in model.or_addresses
+                                                li= or_address
+                                        else
+                                            li none
+                                .property
+                                    h5 Exit Policy Summary
+                                        if model.exit_policy_summary.accept
+                                            strong.true accept
+                                        else
+                                            strong.false reject
 
-                // flag-list
-                .pure-g-r
-                    .pure-u-1-2
-                        .text-content
-                            .property
-                                h5 OR address
-                                // each or_adresses
-                                ul.property-content.item-list
-                                    li foo
-                            .property
-                                h5 Exit Policy Summary
-                                if exit_policy_summary.accept
-                                    strong.true accept
-                                else
-                                    strong.false reject
-                                if exit_policy_summary.accept
-                                    ul.property-content.item-list
-                                        // each exit_policy_summary.accept
-                                        li foo
-                                if exit_policy_summary.reject
-                                    ul.property-content.item-list
-                                        li foo
-                            .property
-                                h5 Exit Policy
-                                .property-content
-                                    ul.item-list
-                                        // each exit_policy
-                                        li foo
-                                        // else none
-                            .property
-                                h5 Advertised Bandwidth
-                                p.property-content
-                                    = advertised_bandwith
-                                // bandwidth
-                            .property
-                                h5 Last Restarted
-                                p.property-content
-                                    = last_restarted
-                    .pure-u-1-2
-                        .text-content
-                            .property
-                                h5 Contact
-                                p.property-content
-                                    = contact
-                            .property
-                                h5 Platform
-                                p.property-content
-                                    = platform
-                            .property
-                                h5 Country
-                                // flaggify country, fullCountry
-                                p.property-content
-                                    = country
-                                    = country
-                            .property
-                                h5 Dir Address
-                                p.property-content
-                                    = dir_address
-                            .property
-                                h5 AS Number
-                                p.property-content
-                                    = as_number
-                            .property
-                                h5 AS Name
-                                p.property-content
-                                    = as_name
-                            .property
-                                h5 Family Members
-                                p.property-content
-                                    ul.item-list
-                                        // each family
-                                        li
-                                            i.button.fa.fa-external-link-square familyToFingerprint
-                .pure-g-r
-                    .pure-u-1-2
-                        .text-content
-                            // RelayBandwithView
-                    .pure-u-1-2
-                        .text-content
-                            // RelayWeightView
+                                    if model.exit_policy_summary.accept
+                                        ul.property-content.item-list
+                                            each accept in model.exit_policy_summary.accept
+                                                li= accept
+                                    if model.exit_policy_summary.reject
+                                        ul.property-content.item-list
+                                            each reject in model.exit_policy_summary.reject
+                                                li= reject
+                                .property
+                                    h5 Exit Policy
+                                    .property-content
+                                        ul.item-list
+                                            if model.exit_policy
+                                                each exit_policy_item in model.exit_policy
+                                                    li= exit_policy_item
+                                            else
+                                                li none
+                                .property
+                                    h5 Advertised Bandwidth
+                                    p.property-content
+                                        = model.formattedAdvertisedBandwith
+                                    // bandwidth
+                                .property
+                                    h5 Last Restarted
+                                    p.property-content
+                                        = model.last_restarted
+                        .pure-u-1-2
+                            .text-content
+                                .property
+                                    h5 Contact
+                                    p.property-content
+                                        = model.contact
+                                .property
+                                    h5 Platform
+                                    p.property-content
+                                        = model.platform
+                                .property
+                                    h5 Country
+                                    // flaggify country, fullCountry
+                                    p.property-content !{model.formattedCountryFlag}
+                                        = model.country
+                                .property
+                                    h5 Dir Address
+                                    p.property-content
+                                        = model.dir_address
+                                .property
+                                    h5 AS Number
+                                    p.property-content
+                                        = model.as_number
+                                .property
+                                    h5 AS Name
+                                    p.property-content
+                                        = model.as_name
+                                .property
+                                    h5 Family Members
+                                    p.property-content
+                                        ul.item-list
+                                            if model.formattedFamily
+                                                each family_member in model.formattedFamily
+                                                    li
+                                                        a(href='#')
+                                                            i.button.fa.fa-external-link-square
+                                                                = family_member
+                                            else
+                                                li none
+            else
+                .text-content
+                    p.align-center.no-width-limit No detail found <i class="fa fa-meh-o"></i>
+.pure-g-r
+    .pure-u-1-2
+        .text-content
+            // RelayBandwithView
+    .pure-u-1-2
+        .text-content
+            // RelayWeightView

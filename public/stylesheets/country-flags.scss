@@ -1,8 +1,10 @@
+@import "vars";
+
 /* generated with http://lab.rndm.de/sprite/ */
 
 .country-flag{
     position:relative;
-    background:url('../img/country-flag-atlas.png') no-repeat;
+    background:url('#{$img-dir}/country-flag-atlas.png') no-repeat;
     background-clip:content-box;
     padding:0;
     display: inline-block;

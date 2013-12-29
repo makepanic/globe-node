@@ -6,10 +6,13 @@
 var express = require('express')
   , routes = require('./routes')
   , detail = require('./routes/detail')
+  , search = require('./routes/search')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
-    , store = require('./lib/storage');
+  , store = require('./lib/storage')
+  , globals = require('./lib/globalData')
+  , apiDetail = require('./onion-dump/details');
 
 var app = express();
 
@@ -34,7 +37,14 @@ app.get('/help', routes.help);
 app.get('/users', user.list);
 
 app.get('/relay/:fingerprint', detail.relay(store));
+app.get('/search', search);
 app.get('/bridge/:fingerprint', detail.bridge);
+
+app.get('/api/:fingerprint', function(req, res){
+    res.send(apiDetail);
+});
+
+app.locals(globals);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -1311,7 +1311,7 @@ body, .pure-g [class*="pure-u"], .pure-g-r [class*="pure-u"] {
   font-family: "Open Sans","lucida grande","Segoe UI",arial,verdana, "lucida sans unicode",tahoma,sans-serif !important; }
 
 .logo {
-  background: url("../img/globe-logo.png") no-repeat center center;
+  background: url("../images/globe-logo.png") no-repeat center center;
   width: 72px;
   height: 21px;
   display: block; }
@@ -4049,7 +4049,7 @@ body, .pure-g [class*="pure-u"], .pure-g-r [class*="pure-u"] {
 /* generated with http://lab.rndm.de/sprite/ */
 .country-flag {
   position: relative;
-  background: url("../img/country-flag-atlas.png") no-repeat;
+  background: url("../images/country-flag-atlas.png") no-repeat;
   background-clip: content-box;
   padding: 0;
   display: inline-block; }
