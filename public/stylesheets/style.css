@@ -1085,6 +1085,16 @@ table {
 input {
   border: 1px solid #999999; }
 
+.dataTable {
+  width: 100%; }
+  .dataTable td {
+    padding: 0; }
+    .dataTable td a {
+      padding: 10px 0px;
+      display: block;
+      text-decoration: none;
+      color: inherit; }
+
 .dataTables_scrollHead {
   margin-top: 2em; }
 
@@ -4055,6 +4065,8 @@ body, .pure-g [class*="pure-u"], .pure-g-r [class*="pure-u"] {
   display: inline-block; }
 
 .empty_png {
+  width: 17px;
+  height: 12px;
   background-image: none;
   outline: 1px solid red; }
 

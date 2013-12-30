@@ -17,3 +17,38 @@ block content
                         .indicator
                             | 0
                             span Bridges
+
+                .dataTables_wrapper
+                    .dataTables_scroll
+                        .dataTables_scrollBody
+                            table.relay-summary-list.dataTable
+                                thead
+                                    tr
+                                        th Nickname
+                                        th Advertised Bandwidth
+                                        th Uptime
+                                        th Country
+                                        th Flags
+                                        th OR Port
+                                        th Dir Port
+                                tbody
+                                    each relay in model.relays
+                                        tr
+                                            td.bold
+                                                a(href='#')
+                                                    = relay.nickname
+                                            td
+                                                a(href='#')
+                                                    = relay.formattedBandwidth
+                                            td
+                                                a(href='#') !{relay.formattedUptime}
+                                            td
+                                                a(href='#') !{relay.formattedCountryFlag}
+                                            td
+                                                a(href='#') !{relay.formattedFlags}
+                                            td
+                                                a(href='#')
+                                                    = relay.formattedOrPort
+                                            td
+                                                a(href='#')
+                                                    = relay.formattedDirPort
