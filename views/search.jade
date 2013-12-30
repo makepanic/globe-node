@@ -11,11 +11,11 @@ block content
                         | Showing all results:
                     .tabbed-item.tabbed-active
                         .indicator.indicator-important
-                            | 0
+                            | #{model.relays.length}
                             span Relays
                     .tabbed-item
                         .indicator
-                            | 0
+                            | #{model.bridges.length}
                             span Bridges
 
                 .dataTables_wrapper
@@ -35,20 +35,20 @@ block content
                                     each relay in model.relays
                                         tr
                                             td.bold
-                                                a(href='#')
+                                                a(href='/relay/'+relay.fingerprint)
                                                     = relay.nickname
                                             td
-                                                a(href='#')
+                                                a(href='/relay/'+relay.fingerprint)
                                                     = relay.formattedBandwidth
                                             td
-                                                a(href='#') !{relay.formattedUptime}
+                                                a(href='/relay/'+relay.fingerprint) !{relay.formattedUptime}
                                             td
-                                                a(href='#') !{relay.formattedCountryFlag}
+                                                a(href='/relay/'+relay.fingerprint) !{relay.formattedCountryFlag}
                                             td
-                                                a(href='#') !{relay.formattedFlags}
+                                                a(href='/relay/'+relay.fingerprint) !{relay.formattedFlags}
                                             td
-                                                a(href='#')
+                                                a(href='/relay/'+relay.fingerprint)
                                                     = relay.formattedOrPort
                                             td
-                                                a(href='#')
+                                                a(href='/relay/'+relay.fingerprint)
                                                     = relay.formattedDirPort
