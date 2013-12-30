@@ -14,3 +14,9 @@ exports.help = function (req, res) {
     };
     res.render('help', data);
 };
+exports.code = function (req, res) {
+    var data = {
+        title: 'Index'
+    };
+    res.render('code', data);
+};

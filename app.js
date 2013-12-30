@@ -34,6 +34,7 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/help', routes.help);
+app.get('/code', routes.code);
 app.get('/users', user.list);
 
 app.get('/relay/:fingerprint', detail.relay(store));
