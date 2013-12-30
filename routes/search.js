@@ -45,12 +45,10 @@ module.exports = function(req, res){
         res.render('search', data);
 
     }, function(err){
-
         data.alert = {
             type: 'info',
             msg: constants.messages.invalidSearchTerm
         };
-
         res.render('search', data);
     });
 

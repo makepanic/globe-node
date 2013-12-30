@@ -4,51 +4,52 @@ block content
     .pure-g
         .pure-u-1
             .text-content
-                h3
-                    if query
-                        | Search results for "#{query}"
-                    else
-                        | Showing all results:
-                    .tabbed-item.tabbed-active
-                        .indicator.indicator-important
-                            | #{model.relays.length}
-                            span Relays
-                    .tabbed-item
-                        .indicator
-                            | #{model.bridges.length}
-                            span Bridges
+                if model
+                    h3
+                        if query
+                            | Search results for "#{query}"
+                        else
+                            | Showing all results:
+                        .tabbed-item.tabbed-active
+                            .indicator.indicator-important
+                                | #{model.relays.length}
+                                span Relays
+                        .tabbed-item
+                            .indicator
+                                | #{model.bridges.length}
+                                span Bridges
 
-                .dataTables_wrapper
-                    .dataTables_scroll
-                        .dataTables_scrollBody
-                            table.relay-summary-list.dataTable
-                                thead
-                                    tr
-                                        th Nickname
-                                        th Advertised Bandwidth
-                                        th Uptime
-                                        th Country
-                                        th Flags
-                                        th OR Port
-                                        th Dir Port
-                                tbody
-                                    each relay in model.relays
+                    .dataTables_wrapper
+                        .dataTables_scroll
+                            .dataTables_scrollBody
+                                table.relay-summary-list.dataTable
+                                    thead
                                         tr
-                                            td.bold
-                                                a(href='/relay/'+relay.fingerprint)
-                                                    = relay.nickname
-                                            td
-                                                a(href='/relay/'+relay.fingerprint)
-                                                    = relay.formattedBandwidth
-                                            td
-                                                a(href='/relay/'+relay.fingerprint) !{relay.formattedUptime}
-                                            td
-                                                a(href='/relay/'+relay.fingerprint) !{relay.formattedCountryFlag}
-                                            td
-                                                a(href='/relay/'+relay.fingerprint) !{relay.formattedFlags}
-                                            td
-                                                a(href='/relay/'+relay.fingerprint)
-                                                    = relay.formattedOrPort
-                                            td
-                                                a(href='/relay/'+relay.fingerprint)
-                                                    = relay.formattedDirPort
+                                            th Nickname
+                                            th Advertised Bandwidth
+                                            th Uptime
+                                            th Country
+                                            th Flags
+                                            th OR Port
+                                            th Dir Port
+                                    tbody
+                                        each relay in model.relays
+                                            tr
+                                                td.bold
+                                                    a(href='/relay/'+relay.fingerprint)
+                                                        = relay.nickname
+                                                td
+                                                    a(href='/relay/'+relay.fingerprint)
+                                                        = relay.formattedBandwidth
+                                                td
+                                                    a(href='/relay/'+relay.fingerprint) !{relay.formattedUptime}
+                                                td
+                                                    a(href='/relay/'+relay.fingerprint) !{relay.formattedCountryFlag}
+                                                td
+                                                    a(href='/relay/'+relay.fingerprint) !{relay.formattedFlags}
+                                                td
+                                                    a(href='/relay/'+relay.fingerprint)
+                                                        = relay.formattedOrPort
+                                                td
+                                                    a(href='/relay/'+relay.fingerprint)
+                                                        = relay.formattedDirPort
