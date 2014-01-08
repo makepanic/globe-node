@@ -7,6 +7,7 @@ var express = require('express')
   , routes = require('./routes')
   , detail = require('./routes/detail')
   , search = require('./routes/search')
+  , top10 = require('./routes/top10')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
@@ -39,6 +40,7 @@ app.get('/users', user.list);
 
 app.get('/relay/:fingerprint', detail.relay(store));
 app.get('/search', search);
+app.get('/top10', top10);
 app.get('/bridge/:fingerprint', detail.bridge);
 
 app.get('/api/:fingerprint', function(req, res){

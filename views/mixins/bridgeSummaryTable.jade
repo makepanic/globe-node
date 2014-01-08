@@ -14,12 +14,12 @@ mixin bridgeSummaryTable(bridges)
                         each bridge in bridges
                             tr
                                 td.bold
-                                    a(href='/bridge/'+bridge.fingerprint) !{bridge.nickname}
+                                    a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.nickname}
                                 td
-                                    a(href='/bridge/'+bridge.fingerprint) !{bridge.formattedBandwidth}
+                                    a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedBandwidth}
                                 td
-                                    a(href='/bridge/'+bridge.fingerprint) !{bridge.formattedUptime}
+                                    a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedUptime}
                                 td
-                                    a(href='/bridge/'+bridge.fingerprint) !{bridge.formattedFlags}
+                                    a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedFlags}
                                 td
-                                    a(href='/bridge/'+bridge.fingerprint) !{bridge.running}
+                                    a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.running}

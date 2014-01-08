@@ -1,0 +1,10 @@
+extends layout
+include mixins/relaySummaryTable
+
+block content
+    .pure-g
+        .pure-u-1
+            .text-content
+                h3 Top 10 relays by consensus weight
+                // relaysummariesView
+                +relaySummaryTable(model.relays)

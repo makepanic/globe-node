@@ -3,34 +3,18 @@ var search = require('../lib/onionoo/search'),
     constants = require('../lib/static');
 
 module.exports = function(req, res){
-    var cfg = req.query,
-        data = {
-            title: 'Express',
-            query: ''
-        };
+    var data = {
+        title: 'Express'
+    };
 
     search({
-        query: cfg.query,
         filter: {
-            limit: 50
+            limit: 10,
+            order: '-consensus_weight'
         }
     }).then(function(summaries){
-        console.log('req.query', cfg);
-
-        data.query = cfg.query;
-
-        // success
-        if(summaries.relays.length >= constants.numbers.maxSearchResults ||
-            summaries.bridges.length >= constants.numbers.maxSearchResults){
-            data.alert = {
-                type: 'info',
-                msg: constants.messages.specifyYourSearch
-            };
-        }
-
         data.model = {
-            relays: summaries.relays,
-            bridges: summaries.bridges
+            relays: summaries.relays
         };
 
         data.model.relays.forEach(function(relay){
@@ -45,14 +29,9 @@ module.exports = function(req, res){
             relay.formattedDirPort = formatter.port(relay.dir_address);
         });
 
-        data.model.bridges.forEach(function(bridge){
-            bridge.formattedBandwidth = formatter.bandwidth(bridge.advertised_bandwidth);
-            bridge.formattedUptime = formatter.uptimeShort(bridge.last_restarted);
-            bridge.formattedFlags = formatter.onionFlags(bridge.flags);
-        });
-
-        res.render('search', data);
+        res.render('top10', data);
     }, function(err){
+        //TODO: error handling
         data.alert = {
             type: 'info',
             msg: constants.messages.invalidSearchTerm
