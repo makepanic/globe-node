@@ -1,0 +1,25 @@
+mixin bridgeSummaryTable(bridges)
+    .dataTables_wrapper
+        .dataTables_scroll
+            .dataTables_scrollBody
+                table.relay-summary-list.dataTable
+                    thead
+                        tr
+                            th Nickname
+                            th Advertised Bandwidth
+                            th Uptime
+                            th Flags
+                            th Running
+                    tbody
+                        each bridge in bridges
+                            tr
+                                td.bold
+                                    a(href='/bridge/'+bridge.fingerprint) !{bridge.nickname}
+                                td
+                                    a(href='/bridge/'+bridge.fingerprint) !{bridge.formattedBandwidth}
+                                td
+                                    a(href='/bridge/'+bridge.fingerprint) !{bridge.formattedUptime}
+                                td
+                                    a(href='/bridge/'+bridge.fingerprint) !{bridge.formattedFlags}
+                                td
+                                    a(href='/bridge/'+bridge.fingerprint) !{bridge.running}

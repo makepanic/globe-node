@@ -12,12 +12,12 @@ block content
                             p= model.nickname
                     .pure-u-1-3
                         .text-content
-                        if model.running
-                            h4 uptime
-                            p !{model.formattedUptimeRestarted}
-                        else
-                            h4 downtime
-                            p !{model.formattedUptimeRestarted}
+                            if model.running
+                                h4 uptime
+                                p !{model.formattedUptimeRestarted}
+                            else
+                                h4 downtime
+                                p !{model.formattedUptimeRestarted}
                     .pure-u-1-3
                         .text-content
                             h4 running
@@ -87,7 +87,7 @@ block content
                                     h5 Country
                                     // flaggify country, fullCountry
                                     p.property-content !{model.formattedCountryFlag}
-                                        = model.country
+                                        = countries[model.country]
                                 .property
                                     h5 Dir Address
                                     p.property-content

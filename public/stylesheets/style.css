@@ -1160,11 +1160,12 @@ input {
   cursor: pointer;
   color: #999999;
   margin-right: 10px; }
+  .tabbed-item a {
+    text-decoration: none;
+    color: #363636;
+    font-weight: bold; }
   .tabbed-item:first-of-type {
     margin-left: 20px; }
-  .tabbed-item.tabbed-active {
-    color: #634e81;
-    border-bottom: 1px solid #999999; }
 
 .loading-indicator {
   padding: 150px 50px 50px 50px;

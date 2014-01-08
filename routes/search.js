@@ -42,8 +42,13 @@ module.exports = function(req, res){
             relay.formattedDirPort = formatter.port(relay.dir_address);
         });
 
-        res.render('search', data);
+        data.model.bridges.forEach(function(bridge){
+            bridge.formattedBandwidth = formatter.bandwidth(bridge.advertised_bandwidth);
+            bridge.formattedUptime = formatter.uptimeShort(bridge.last_restarted);
+            bridge.formattedFlags = formatter.onionFlags(bridge.flags);
+        });
 
+        res.render('search', data);
     }, function(err){
         data.alert = {
             type: 'info',

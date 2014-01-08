@@ -1,4 +1,6 @@
 extends layout
+include mixins/relaySummaryTable
+include mixins/bridgeSummaryTable
 
 block content
     .pure-g
@@ -10,46 +12,19 @@ block content
                             | Search results for "#{query}"
                         else
                             | Showing all results:
-                        .tabbed-item.tabbed-active
-                            .indicator.indicator-important
+                        .tabbed-item
+                            a.indicator(href='#relay-results')
                                 | #{model.relays.length}
                                 span Relays
                         .tabbed-item
-                            .indicator
+                            a.indicator(href='#bridge-results')
                                 | #{model.bridges.length}
                                 span Bridges
 
-                    .dataTables_wrapper
-                        .dataTables_scroll
-                            .dataTables_scrollBody
-                                table.relay-summary-list.dataTable
-                                    thead
-                                        tr
-                                            th Nickname
-                                            th Advertised Bandwidth
-                                            th Uptime
-                                            th Country
-                                            th Flags
-                                            th OR Port
-                                            th Dir Port
-                                    tbody
-                                        each relay in model.relays
-                                            tr
-                                                td.bold
-                                                    a(href='/relay/'+relay.fingerprint)
-                                                        = relay.nickname
-                                                td
-                                                    a(href='/relay/'+relay.fingerprint)
-                                                        = relay.formattedBandwidth
-                                                td
-                                                    a(href='/relay/'+relay.fingerprint) !{relay.formattedUptime}
-                                                td
-                                                    a(href='/relay/'+relay.fingerprint) !{relay.formattedCountryFlag}
-                                                td
-                                                    a(href='/relay/'+relay.fingerprint) !{relay.formattedFlags}
-                                                td
-                                                    a(href='/relay/'+relay.fingerprint)
-                                                        = relay.formattedOrPort
-                                                td
-                                                    a(href='/relay/'+relay.fingerprint)
-                                                        = relay.formattedDirPort
+                    a(name='relay-results')
+                    h3 Relays
+                    +relaySummaryTable(model.relays)
+
+                    h3 Bridges
+                    a(name='bridge-results')
+                    +bridgeSummaryTable(model.bridges)

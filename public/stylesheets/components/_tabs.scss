@@ -19,12 +19,13 @@
   color: $grey-darkest;
   margin-right: 10px;
 
-  &:first-of-type{
-    margin-left: 20px;
+  a{
+    text-decoration: none;
+    color: $black;
+    font-weight: bold;
   }
 
-  &.tabbed-active{
-    color: $purple-darker;
-    border-bottom: 1px solid $grey-darkest;
+  &:first-of-type{
+    margin-left: 20px;
   }
 }
