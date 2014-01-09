@@ -13,6 +13,7 @@ var express = require('express')
   , path = require('path')
   , store = require('./lib/storage')
   , globals = require('./lib/globalData')
+  , bandwidthGraph = require('./routes/bandwidthGraph')
   , apiDetail = require('./onion-dump/details');
 
 var app = express();
@@ -39,9 +40,10 @@ app.get('/code', routes.code);
 app.get('/users', user.list);
 
 app.get('/relay/:fingerprint', detail.relay(store));
+app.get('/relay/bandwidth/:fingerprint.svg', bandwidthGraph);
 app.get('/search', search);
 app.get('/top10', top10);
-app.get('/bridge/:fingerprint', detail.bridge);
+app.get('/bridge/:fingerprint', detail.bridge(store));
 
 app.get('/api/:fingerprint', function(req, res){
     res.send(apiDetail);

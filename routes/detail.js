@@ -1,10 +1,33 @@
 var lookup = require('../lib/onionoo/lookup'),
     formatter = require('../lib/util/formatter');
 
-exports.bridge = function(req, res){
-    res.render('bridge', {
-        title: 'Express'
-    });
+exports.bridge = function(store){
+    return function(req, res){
+        var fingerprint = req.params.fingerprint;
+
+        lookup(fingerprint, false, store).then(function(detail){
+            var bridge,
+                // initialize data holder with general data
+                data = {
+                    title: 'Express',
+                    model: null
+                };
+
+            if (detail.relay){
+                // has relay details
+                bridge = detail.bridge;
+
+                // set view model
+                data.model = bridge;
+
+                // apply formatter
+                data.model.formattedUptimeRestarted = formatter.uptimeFull(data.model.last_restarted);
+                data.model.formattedAdvertisedBandwith = formatter.bandwidth(data.model.advertised_bandwidth);
+            }
+
+            res.render('bridge', data);
+        });
+    };
 };
 
 exports.relay = function(store){
@@ -12,19 +35,16 @@ exports.relay = function(store){
         var fingerprint = req.params.fingerprint;
 
         lookup(fingerprint, false, store).then(function(detail){
-            var relay;
-
-            // initialize data holder with global data
-            var data = {
-                title: 'Express',
-                model: null
-            };
+            var relay,
+            // initialize data holder with general data
+                data = {
+                    title: 'Express',
+                    model: null
+                };
 
             if (detail.relay){
                 // has relay details
                 relay = detail.relay;
-
-                console.log('using relay', relay);
 
                 // set view model
                 data.model = relay;
@@ -40,8 +60,6 @@ exports.relay = function(store){
                     });
                 }
             }
-
-            console.log('data', data);
 
             res.render('relay', data);
         });
