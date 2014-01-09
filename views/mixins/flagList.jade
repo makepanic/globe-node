@@ -1,0 +1,20 @@
+mixin flagList(flags, inLatestConsensus)
+    .text-content
+        .property
+            if inLatestConsensus
+                h5 Flags
+            else
+                h5 Flags (old)
+            .pure-g-r.flags-list
+                unless inLatestConsensus
+                    .pure-u-1
+                        p.c-red.no-width-limit
+                            i.fa.fa-clock-o
+                            These flags aren't up to date anymore
+                if flags
+                    for flag in flags
+                        .pure-u-1-3
+                            p= flag
+                else
+                    .pure-u-1
+                        p none

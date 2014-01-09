@@ -1,3 +1,5 @@
+include mixins/flagList
+
 extends layout
 
 block content
@@ -29,7 +31,7 @@ block content
                             p.align-center.no-width-limit
                                 =model.hashed_fingerprint
 
-                    //- TODO: flag-list
+                    +flagList(model.flags, model.inLatestConsensus)
 
                     .pure-g-r
                         //- first column
