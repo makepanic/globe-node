@@ -10,7 +10,7 @@ exports.relay = {
 
             var svgGraph = historyGraph.svg({
                 period: bandwidthData.relays.periods[0],
-                data: bandwidthData.relays,
+                data: bandwidthData.relays.history,
                 graphs: ['readHistory', 'writeHistory'],
                 labels: ['written bytes per second', 'read bytes per second'],
                 tickFormat: 's',
