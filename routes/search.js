@@ -20,8 +20,7 @@ module.exports = function(req, res){
         data.query = cfg.query;
 
         // success
-        if(summaries.relays.length >= constants.numbers.maxSearchResults ||
-            summaries.bridges.length >= constants.numbers.maxSearchResults){
+        if(summaries.relays.length + summaries.bridges.length >= constants.numbers.maxSearchResults){
             data.alert = {
                 type: 'info',
                 msg: constants.messages.specifyYourSearch

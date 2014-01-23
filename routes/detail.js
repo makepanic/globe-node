@@ -53,6 +53,8 @@ exports.relay = function(store){
                 data.model.formattedUptimeRestarted = formatter.uptimeFull(data.model.last_restarted);
                 data.model.formattedAdvertisedBandwith = formatter.bandwidth(data.model.advertised_bandwidth);
                 data.model.formattedCountryFlag = formatter.flaggify(data.model.country);
+                data.model.bandwidthGraphUrl = '/relay/bandwidth/' + detail.relay.fingerprint + '.svg';
+                data.model.historyGraphUrl = '/relay/history/' + detail.relay.fingerprint + '.svg';
 
                 if (data.model.family.length){
                     data.model.formattedFamily = data.model.family.map(function(val){

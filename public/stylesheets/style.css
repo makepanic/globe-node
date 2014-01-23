@@ -1314,6 +1314,10 @@ code {
 .flags-list p {
   text-align: center; }
 
+.relay-graphs img {
+  width: 440px;
+  height: 330px; }
+
 .footer {
   font-size: .9em;
   color: #505050; }

@@ -119,10 +119,12 @@ block content
             else
                 .text-content
                     p.align-center.no-width-limit No detail found <i class="fa fa-meh-o"></i>
-.pure-g-r
-    .pure-u-1-2
-        .text-content
-            // RelayBandwithView
-    .pure-u-1-2
-        .text-content
-            // RelayWeightView
+    .pure-g-r.relay-graphs
+        .pure-u-1-2
+            .text-content
+                img(src=model.bandwidthGraphUrl,alt='Relay bandwidth graph')
+                // RelayBandwithView
+        .pure-u-1-2
+            .text-content
+                img(src=model.historyGraphUrl,alt='Relay bandwidth graph')
+                // RelayWeightView

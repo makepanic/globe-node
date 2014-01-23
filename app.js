@@ -13,7 +13,7 @@ var express = require('express')
   , path = require('path')
   , store = require('./lib/storage')
   , globals = require('./lib/globalData')
-  , bandwidthGraph = require('./routes/bandwidthGraph')
+  , graphs = require('./routes/graphs')
   , apiDetail = require('./onion-dump/details');
 
 var app = express();
@@ -34,13 +34,16 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+// static urls
 app.get('/', routes.index);
 app.get('/help', routes.help);
 app.get('/code', routes.code);
 app.get('/users', user.list);
 
+// dynamic urls
 app.get('/relay/:fingerprint', detail.relay(store));
-app.get('/relay/bandwidth/:fingerprint.svg', bandwidthGraph);
+app.get('/relay/bandwidth/:fingerprint.svg', graphs.relay.bandwidth);
+app.get('/relay/history/:fingerprint.svg', graphs.relay.history);
 app.get('/search', search);
 app.get('/top10', top10);
 app.get('/bridge/:fingerprint', detail.bridge(store));
