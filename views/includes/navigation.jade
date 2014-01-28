@@ -1,13 +1,13 @@
 .pure-g-r.navigation
     .pure-u-1-3
-        a(href='/top10')
+        a(href='/top10', class= (path === 'top10' ? 'active' : ''))
             i.fa.fa-signal
             span Top 10 relays
     .pure-u-1-3
-        a(href='/help')
+        a(href='/help', class= (path === 'help' ? 'active' : ''))
             i.fa.fa-info-circle
             span Help
     .pure-u-1-3
-        a(href='/code')
+        a(href='/code', class= (path === 'code' ? 'active' : ''))
             i.fa.fa-code
             span Code

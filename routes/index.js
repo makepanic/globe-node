@@ -10,13 +10,15 @@ exports.index = function (req, res) {
 };
 exports.help = function (req, res) {
     var data = {
-        title: 'Index'
+        title: 'Index',
+        path: 'help'
     };
     res.render('help', data);
 };
 exports.code = function (req, res) {
     var data = {
-        title: 'Index'
+        title: 'Index',
+        path: 'code'
     };
     res.render('code', data);
 };

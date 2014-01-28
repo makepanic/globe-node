@@ -10,6 +10,7 @@ exports.bridge = function(store){
                 // initialize data holder with general data
                 data = {
                     title: 'Express',
+                    path: 'bridge',
                     model: null
                 };
 
@@ -39,6 +40,7 @@ exports.relay = function(store){
             // initialize data holder with general data
                 data = {
                     title: 'Express',
+                    path: 'relay',
                     model: null
                 };
 

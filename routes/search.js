@@ -6,7 +6,8 @@ module.exports = function(req, res){
     var cfg = req.query,
         data = {
             title: 'Express',
-            query: ''
+            query: '',
+            path: 'search'
         };
 
     search({

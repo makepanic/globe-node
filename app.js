@@ -8,7 +8,6 @@ var express = require('express')
   , detail = require('./routes/detail')
   , search = require('./routes/search')
   , top10 = require('./routes/top10')
-  , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
   , store = require('./lib/storage')
@@ -38,7 +37,6 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/help', routes.help);
 app.get('/code', routes.code);
-app.get('/users', user.list);
 
 // dynamic urls
 app.get('/relay/:fingerprint', detail.relay(store));

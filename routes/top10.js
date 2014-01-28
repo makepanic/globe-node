@@ -4,6 +4,7 @@ var search = require('../lib/onionoo/search'),
 
 module.exports = function(req, res){
     var data = {
+        path: 'top10',
         title: 'Express'
     };
 
