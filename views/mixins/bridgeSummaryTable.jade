@@ -1,25 +1,26 @@
 mixin bridgeSummaryTable(bridges)
-    .dataTables_wrapper
-        .dataTables_scroll
-            .dataTables_scrollBody
-                table.relay-summary-list.dataTable
-                    thead
-                        tr
-                            th Nickname
-                            th Advertised Bandwidth
-                            th Uptime
-                            th Flags
-                            th Running
-                    tbody
-                        each bridge in bridges
-                            tr
-                                td.bold
-                                    a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.nickname}
-                                td
-                                    a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedBandwidth}
-                                td
-                                    a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedUptime}
-                                td
-                                    a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedFlags}
-                                td
-                                    a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.running}
+    table.bridge-summary-list.datatable
+        thead
+            tr
+                th Nickname
+                th Advertised Bandwidth
+                th Uptime
+                th Flags
+                th Running
+        tbody
+            if bridges.length
+                each bridge in bridges
+                    tr
+                        td.bold
+                            a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.nickname}
+                        td
+                            a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedBandwidth}
+                        td
+                            a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedUptime}
+                        td
+                            a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedFlags}
+                        td
+                            a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.running}
+            else
+                tr
+                    td(colspan='6', class='empty no-a') No bridges found :(

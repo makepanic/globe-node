@@ -26,16 +26,16 @@ form(action='/search', method='GET')
                             option(value=running)
                                 =running
                 .pure-u-1-6
-                    select(name='type')
+                    select(name='country')
                         option(value='') Country
-                        each country in countries
-                            option(value=country)
-                                =country
+                        each country in countriesArray
+                            option(value=country.key)
+                                =country.value
                 .pure-u-1-6
-                    input(type=text,name='as',placeholder=AS)
+                    input(type=text, name='as', placeholder='AS')
                 .pure-u-1-6
                     select(name='flag')
                         option(value='') Flag
                         each flag in flagsArray
-                            option
+                            option(value=flag.key)
                                 =flag.key

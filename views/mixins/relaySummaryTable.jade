@@ -1,35 +1,36 @@
 mixin relaySummaryTable(relays)
-    .dataTables_wrapper
-        .dataTables_scroll
-            .dataTables_scrollBody
-                table.relay-summary-list.dataTable
-                    thead
-                        tr
-                            th Nickname
-                            th Advertised Bandwidth
-                            th Uptime
-                            th Country
-                            th Flags
-                            th OR Port
-                            th Dir Port
-                    tbody
-                        each relay in relays
-                            tr
-                                td.bold
-                                    a(href='/relay/'+relay.fingerprint)
-                                        = relay.nickname
-                                td
-                                    a(href='/relay/'+relay.fingerprint)
-                                        = relay.formattedBandwidth
-                                td
-                                    a(href='/relay/'+relay.fingerprint) !{relay.formattedUptime}
-                                td
-                                    a(href='/relay/'+relay.fingerprint) !{relay.formattedCountryFlag}
-                                td
-                                    a(href='/relay/'+relay.fingerprint) !{relay.formattedFlags}
-                                td
-                                    a(href='/relay/'+relay.fingerprint)
-                                        = relay.formattedOrPort
-                                td
-                                    a(href='/relay/'+relay.fingerprint)
-                                        = relay.formattedDirPort
+    table.relay-summary-list.datatable
+        thead
+            tr
+                th Nickname
+                th Advertised Bandwidth
+                th Uptime
+                th Country
+                th Flags
+                th OR Port
+                th Dir Port
+        tbody
+            if relays.length
+                each relay in relays
+                    tr
+                        td.bold
+                            a(href='/relay/'+relay.fingerprint)
+                                = relay.nickname
+                        td
+                            a(href='/relay/'+relay.fingerprint)
+                                = relay.formattedBandwidth
+                        td
+                            a(href='/relay/'+relay.fingerprint) !{relay.formattedUptime}
+                        td
+                            a(href='/relay/'+relay.fingerprint) !{relay.formattedCountryFlag}
+                        td
+                            a(href='/relay/'+relay.fingerprint) !{relay.formattedFlags}
+                        td
+                            a(href='/relay/'+relay.fingerprint)
+                                = relay.formattedOrPort
+                        td
+                            a(href='/relay/'+relay.fingerprint)
+                                = relay.formattedDirPort
+            else
+                tr
+                    td(colspan='7', class='empty no-a') No relays found :(

@@ -12,15 +12,11 @@
   width: 100%;
   padding: 5px;
   margin: 0;
-  background: $purple-light;
+  background: $white;
   color: $black;
 
-  @include transition(background-color, .2s);
   @include border-box();
 
-  &:hover, &:focus, &.hover{
-    background: $white;
-  }
 
   &::-webkit-input-placeholder { /* WebKit browsers */
     color: $purple-darker;
@@ -85,13 +81,11 @@
   margin-left: 20px;
   margin-right: 20px;
 
-
   label, span{
     display: inline-block;
   }
 
   input, select{
-    opacity: .75;
     background: $white-darker;
     border: 1px solid $grey-darker;
     color: $black-lighter;
@@ -103,10 +97,8 @@
     box-shadow: none;
     @include border-box();
 
-    &.has-value{
-      background: $white;
-      opacity: 1;
-      border-color: $grey-darkest;
-    }
+    background: $white;
+    opacity: 1;
+    border-color: $grey-darkest;
   }
 }

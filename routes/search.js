@@ -13,7 +13,12 @@ module.exports = function(req, res){
     search({
         query: cfg.query,
         filter: {
-            limit: 50
+            limit: 50,
+            type: cfg.type,
+            running: cfg.running,
+            country: cfg.country,
+            as: cfg.as,
+            flag: cfg.flag
         }
     }).then(function(summaries){
         console.log('req.query', cfg);
@@ -28,13 +33,14 @@ module.exports = function(req, res){
             };
         }
 
+        // assign model values
         data.model = {
             relays: summaries.relays,
             bridges: summaries.bridges
         };
 
+        // apply formats for each relay
         data.model.relays.forEach(function(relay){
-            // formatter
             relay.formattedBandwidth = formatter.bandwidth(relay.advertised_bandwidth);
             relay.formattedCountryFlag = formatter.flaggify(relay.country);
             relay.formattedUptime = formatter.uptimeShort(relay.last_restarted);
@@ -45,6 +51,7 @@ module.exports = function(req, res){
             relay.formattedDirPort = formatter.port(relay.dir_address);
         });
 
+        // apply formats for each bridge
         data.model.bridges.forEach(function(bridge){
             bridge.formattedBandwidth = formatter.bandwidth(bridge.advertised_bandwidth);
             bridge.formattedUptime = formatter.uptimeShort(bridge.last_restarted);

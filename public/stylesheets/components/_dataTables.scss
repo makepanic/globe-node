@@ -2,11 +2,17 @@
 @import "../vars";
 @import "../mixins";
 
-.dataTable{
+.datatable{
+  margin-top: 2em;
+  margin-bottom: 2em;
   width: 100%;
-
   td{
     padding: 0;
+
+    // td that doesn't contain an anchor that uses padding
+    &.no-a{
+      padding: 10px 0px;
+    }
 
     a{
       padding: 10px 0px;
@@ -15,14 +21,6 @@
       color: inherit;
     }
   }
-}
-.dataTables_scrollHead{
-  margin-top: 2em;
-}
-.dataTables_scrollBody{
-  margin-bottom: 2em;
-}
-.dataTables_wrapper{
 
   thead{
     th{
@@ -48,28 +46,8 @@
     margin-right: 4px;
   }
 
-  .dataTables_empty{
+  .empty{
     text-align: center;
     color: $red;
-  }
-}
-.dataTables_info, .dataTables_filter{
-  color: $black-lighter;
-  font-size: .9em;
-}
-.datatables-meta{
-  position: absolute;
-  top: 15px;
-  right: 0;
-
-  .dataTables_info, .dataTables_filter{
-    display: inline-block;
-    margin: 5px 10px;
-  }
-}
-.dataTables_filter{
-  input{
-    border-color: $grey-darker;
-    padding: 5px 10px;
   }
 }
