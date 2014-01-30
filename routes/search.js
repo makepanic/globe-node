@@ -8,24 +8,26 @@ module.exports = function(req, res){
             title: 'Express',
             query: '',
             path: 'search'
-        };
-
-    search({
-        query: cfg.query,
-        filter: {
+        },
+        filter = {
             limit: 50,
             type: cfg.type,
             running: cfg.running,
             country: cfg.country,
             as: cfg.as,
             flag: cfg.flag
-        }
+        };
+
+    search({
+        query: cfg.query,
+        filter: filter
     }).then(function(summaries){
         console.log('req.query', cfg);
 
         data.query = cfg.query;
+        data.filter = filter;
 
-        // success
+        // check if result length is over limit
         if(summaries.relays.length + summaries.bridges.length >= constants.numbers.maxSearchResults){
             data.alert = {
                 type: 'info',
