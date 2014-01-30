@@ -13,5 +13,10 @@
     "moment": "~2.5.0",
     "d3": "~3.3.13",
     "lodash": "~2.4.1"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-nodeunit": "~0.3.0",
+    "load-grunt-tasks": "~0.3.0"
   }
 }
