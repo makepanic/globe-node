@@ -37,14 +37,17 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/help', routes.help);
 app.get('/code', routes.code);
+app.get('/search', search);
+app.get('/top10', top10);
 
 // dynamic urls
 app.get('/relay/:fingerprint', detail.relay(store));
+app.get('/bridge/:fingerprint', detail.bridge(store));
+
+// graphs
 app.get('/relay/bandwidth/:fingerprint.svg', graphs.relay.bandwidth);
 app.get('/relay/history/:fingerprint.svg', graphs.relay.history);
-app.get('/search', search);
-app.get('/top10', top10);
-app.get('/bridge/:fingerprint', detail.bridge(store));
+app.get('/bridge/bandwidth/:fingerprint.svg', graphs.bridge.bandwidth);
 
 app.get('/api/:fingerprint', function(req, res){
     res.send(apiDetail);

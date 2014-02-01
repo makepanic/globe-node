@@ -1097,6 +1097,7 @@ input {
     color: #363636;
     font-weight: bold; }
     .tabbed-item a span {
+      color: #999999;
       font-weight: normal; }
     .tabbed-item a.has-values span {
       color: #7c62a0; }

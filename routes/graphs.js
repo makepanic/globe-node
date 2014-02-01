@@ -42,3 +42,26 @@ exports.relay = {
         });
     }
 };
+
+exports.bridge = {
+    bandwidth: function(req, res) {
+        var fingerprint = req.params.fingerprint;
+
+        bandwidth(fingerprint).then(function(bandwidthData){
+
+            var svgGraph = historyGraph.svg({
+                dimension: { w: 1100, h: 300 },
+                period: bandwidthData.bridges.periods[0],
+                data: bandwidthData.bridges.history,
+                graphs: ['readHistory', 'writeHistory'],
+                labels: ['written bytes per second', 'read bytes per second'],
+                tickFormat: 's',
+                legendPos: [{x:60,y:25}, {x:270,y:25}]
+            });
+
+            res.set('Content-Type', 'image/svg+xml');
+            res.send(svgGraph);
+
+        });
+    }
+}
