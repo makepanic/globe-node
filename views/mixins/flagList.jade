@@ -14,7 +14,9 @@ mixin flagList(flags, inLatestConsensus)
                 if flags
                     for flag in flags
                         .pure-u-1-3
-                            p= flag
+                            p
+                                i(class='fa ' + icons[flag])
+                                | #{flag}
                 else
                     .pure-u-1
                         p none
