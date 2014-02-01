@@ -917,46 +917,6 @@ table {
     margin: 0 auto;
     margin-top: 10px; }
 
-@-webkit-keyframes text-shadow-pulse {
-  0% {
-    text-shadow: 0 0 0; }
-
-  50% {
-    text-shadow: 0 0 10px; }
-
-  100% {
-    text-shadow: 0 0 0; } }
-
-@-moz-keyframes text-shadow-pulse {
-  0% {
-    text-shadow: 0 0 0; }
-
-  50% {
-    text-shadow: 0 0 10px; }
-
-  100% {
-    text-shadow: 0 0 0; } }
-
-@-o-keyframes text-shadow-pulse {
-  0% {
-    text-shadow: 0 0 0; }
-
-  50% {
-    text-shadow: 0 0 10px; }
-
-  100% {
-    text-shadow: 0 0 0; } }
-
-@keyframes text-shadow-pulse {
-  0% {
-    text-shadow: 0 0 0; }
-
-  50% {
-    text-shadow: 0 0 10px; }
-
-  100% {
-    text-shadow: 0 0 0; } }
-
 .searchbar {
   padding: 8px 0; }
 
@@ -998,16 +958,16 @@ table {
   -ms-transition: color 0.2s linear;
   -o-transition: color 0.2s linear;
   transition: color 0.2s linear; }
-  .search-control:hover, .search-control.hover {
-    color: white; }
   .search-control .fa {
     display: block;
     padding: 5px 0; }
-  .search-control.hover .fa-search {
-    -webkit-animation: text-shadow-pulse 1s;
-    -moz-animation: text-shadow-pulse 1s;
-    -o-animation: text-shadow-pulse 1s;
-    animation: text-shadow-pulse 1s; }
+  .search-control button {
+    background: transparent;
+    border: 0;
+    width: 100%;
+    color: #ab93cb; }
+    .search-control button:hover {
+      color: white; }
 
 .search-filters {
   width: 100%;
@@ -1136,6 +1096,10 @@ input {
     text-decoration: none;
     color: #363636;
     font-weight: bold; }
+    .tabbed-item a span {
+      font-weight: normal; }
+    .tabbed-item a.has-values span {
+      color: #7c62a0; }
   .tabbed-item:first-of-type {
     margin-left: 20px; }
 
@@ -5281,92 +5245,3 @@ body, .pure-g [class*="pure-u"], .pure-g-r [class*="pure-u"] {
   width: 10px;
   height: 12px;
   background-position: -204px -217px; }
-
-/* qTip2 v2.1.1 None | qtip2.com | Licensed MIT, GPL | Thu Jul 11 2013 14:03:07 */
-.qtip {
-  position: absolute;
-  left: -28000px;
-  top: -28000px;
-  display: none;
-  max-width: 280px;
-  min-width: 50px;
-  font-size: 10.5px;
-  line-height: 12px;
-  direction: ltr;
-  box-shadow: none;
-  padding: 0; }
-
-.qtip-content {
-  position: relative;
-  padding: 5px 9px;
-  overflow: hidden;
-  text-align: left;
-  word-wrap: break-word; }
-
-.qtip-titlebar {
-  position: relative;
-  padding: 5px 35px 5px 10px;
-  overflow: hidden;
-  border-width: 0 0 1px;
-  font-weight: 700; }
-
-.qtip-titlebar + .qtip-content {
-  border-top-width: 0 !important; }
-
-.qtip-close {
-  position: absolute;
-  right: -9px;
-  top: -9px;
-  cursor: pointer;
-  outline: medium none;
-  border-width: 1px;
-  border-style: solid;
-  border-color: transparent; }
-
-.qtip-titlebar .qtip-close {
-  right: 4px;
-  top: 50%;
-  margin-top: -9px; }
-
-* html .qtip-titlebar .qtip-close {
-  top: 16px; }
-
-.qtip-titlebar .ui-icon, .qtip-icon .ui-icon {
-  display: block;
-  text-indent: -1000em;
-  direction: ltr; }
-
-.qtip-icon, .qtip-icon .ui-icon {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  text-decoration: none; }
-
-.qtip-icon .ui-icon {
-  width: 18px;
-  height: 14px;
-  line-height: 14px;
-  text-align: center;
-  text-indent: 0;
-  font: 400 bold 10px/13px Tahoma,sans-serif;
-  color: inherit;
-  background: transparent none no-repeat -100em -100em; }
-
-.qtip-default {
-  border-width: 1px;
-  border-style: solid;
-  border-color: #F1D031;
-  background-color: #FFFFA3;
-  color: #555; }
-
-.qtip-default .qtip-titlebar {
-  background-color: #FFEF93; }
-
-.qtip-default .qtip-icon {
-  border-color: #CCC;
-  background: #F1F1F1;
-  color: #777; }
-
-.qtip-default .qtip-titlebar .qtip-close {
-  border-color: #AAA;
-  color: #111; }

@@ -7,11 +7,11 @@ block content
         .pure-u-1
             if model
                 .text-content
-                .fast-look.pure-g-r(class=model.running?'true':'false')
+                .fast-look.pure-g-r(class=model.running)
                     .pure-u-1-3
                         .text-content
                             h4 nickname
-                            p= model.nickname
+                            p #{model.nickname}
                     .pure-u-1-3
                         .text-content
                             if model.running
@@ -23,13 +23,12 @@ block content
                     .pure-u-1-3
                         .text-content
                             h4 running
-                            p(class=model.running?'true':'false')= model.running
+                            p(class=model.running) #{model.running}
                 .page-properties
                     .text-content
                         .property
                             h5 Fingerprint
-                            p.align-center.no-width-limit
-                                =model.fingerprint
+                            p.align-center.no-width-limit #{model.fingerprint}
 
                     +flagList(model.flags, model.inLatestConsensus)
 
@@ -41,7 +40,7 @@ block content
                                     ul.property-content.item-list
                                         if model.or_addresses
                                             each or_address in model.or_addresses
-                                                li= or_address
+                                                li #{or_address}
                                         else
                                             li none
                                 .property
@@ -54,56 +53,47 @@ block content
                                     if model.exit_policy_summary.accept
                                         ul.property-content.item-list
                                             each accept in model.exit_policy_summary.accept
-                                                li= accept
+                                                li #{accept}
                                     if model.exit_policy_summary.reject
                                         ul.property-content.item-list
                                             each reject in model.exit_policy_summary.reject
-                                                li= reject
+                                                li #{reject}
                                 .property
                                     h5 Exit Policy
                                     .property-content
                                         ul.item-list
                                             if model.exit_policy
                                                 each exit_policy_item in model.exit_policy
-                                                    li= exit_policy_item
+                                                    li #{exit_policy_item}
                                             else
                                                 li none
                                 .property
                                     h5 Advertised Bandwidth
-                                    p.property-content
-                                        = model.formattedAdvertisedBandwith
-                                    // bandwidth
+                                    p.property-content #{model.formattedAdvertisedBandwith}
                                 .property
                                     h5 Last Restarted
-                                    p.property-content
-                                        = model.last_restarted
+                                    p.property-content #{model.last_restarted}
                         .pure-u-1-2
                             .text-content
                                 .property
                                     h5 Contact
-                                    p.property-content
-                                        = model.contact
+                                    p.property-content #{model.contact}
                                 .property
                                     h5 Platform
-                                    p.property-content
-                                        = model.platform
+                                    p.property-content #{model.platform}
                                 .property
                                     h5 Country
                                     // flaggify country, fullCountry
-                                    p.property-content !{model.formattedCountryFlag}
-                                        = countries[model.country]
+                                    p.property-content !{model.formattedCountryFlag} #{countries[model.country]}
                                 .property
                                     h5 Dir Address
-                                    p.property-content
-                                        = model.dir_address
+                                    p.property-content #{model.dir_address}
                                 .property
                                     h5 AS Number
-                                    p.property-content
-                                        = model.as_number
+                                    p.property-content #{model.as_number}
                                 .property
                                     h5 AS Name
-                                    p.property-content
-                                        = model.as_name
+                                    p.property-content #{model.as_name}
                                 .property
                                     h5 Family Members
                                     p.property-content
@@ -113,7 +103,7 @@ block content
                                                     li
                                                         a(href='/relay/' + family_member)
                                                             i.button.fa.fa-external-link-square
-                                                                = family_member
+                                                            = family_member
                                             else
                                                 li none
             else

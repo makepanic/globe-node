@@ -23,6 +23,13 @@
     text-decoration: none;
     color: $black;
     font-weight: bold;
+
+    span{
+      font-weight: normal;
+    }
+    &.has-values span{
+      color: $purple;
+    }
   }
 
   &:first-of-type{

@@ -1,6 +1,5 @@
 @import "../mixins";
 @import "../colors";
-@import "../animations";
 
 .searchbar{
   padding: 8px 0;
@@ -16,7 +15,6 @@
   color: $black;
 
   @include border-box();
-
 
   &::-webkit-input-placeholder { /* WebKit browsers */
     color: $purple-darker;
@@ -40,20 +38,20 @@
 
   @include transition(color, .2s);
 
-  &:hover, &.hover{
-    color: $white;
-  }
-
   .fa{
     display: block;
     padding: 5px 0;
   }
 
-  &.hover .fa-search{
-    -webkit-animation: text-shadow-pulse 1s; // Chrome, Safari 5+
-    -moz-animation: text-shadow-pulse 1s; // Firefox 5-15
-    -o-animation: text-shadow-pulse 1s; // Opera 12.00
-    animation: text-shadow-pulse 1s;
+  button{
+    background: transparent;
+    border: 0;
+    width: 100%;
+    color: $purple-light;
+
+    &:hover{
+      color: $white
+    }
   }
 }
 

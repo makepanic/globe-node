@@ -13,13 +13,13 @@ block content
                         else
                             | Showing all results:
                         .tabbed-item
-                            a.indicator(href='#relay-results')
+                            a.indicator(href='#relay-results', class=model.relays.length > 0 ? 'has-values' : '')
                                 | #{model.relays.length}
-                                span Relays
+                                span  Relays
                         .tabbed-item
-                            a.indicator(href='#bridge-results')
+                            a.indicator(href='#bridge-results', class=model.bridges.length > 0 ? 'has-values' : '')
                                 | #{model.bridges.length}
-                                span Bridges
+                                span  Bridges
 
                     a(name='relay-results')
                     h3 Relays
