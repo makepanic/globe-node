@@ -1,0 +1,10 @@
+extends layout
+block content
+    .pure-g.help
+        .pure-u-1
+            .text-content
+                if title
+                    h2.styled #{title}
+                else
+                    h2.styled Error
+                p #{msg}

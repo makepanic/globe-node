@@ -1,6 +1,10 @@
 var bandwidth = require('../lib/onionoo/bandwidth'),
     weights = require('../lib/onionoo/weights'),
-    historyGraph = require('../lib/graphs/historyGraph');
+    historyGraph = require('../lib/graphs/historyGraph'),
+
+    hasRenderRequirements = function(data, type) {
+        return data.hasOwnProperty(type) && data[type].periods.length;
+    };
 
 exports.relay = {
     bandwidth: function(req, res) {
@@ -8,18 +12,31 @@ exports.relay = {
 
         bandwidth(fingerprint).then(function(bandwidthData){
 
-            var svgGraph = historyGraph.svg({
-                period: bandwidthData.relays.periods[0],
-                data: bandwidthData.relays.history,
-                graphs: ['readHistory', 'writeHistory'],
-                labels: ['written bytes per second', 'read bytes per second'],
-                tickFormat: 's',
-                legendPos: [{x:60,y:25}, {x:270,y:25}]
+            if (hasRenderRequirements(bandwidthData, 'relays')) {
+
+                var svgGraph = historyGraph.svg({
+                    period: bandwidthData.relays.periods[0],
+                    data: bandwidthData.relays.history,
+                    graphs: ['readHistory', 'writeHistory'],
+                    labels: ['written bytes per second', 'read bytes per second'],
+                    tickFormat: 's',
+                    legendPos: [{x:60,y:25}, {x:270,y:25}]
+                });
+
+                res.set('Content-Type', 'image/svg+xml');
+                res.send(svgGraph);
+
+            } else {
+                res.status(404).render('error', {
+                    title: 404
+                });
+            }
+
+        }, function(err){
+            console.error(err);
+            res.render('error', {
+                msg: err
             });
-
-            res.set('Content-Type', 'image/svg+xml');
-            res.send(svgGraph);
-
         });
     },
     history: function(req, res) {
@@ -27,18 +44,30 @@ exports.relay = {
 
         weights(fingerprint).then(function(historyData){
 
-            var svgGraph = historyGraph.svg({
-                data: historyData.data,
-                period: historyData.periods[0],
-                graphs: ['advertisedBandwidth', 'consensusWeightFraction', 'guardProbability', 'exitProbability'],
-                labels: ['advertised bandwidth fraction', 'consensus weight fraction','guard probability', 'exit probability'],
-                tickFormat: 's',
-                legendPos: [{x:80,y:35},{x:80,y:15},{x:270,y:15}, {x:270,y:35}]
+            if (hasRenderRequirements(historyData, 'relays')) {
+
+                var svgGraph = historyGraph.svg({
+                    data: historyData.data,
+                    period: historyData.periods[0],
+                    graphs: ['advertisedBandwidth', 'consensusWeightFraction', 'guardProbability', 'exitProbability'],
+                    labels: ['advertised bandwidth fraction', 'consensus weight fraction','guard probability', 'exit probability'],
+                    tickFormat: 's',
+                    legendPos: [{x:80,y:35},{x:80,y:15},{x:270,y:15}, {x:270,y:35}]
+                });
+
+                res.set('Content-Type', 'image/svg+xml');
+                res.send(svgGraph);
+            } else {
+                res.status(404).render('error', {
+                    title: 404
+                });
+            }
+
+        }, function(err){
+            console.error(err);
+            res.render('error', {
+                msg: err
             });
-
-            res.set('Content-Type', 'image/svg+xml');
-            res.send(svgGraph);
-
         });
     }
 };
@@ -49,19 +78,30 @@ exports.bridge = {
 
         bandwidth(fingerprint).then(function(bandwidthData){
 
-            var svgGraph = historyGraph.svg({
-                dimension: { w: 1100, h: 300 },
-                period: bandwidthData.bridges.periods[0],
-                data: bandwidthData.bridges.history,
-                graphs: ['readHistory', 'writeHistory'],
-                labels: ['written bytes per second', 'read bytes per second'],
-                tickFormat: 's',
-                legendPos: [{x:60,y:25}, {x:270,y:25}]
+            if (hasRenderRequirements(bandwidthData, 'bridges')) {
+                var svgGraph = historyGraph.svg({
+                    dimension: { w: 1100, h: 300 },
+                    period: bandwidthData.bridges.periods[0],
+                    data: bandwidthData.bridges.history,
+                    graphs: ['readHistory', 'writeHistory'],
+                    labels: ['written bytes per second', 'read bytes per second'],
+                    tickFormat: 's',
+                    legendPos: [{x:60,y:25}, {x:270,y:25}]
+                });
+
+                res.set('Content-Type', 'image/svg+xml');
+                res.send(svgGraph);
+            } else {
+                res.status(404).render('error', {
+                    title: 404
+                });
+            }
+
+        }, function(err){
+            console.error(err);
+            res.render('error', {
+                msg: err
             });
-
-            res.set('Content-Type', 'image/svg+xml');
-            res.send(svgGraph);
-
         });
     }
-}
+};

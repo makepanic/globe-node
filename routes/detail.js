@@ -1,4 +1,5 @@
-var lookup = require('../lib/onionoo/lookup'),
+var errors = require('../lib/errors'),
+    lookup = require('../lib/onionoo/lookup'),
     formatter = require('../lib/util/formatter');
 
 exports.bridge = function(store){
@@ -14,7 +15,8 @@ exports.bridge = function(store){
                     model: null
                 };
 
-            if (detail.bridge){
+            // check if result found (found = has hashed_fingerprint)
+            if (detail.bridge && detail.bridge.hasOwnProperty('hashed_fingerprint')){
                 // has relay details
                 bridge = detail.bridge;
 
@@ -25,9 +27,19 @@ exports.bridge = function(store){
                 data.model.formattedUptimeRestarted = formatter.uptimeFull(data.model.last_restarted);
                 data.model.formattedAdvertisedBandwith = formatter.bandwidth(data.model.advertised_bandwidth);
                 data.model.bandwidthGraphUrl = '/bridge/bandwidth/' + bridge.hashed_fingerprint + '.svg';
+                res.render('bridge', data);
+            } else {
+                // no result found
+                res.render('error', {
+                    msg: errors.BridgeNotFound
+                });
             }
 
-            res.render('bridge', data);
+        }, function(err){
+            console.error(err);
+            res.render('error', {
+                msg: err
+            });
         });
     };
 };
@@ -45,7 +57,8 @@ exports.relay = function(store){
                     model: null
                 };
 
-            if (detail.relay){
+            // check if result found (found = has fingerprint)
+            if (detail.relay && detail.relay.hasOwnProperty('fingerprint')){
                 // has relay details
                 relay = detail.relay;
 
@@ -64,9 +77,20 @@ exports.relay = function(store){
                         return formatter.familyToFingerprint(val);
                     });
                 }
+
+                res.render('relay', data);
+            } else {
+                // no result found
+                res.render('error', {
+                    msg: errors.RelayNotFound
+                });
             }
 
-            res.render('relay', data);
+        }, function(err){
+            console.error(err);
+            res.render('error', {
+                msg: err
+            });
         });
     };
 };
