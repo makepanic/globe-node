@@ -3,7 +3,15 @@ var bandwidth = require('../lib/onionoo/bandwidth'),
     historyGraph = require('../lib/graphs/historyGraph'),
 
     hasRenderRequirements = function(data, type) {
-        return data.hasOwnProperty(type) && data[type].periods.length;
+        var hasRequirements = false;
+        if (type) {
+            // case bandwidth
+            hasRequirements = data.hasOwnProperty(type) && data[type].periods.length;
+        } else {
+            // case history
+            hasRequirements = data.periods.length;
+        }
+        return hasRequirements;
     };
 
 exports.relay = {
@@ -44,7 +52,7 @@ exports.relay = {
 
         weights(fingerprint).then(function(historyData){
 
-            if (hasRenderRequirements(historyData, 'relays')) {
+            if (hasRenderRequirements(historyData)) {
 
                 var svgGraph = historyGraph.svg({
                     data: historyData.data,
