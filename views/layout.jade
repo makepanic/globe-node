@@ -3,7 +3,7 @@ include mixins/alertBox
 doctype html
 html
     head
-        title= title
+        title #{buildTitle(title, version)}
         link(rel='stylesheet', href='/stylesheets/style.css')
     body
         .head-bar

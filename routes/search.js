@@ -5,7 +5,7 @@ var search = require('../lib/onionoo/search'),
 module.exports = function(req, res){
     var cfg = req.query,
         data = {
-            title: 'Express',
+            title: ['Results for "' + cfg.query + '"'],
             query: '',
             path: 'search'
         },
@@ -18,14 +18,14 @@ module.exports = function(req, res){
             flag: cfg.flag
         };
 
+    data.query = cfg.query;
+    data.filter = filter;
+
     search({
         query: cfg.query,
         filter: filter
     }).then(function(summaries){
         console.log('req.query', cfg);
-
-        data.query = cfg.query;
-        data.filter = filter;
 
         // check if result length is over limit
         if(summaries.relays.length + summaries.bridges.length >= constants.numbers.maxSearchResults){

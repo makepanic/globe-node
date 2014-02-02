@@ -3,21 +3,19 @@
  */
 
 exports.index = function (req, res) {
-    var data = {
-        title: 'Index'
-    };
+    var data = {};
     res.render('index', data);
 };
 exports.help = function (req, res) {
     var data = {
-        title: 'Index',
+        title: ['Help'],
         path: 'help'
     };
     res.render('help', data);
 };
 exports.code = function (req, res) {
     var data = {
-        title: 'Index',
+        title: ['Code'],
         path: 'code'
     };
     res.render('code', data);

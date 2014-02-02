@@ -48,6 +48,7 @@ app.get('/relay/bandwidth/:fingerprint.svg', graphs.relay.bandwidth);
 app.get('/relay/history/:fingerprint.svg', graphs.relay.history);
 app.get('/bridge/bandwidth/:fingerprint.svg', graphs.bridge.bandwidth);
 
+globals.version = '0.0.1';
 app.locals(globals);
 
 http.createServer(app).listen(app.get('port'), function(){

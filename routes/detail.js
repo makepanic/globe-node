@@ -10,7 +10,7 @@ exports.bridge = function(store){
             var bridge,
                 // initialize data holder with general data
                 data = {
-                    title: 'Express',
+                    title: ['Bridge'],
                     path: 'bridge',
                     model: null
                 };
@@ -19,6 +19,9 @@ exports.bridge = function(store){
             if (detail.bridge && detail.bridge.hasOwnProperty('hashed_fingerprint')){
                 // has relay details
                 bridge = detail.bridge;
+
+                // fill title
+                data.title = ['Details for ' + bridge.nickname].concat(data.title);
 
                 // set view model
                 data.model = bridge;
@@ -52,7 +55,7 @@ exports.relay = function(store){
             var relay,
             // initialize data holder with general data
                 data = {
-                    title: 'Express',
+                    title: ['Relay'],
                     path: 'relay',
                     model: null
                 };
@@ -61,6 +64,9 @@ exports.relay = function(store){
             if (detail.relay && detail.relay.hasOwnProperty('fingerprint')){
                 // has relay details
                 relay = detail.relay;
+
+                // fill title
+                data.title = ['Details for ' + relay.nickname].concat(data.title);
 
                 // set view model
                 data.model = relay;
