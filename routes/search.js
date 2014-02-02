@@ -25,8 +25,6 @@ module.exports = function(req, res){
         query: cfg.query,
         filter: filter
     }).then(function(summaries){
-        console.log('req.query', cfg);
-
         // check if result length is over limit
         if(summaries.relays.length + summaries.bridges.length >= constants.numbers.maxSearchResults){
             data.alert = {
