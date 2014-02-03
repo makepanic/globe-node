@@ -28,7 +28,7 @@ exports.relay = {
                     graphs: ['readHistory', 'writeHistory'],
                     labels: ['written bytes per second', 'read bytes per second'],
                     tickFormat: 's',
-                    legendPos: [{x:60,y:25}, {x:270,y:25}]
+                    legendPos: [{x:60,y:30}, {x:270,y:30}]
                 });
 
                 res.set('Content-Type', 'image/svg+xml');
@@ -60,7 +60,7 @@ exports.relay = {
                     graphs: ['advertisedBandwidth', 'consensusWeightFraction', 'guardProbability', 'exitProbability'],
                     labels: ['advertised bandwidth fraction', 'consensus weight fraction','guard probability', 'exit probability'],
                     tickFormat: 's',
-                    legendPos: [{x:80,y:35},{x:80,y:15},{x:270,y:15}, {x:270,y:35}]
+                    legendPos: [{x:80,y:45},{x:80,y:30},{x:270,y:30}, {x:270,y:45}]
                 });
 
                 res.set('Content-Type', 'image/svg+xml');
