@@ -1,8 +1,8 @@
 var bandwidth = require('../lib/onionoo/bandwidth'),
     weights = require('../lib/onionoo/weights'),
-    historyGraph = require('../lib/graphs/historyGraph'),
+    historyGraph = require('../lib/graphs/historyGraph');
 
-    hasRenderRequirements = function(data, type) {
+var hasRenderRequirements = function(data, type) {
         var hasRequirements = false;
         if (type) {
             // case bandwidth
