@@ -41,7 +41,6 @@ exports.relay = {
             }
 
         }, function(err){
-            console.error(err);
             res.render('error', {
                 msg: err
             });
@@ -72,7 +71,6 @@ exports.relay = {
             }
 
         }, function(err){
-            console.error(err);
             res.render('error', {
                 msg: err
             });
@@ -106,7 +104,6 @@ exports.bridge = {
             }
 
         }, function(err){
-            console.error(err);
             res.render('error', {
                 msg: err
             });
