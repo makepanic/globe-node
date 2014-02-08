@@ -26,7 +26,8 @@
     "request": "~2.30.0",
     "moment": "~2.5.0",
     "d3": "~3.3.13",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "objstore": "0.0.1"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

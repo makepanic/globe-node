@@ -10,7 +10,6 @@ var express = require('express')
   , top10 = require('./routes/top10')
   , http = require('http')
   , path = require('path')
-  , store = require('./lib/storage')
   , globals = require('./lib/globalData')
   , graphs = require('./routes/graphs');
 
@@ -40,8 +39,8 @@ app.get('/search', search);
 app.get('/top10', top10);
 
 // dynamic urls
-app.get('/relay/:fingerprint', detail.relay(store));
-app.get('/bridge/:fingerprint', detail.bridge(store));
+app.get('/relay/:fingerprint', detail.relay);
+app.get('/bridge/:fingerprint', detail.bridge);
 
 // graphs
 app.get('/relay/bandwidth/:fingerprint.svg', graphs.relay.bandwidth);
