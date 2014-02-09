@@ -16,14 +16,16 @@ var hasRenderRequirements = function(data, type) {
 
 exports.relay = {
     bandwidth: function(req, res) {
-        var fingerprint = req.params.fingerprint;
+        var fingerprint = req.params.fingerprint,
+            period = req.query.period;
 
         bandwidth(fingerprint).then(function(bandwidthData){
 
             if (hasRenderRequirements(bandwidthData, 'relays')) {
 
                 var svgGraph = historyGraph.svg({
-                    period: bandwidthData.relays.periods[0],
+                    dimension: { w: 400 * 3, h: 300 },
+                    period: period || bandwidthData.relays.periods[0],
                     data: bandwidthData.relays.history,
                     graphs: ['readHistory', 'writeHistory'],
                     labels: ['written bytes per second', 'read bytes per second'],
@@ -47,15 +49,17 @@ exports.relay = {
         });
     },
     history: function(req, res) {
-        var fingerprint = req.params.fingerprint;
+        var fingerprint = req.params.fingerprint,
+            period = req.query.period;
 
         weights(fingerprint).then(function(historyData){
 
             if (hasRenderRequirements(historyData)) {
 
                 var svgGraph = historyGraph.svg({
+                    dimension: { w: 400 * 3, h: 300 },
                     data: historyData.data,
-                    period: historyData.periods[0],
+                    period: period || historyData.periods[0],
                     graphs: ['advertisedBandwidth', 'consensusWeightFraction', 'guardProbability', 'exitProbability'],
                     labels: ['advertised bandwidth fraction', 'consensus weight fraction','guard probability', 'exit probability'],
                     tickFormat: 's',
@@ -80,14 +84,15 @@ exports.relay = {
 
 exports.bridge = {
     bandwidth: function(req, res) {
-        var fingerprint = req.params.fingerprint;
+        var fingerprint = req.params.fingerprint,
+            period = req.query.period;
 
         bandwidth(fingerprint).then(function(bandwidthData){
 
             if (hasRenderRequirements(bandwidthData, 'bridges')) {
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 1100, h: 300 },
-                    period: bandwidthData.bridges.periods[0],
+                    dimension: { w: 1100 * 3, h: 300 },
+                    period: period || bandwidthData.bridges.periods[0],
                     data: bandwidthData.bridges.history,
                     graphs: ['readHistory', 'writeHistory'],
                     labels: ['written bytes per second', 'read bytes per second'],

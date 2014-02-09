@@ -1,0 +1,14 @@
+@import "../colors";
+
+.graph-holder{
+  overflow: hidden;
+  overflow-x: scroll;
+  display: block;
+  max-width: 100%;
+  margin-bottom: 20px;
+
+  img{
+    max-width: none !important;
+    width: auto !important;
+  }
+}

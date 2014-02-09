@@ -1,5 +1,8 @@
 var errors = require('../lib/errors'),
+    RSVP = require('rsvp'),
     lookup = require('../lib/onionoo/lookup'),
+    bandwidth = require('../lib/onionoo/bandwidth'),
+    weights = require('../lib/onionoo/weights'),
     formatter = require('../lib/util/formatter');
 
 exports.bridge = function(req, res){
@@ -16,20 +19,28 @@ exports.bridge = function(req, res){
 
         // check if result found (found = has hashed_fingerprint)
         if (detail.bridge && detail.bridge.hasOwnProperty('hashed_fingerprint')){
-            // has relay details
-            bridge = detail.bridge;
 
-            // fill title
-            data.title = ['Details for ' + bridge.nickname].concat(data.title);
+            bandwidth(fingerprint).then(function(bandwidthData){
 
-            // set view model
-            data.model = bridge;
+                // has relay details
+                bridge = detail.bridge;
 
-            // apply formatter
-            data.model.formattedUptimeRestarted = formatter.uptimeFull(data.model.last_restarted);
-            data.model.formattedAdvertisedBandwith = formatter.bandwidth(data.model.advertised_bandwidth);
-            data.model.bandwidthGraphUrl = '/bridge/bandwidth/' + bridge.hashed_fingerprint + '.svg';
-            res.render('bridge', data);
+                // fill title
+                data.title = ['Details for ' + bridge.nickname].concat(data.title);
+
+                // set view model
+                data.model = bridge;
+
+                // set graph periods
+                data.model.bandwidthPeriods = bandwidthData.bridges.periods;
+
+                // apply formatter
+                data.model.formattedUptimeRestarted = formatter.uptimeFull(data.model.last_restarted);
+                data.model.formattedAdvertisedBandwith = formatter.bandwidth(data.model.advertised_bandwidth);
+                data.model.bandwidthGraphUrl = '/bridge/bandwidth/' + bridge.hashed_fingerprint + '.svg';
+                res.render('bridge', data);
+
+            });
         } else {
             // no result found
             res.render('error', {
@@ -61,26 +72,36 @@ exports.relay = function(req, res){
             // has relay details
             relay = detail.relay;
 
-            // fill title
-            data.title = ['Details for ' + relay.nickname].concat(data.title);
+            RSVP.hash({
+                bandwidth: bandwidth(fingerprint),
+                weights: weights(fingerprint)
+            }).then(function(results){
+                // fill title
+                data.title = ['Details for ' + relay.nickname].concat(data.title);
 
-            // set view model
-            data.model = relay;
+                // set view model
+                data.model = relay;
 
-            // apply formatter
-            data.model.formattedUptimeRestarted = formatter.uptimeFull(data.model.last_restarted);
-            data.model.formattedAdvertisedBandwith = formatter.bandwidth(data.model.advertised_bandwidth);
-            data.model.formattedCountryFlag = formatter.flaggify(data.model.country);
-            data.model.bandwidthGraphUrl = '/relay/bandwidth/' + relay.fingerprint + '.svg';
-            data.model.historyGraphUrl = '/relay/history/' + relay.fingerprint + '.svg';
+                // apply formatter
+                data.model.formattedUptimeRestarted = formatter.uptimeFull(data.model.last_restarted);
+                data.model.formattedAdvertisedBandwith = formatter.bandwidth(data.model.advertised_bandwidth);
+                data.model.formattedCountryFlag = formatter.flaggify(data.model.country);
+                data.model.bandwidthGraphUrl = '/relay/bandwidth/' + relay.fingerprint + '.svg';
+                data.model.historyGraphUrl = '/relay/history/' + relay.fingerprint + '.svg';
 
-            if (data.model.family.length){
-                data.model.formattedFamily = data.model.family.map(function(val){
-                    return formatter.familyToFingerprint(val);
-                });
-            }
+                // set graph periods
+                data.model.bandwidthPeriods = results.bandwidth.relays.periods;
+                data.model.weightPeriods = results.weights.periods;
 
-            res.render('relay', data);
+                if (data.model.family.length){
+                    data.model.formattedFamily = data.model.family.map(function(val){
+                        return formatter.familyToFingerprint(val);
+                    });
+                }
+
+                res.render('relay', data);
+            });
+
         } else {
             // no result found
             res.render('error', {

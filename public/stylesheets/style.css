@@ -1064,19 +1064,15 @@ input {
     text-align: center;
     color: #c96f67; }
 
-.graph-canvas {
-  margin: 10px 0; }
-  .graph-canvas > div:hover .dygraph-legend {
-    opacity: 1; }
-
-.dygraph-legend {
-  opacity: 0;
-  padding: 5px;
-  border: 1px solid #e4dfe1; }
-  .dygraph-legend > span {
-    display: block; }
-    .dygraph-legend > span b {
-      font-size: 12px; }
+.graph-holder {
+  overflow: hidden;
+  overflow-x: scroll;
+  display: block;
+  max-width: 100%;
+  margin-bottom: 20px; }
+  .graph-holder img {
+    max-width: none !important;
+    width: auto !important; }
 
 .indicator {
   color: #999999;

@@ -65,4 +65,8 @@ block content
         .pure-u-1
             .text-content
                 h5 Bandwidth
-                img(src=model.bandwidthGraphUrl,alt='Bridge bandwidth graph')
+                if model.bandwidthPeriods
+                    each bandwidthPeriod in model.bandwidthPeriods
+                        h6 #{bandwidthPeriod}
+                        .graph-holder
+                            img(src=model.bandwidthGraphUrl + '?period=' + bandwidthPeriod,alt='Bridge bandwidth graph')

@@ -113,8 +113,16 @@ block content
         .pure-u-1-2
             .text-content
                 h5 Bandwidth
-                img(src=model.bandwidthGraphUrl,alt='Relay bandwidth graph')
+                if model.bandwidthPeriods
+                    each bandwidthPeriod in model.bandwidthPeriods
+                        h6 #{bandwidthPeriod}
+                        .graph-holder
+                            img(src=model.bandwidthGraphUrl + '?period=' + bandwidthPeriod,alt='Relay bandwidth graph')
         .pure-u-1-2
             .text-content
                 h5 History
-                img(src=model.historyGraphUrl,alt='Relay history graph')
+                if model.weightPeriods
+                    each weightPeriod in model.weightPeriods
+                        h6 #{weightPeriod}
+                        .graph-holder
+                            img(src=model.historyGraphUrl + '?period=' + weightPeriod,alt='Relay history graph')
