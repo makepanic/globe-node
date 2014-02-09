@@ -61,12 +61,16 @@ block content
             else
                 .text-content
                     p.align-center.no-width-limit No detail found <i class="fa fa-meh-o"></i>
-    .pure-g-r
+    .pure-g-r.bridge-graphs
         .pure-u-1
-            .text-content
+            .text-content.graph-content
                 h5 Bandwidth
                 if model.bandwidthPeriods
-                    each bandwidthPeriod in model.bandwidthPeriods
-                        h6 #{bandwidthPeriod}
+                    each bandwidthPeriod, index in model.bandwidthPeriods
+                        label(for='bw' + bandwidthPeriod)  #{bandwidthPeriod}
+                        if index === 0
+                            input(type='radio',id='bw' + bandwidthPeriod,name='bandwidth', checked='checked')
+                        else
+                            input(type='radio',id='bw' + bandwidthPeriod,name='bandwidth')
                         .graph-holder
-                            img(src=model.bandwidthGraphUrl + '?period=' + bandwidthPeriod,alt='Bridge bandwidth graph')
+                            img(src=model.bandwidthGraphUrl + '?period=' + bandwidthPeriod,alt='Relay bandwidth graph')

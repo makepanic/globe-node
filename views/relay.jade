@@ -111,18 +111,26 @@ block content
                     p.align-center.no-width-limit No detail found <i class="fa fa-meh-o"></i>
     .pure-g-r.relay-graphs
         .pure-u-1-2
-            .text-content
+            .text-content.graph-content
                 h5 Bandwidth
                 if model.bandwidthPeriods
-                    each bandwidthPeriod in model.bandwidthPeriods
-                        h6 #{bandwidthPeriod}
+                    each bandwidthPeriod, index in model.bandwidthPeriods
+                        label(for='bw' + bandwidthPeriod)  #{bandwidthPeriod}
+                        if index === 0
+                            input(type='radio',id='bw' + bandwidthPeriod,name='bandwidth', checked='checked')
+                        else
+                            input(type='radio',id='bw' + bandwidthPeriod,name='bandwidth')
                         .graph-holder
                             img(src=model.bandwidthGraphUrl + '?period=' + bandwidthPeriod,alt='Relay bandwidth graph')
         .pure-u-1-2
-            .text-content
+            .text-content.graph-content
                 h5 History
                 if model.weightPeriods
-                    each weightPeriod in model.weightPeriods
-                        h6 #{weightPeriod}
+                    each weightPeriod, index in model.weightPeriods
+                        label(for='we' + weightPeriod)  #{weightPeriod}
+                        if index === 0
+                            input(type='radio',id='we' + weightPeriod, name='weight', checked='checked')
+                        else
+                            input(type='radio',id='we' + weightPeriod, name='weight')
                         .graph-holder
                             img(src=model.historyGraphUrl + '?period=' + weightPeriod,alt='Relay history graph')

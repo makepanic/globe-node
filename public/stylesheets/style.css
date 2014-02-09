@@ -1068,11 +1068,31 @@ input {
   overflow: hidden;
   overflow-x: scroll;
   display: block;
-  max-width: 100%;
-  margin-bottom: 20px; }
+  max-width: 100%; }
   .graph-holder img {
     max-width: none !important;
     width: auto !important; }
+
+.graph-content .graph-holder {
+  height: 0px;
+  -webkit-transition: height 0.2s linear;
+  -moz-transition: height 0.2s linear;
+  -ms-transition: height 0.2s linear;
+  -o-transition: height 0.2s linear;
+  transition: height 0.2s linear; }
+.graph-content label {
+  display: block;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-bottom: 1px solid #e4dfe1; }
+.graph-content input[type=radio] {
+  display: none; }
+
+.relay-graphs .graph-content input[type=radio]:checked + .graph-holder {
+  height: 350px; }
+
+.bridge-graphs .graph-content input[type=radio]:checked + .graph-holder {
+  height: 380px; }
 
 .indicator {
   color: #999999;
