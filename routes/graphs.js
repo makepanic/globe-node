@@ -24,7 +24,7 @@ exports.relay = {
             if (hasRenderRequirements(bandwidthData, 'relays')) {
 
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 400 * 3, h: 300 },
+                    dimension: { w: 550, h: 300 },
                     period: period || bandwidthData.relays.periods[0],
                     data: bandwidthData.relays.history,
                     graphs: ['readHistory', 'writeHistory'],
@@ -57,7 +57,7 @@ exports.relay = {
             if (hasRenderRequirements(historyData)) {
 
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 400 * 3, h: 300 },
+                    dimension: { w: 550, h: 300 },
                     data: historyData.data,
                     period: period || historyData.periods[0],
                     graphs: ['advertisedBandwidth', 'consensusWeightFraction', 'guardProbability', 'exitProbability'],
@@ -91,7 +91,7 @@ exports.bridge = {
 
             if (hasRenderRequirements(bandwidthData, 'bridges')) {
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 1100 * 3, h: 300 },
+                    dimension: { w: 1100, h: 300 },
                     period: period || bandwidthData.bridges.periods[0],
                     data: bandwidthData.bridges.history,
                     graphs: ['readHistory', 'writeHistory'],

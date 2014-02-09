@@ -1066,12 +1066,11 @@ input {
 
 .graph-holder {
   overflow: hidden;
-  overflow-x: scroll;
   display: block;
   max-width: 100%; }
   .graph-holder img {
     max-width: none !important;
-    width: auto !important; }
+    width: 100%; }
 
 .graph-content .graph-holder {
   height: 0px;
@@ -1268,7 +1267,6 @@ code {
   text-align: center; }
 
 .relay-graphs img {
-  width: 440px;
   height: 330px; }
 
 .footer {

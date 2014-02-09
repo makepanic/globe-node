@@ -3,13 +3,12 @@
 
 .graph-holder{
   overflow: hidden;
-  overflow-x: scroll;
   display: block;
   max-width: 100%;
 
   img{
     max-width: none !important;
-    width: auto !important;
+    width: 100%;
   }
 }
 
