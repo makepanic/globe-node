@@ -7,6 +7,11 @@ block content
         .pure-u-1
             .text-content
                 if model
+                    if model.hashFingerprintWarning
+                        h4.c-red
+                            | It looks like you tried to search for a bridge using an unhashed fingerprint.
+                            | See <a href="#">UNHASHED_FP_PAGE_NAME</a> for more information. <br/>
+                            | In the future try to use the <a href="#{model.correctSearchUrl}">hashed fingerprint of the bridge</a> instead.
                     h3
                         if query
                             | Search results for "#{query}"

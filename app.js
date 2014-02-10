@@ -35,7 +35,8 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/help', routes.help);
 app.get('/code', routes.code);
-app.get('/search', search);
+app.get('/search', search.searchNotAlreadyHashed);
+app.get('/search2', search.searchAlreadyHashed);
 app.get('/top10', top10);
 
 // dynamic urls
