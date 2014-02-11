@@ -1062,7 +1062,7 @@ input {
     margin-right: 4px; }
   .datatable .empty {
     text-align: center;
-    color: #c96f67; }
+    color: #a65353; }
 
 .graph-holder {
   overflow: hidden;
@@ -1151,7 +1151,7 @@ input {
     background: #7c62a0;
     color: white; }
   .alert.warn {
-    background: #c96f67;
+    background: #a65353;
     color: white; }
 
 h2 small, h3 small, h4 small, h5 small, h6 small {
@@ -1192,7 +1192,9 @@ code {
   display: inline-block; }
 
 .c-red {
-  color: #c96f67; }
+  color: #a65353; }
+  .c-red a {
+    color: #733a3a; }
 
 .fast-look {
   border: 1px solid #999999;
@@ -1200,7 +1202,7 @@ code {
   .fast-look.true {
     border-color: #aed6ac; }
   .fast-look.false {
-    border-color: #c96f67; }
+    border-color: #a65353; }
   .fast-look h4 {
     font-weight: normal;
     color: #505050;
@@ -1212,7 +1214,7 @@ code {
     .fast-look p.true {
       color: #8dc58a; }
     .fast-look p.false {
-      color: #bb4c42; }
+      color: #844242; }
     .fast-look p span {
       color: #999999;
       font-size: .9em; }
@@ -1231,7 +1233,7 @@ code {
   .page-properties .true {
     color: #8dc58a; }
   .page-properties .false {
-    color: #bb4c42; }
+    color: #844242; }
   .page-properties h5 {
     font-size: 1em;
     font-weight: normal;
