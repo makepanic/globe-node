@@ -115,6 +115,15 @@ exports.searchAlreadyHashed = function(req, res){
             bridges: summaries.bridges
         };
 
+        // check if user searched for a bridge using an unhashed fingerprint
+        if (cfg.query && summaries.bridges.length === 1 && summaries.relays.length === 0 &&
+            summaries.bridges[0].hashed_fingerprint === cfg.query
+            ) {
+            // search was 40char hex and hashed fingerprint is same as result bridge hashed fingerprint
+            data.model.hashFingerprintWarning = true;
+            data.model.correctSearchUrl = '/search?query=' + cfg.query;
+        }
+
         // apply formats for each relay
         data.model.relays.forEach(function(relay){
             relay.formattedBandwidth = formatter.bandwidth(relay.advertised_bandwidth);

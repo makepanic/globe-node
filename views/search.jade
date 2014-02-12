@@ -12,8 +12,6 @@ block content
                             | It looks like you tried to search for a bridge using an unhashed fingerprint.
                             | See <a href="/help#how-to-search">How do I search for my bridge</a> for more information why this is a bad idea.
                             | In the future try to use the <a href="#{model.correctSearchUrl}">hashed fingerprint of the bridge</a> instead.
-                    if model.usedPrehashedFingerprint
-                        p foo
                     h3
                         if query
                             | Search results for "#{query}"
