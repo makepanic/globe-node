@@ -32,6 +32,6 @@
     "grunt": "~0.4.2",
     "grunt-contrib-nodeunit": "~0.3.0",
     "load-grunt-tasks": "~0.3.0",
-    "grunt-eslint": "~0.2.0"
+    "grunt-eslint": "~0.3.2"
   }
 }
