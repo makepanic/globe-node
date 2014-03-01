@@ -36,6 +36,7 @@ exports.bridge = function(req, res){
 
                 // apply formatter
                 data.model.formattedUptimeRestarted = formatter.uptimeFull(data.model.last_restarted);
+                data.model.formattedUptimeSeen = formatter.uptimeFull(data.model.last_seen);
                 data.model.formattedAdvertisedBandwith = formatter.bandwidth(data.model.advertised_bandwidth);
                 data.model.bandwidthGraphUrl = '/bridge/bandwidth/' + bridge.hashed_fingerprint + '.svg';
                 res.render('bridge', data);
@@ -84,6 +85,7 @@ exports.relay = function(req, res){
 
                 // apply formatter
                 data.model.formattedUptimeRestarted = formatter.uptimeFull(data.model.last_restarted);
+                data.model.formattedUptimeSeen = formatter.uptimeFull(data.model.last_seen);
                 data.model.formattedAdvertisedBandwith = formatter.bandwidth(data.model.advertised_bandwidth);
                 data.model.formattedCountryFlag = formatter.flaggify(data.model.country);
                 data.model.bandwidthGraphUrl = '/relay/bandwidth/' + relay.fingerprint + '.svg';
