@@ -1150,9 +1150,13 @@ input {
   .alert.info {
     background: #7c62a0;
     color: white; }
+    .alert.info a {
+      color: white; }
   .alert.warn {
     background: #a65353;
     color: white; }
+    .alert.warn a {
+      color: white; }
 
 h2 small, h3 small, h4 small, h5 small, h6 small {
   color: #505050;

@@ -1,4 +1,4 @@
-var is40CharHex = require('../lib/util/is40CharHex');
+var is40CharHex = require('../lib/onionoo/util/is40CharHex');
 
 exports['checks valid strings'] = function(test){
     test.expect(2);

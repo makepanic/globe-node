@@ -1,4 +1,4 @@
-var search = require('../lib/onionoo/search'),
+var search = require('../lib/onionoo/api/search'),
     formatter = require('../lib/util/formatter'),
     constants = require('../lib/static');
 

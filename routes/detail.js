@@ -1,8 +1,8 @@
 var errors = require('../lib/errors'),
     RSVP = require('rsvp'),
-    lookup = require('../lib/onionoo/lookup'),
-    bandwidth = require('../lib/onionoo/bandwidth'),
-    weights = require('../lib/onionoo/weights'),
+    lookup = require('../lib/onionoo/api/lookup'),
+    bandwidth = require('../lib/onionoo/api/bandwidth'),
+    weights = require('../lib/onionoo/api/weights'),
     formatter = require('../lib/util/formatter');
 
 exports.bridge = function(req, res){

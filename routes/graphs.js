@@ -1,5 +1,5 @@
-var bandwidth = require('../lib/onionoo/bandwidth'),
-    weights = require('../lib/onionoo/weights'),
+var bandwidth = require('../lib/onionoo/api/bandwidth'),
+    weights = require('../lib/onionoo/api/weights'),
     historyGraph = require('../lib/graphs/historyGraph');
 
 var hasRenderRequirements = function(data, type) {

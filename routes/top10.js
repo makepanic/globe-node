@@ -1,4 +1,4 @@
-var search = require('../lib/onionoo/search'),
+var search = require('../lib/onionoo/api/search'),
     formatter = require('../lib/util/formatter'),
     constants = require('../lib/static');
 
@@ -32,10 +32,16 @@ module.exports = function(req, res){
 
         res.render('top10', data);
     }, function(err){
-        //TODO: error handling
+        var errMsg;
+
+        if (err.hasOwnProperty('code')) {
+            errMsg = constants.messages.hasOwnProperty(err.code) ? constants.messages[err.code] : err.code;
+        } else {
+            errMsg = constants.messages.invalidSearchTerm;
+        }
         data.alert = {
             type: 'info',
-            msg: constants.messages.invalidSearchTerm
+            msg: errMsg
         };
         res.render('search', data);
     });

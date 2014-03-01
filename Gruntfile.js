@@ -15,9 +15,25 @@ module.exports = function(grunt) {
                 'routes/**/*.js',
                 'lib/**/*.js'
             ]
+        },
+
+        coverage: {
+            options: {
+                thresholds: {
+                    'statements': 90,
+                    'branches': 90,
+                    'lines': 90,
+                    'functions': 90
+                },
+                dir: 'coverage',
+                root: 'tests'
+            }
         }
     });
 
+
+
+    grunt.registerTask('cov', ['coverage']);
     grunt.registerTask('default', ['eslint', 'nodeunit']);
 
     grunt.registerTask('test', ['eslint', 'nodeunit']);
