@@ -34,7 +34,7 @@ body, .pure-g [class *= "pure-u"], .pure-g-r [class *= "pure-u"]{
 }
 .fader{
   opacity: 1;
-  @include transition(opacity, .2s);
+  @include transition(opacity .2s);
 
   &.out{
     opacity: 0;

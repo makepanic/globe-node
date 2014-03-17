@@ -953,11 +953,11 @@ table {
   font-size: 1.3em;
   cursor: pointer;
   text-align: center;
-  -webkit-transition: color 0.2s linear;
-  -moz-transition: color 0.2s linear;
-  -ms-transition: color 0.2s linear;
-  -o-transition: color 0.2s linear;
-  transition: color 0.2s linear; }
+  -webkit-transition: color 0.2s;
+  -moz-transition: color 0.2s;
+  -ms-transition: color 0.2s;
+  -o-transition: color 0.2s;
+  transition: color 0.2s; }
   .search-control .fa {
     display: block;
     padding: 5px 0; }
@@ -1074,11 +1074,11 @@ input {
 
 .graph-content .graph-holder {
   height: 0px;
-  -webkit-transition: height 0.2s linear;
-  -moz-transition: height 0.2s linear;
-  -ms-transition: height 0.2s linear;
-  -o-transition: height 0.2s linear;
-  transition: height 0.2s linear; }
+  -webkit-transition: height 0.2s;
+  -moz-transition: height 0.2s;
+  -ms-transition: height 0.2s;
+  -o-transition: height 0.2s;
+  transition: height 0.2s; }
 .graph-content label {
   display: block;
   cursor: pointer;
@@ -1259,12 +1259,17 @@ code {
   .page-properties .property-content {
     margin: 0 20px 20px; }
 
-.property h2 .pure-button, .property h3 .pure-button, .property h4 .pure-button, .property h5 .pure-button, .property h6 .pure-button {
-  display: none;
-  font-size: 70%;
-  float: right; }
-.property:hover .pure-button {
-  display: inline-block; }
+.property .show-toggle.pure-button {
+  opacity: 0;
+  filter: alpha(opacity=0);
+  -webkit-transition: opacity 0.2s;
+  -moz-transition: opacity 0.2s;
+  -ms-transition: opacity 0.2s;
+  -o-transition: opacity 0.2s;
+  transition: opacity 0.2s; }
+.property:hover .show-toggle {
+  opacity: 1;
+  filter: alpha(opacity=100); }
 
 .item-list {
   max-height: 320px;
@@ -1321,11 +1326,11 @@ body, .pure-g [class*="pure-u"], .pure-g-r [class*="pure-u"] {
 
 .fader {
   opacity: 1;
-  -webkit-transition: opacity 0.2s linear;
-  -moz-transition: opacity 0.2s linear;
-  -ms-transition: opacity 0.2s linear;
-  -o-transition: opacity 0.2s linear;
-  transition: opacity 0.2s linear; }
+  -webkit-transition: opacity 0.2s;
+  -moz-transition: opacity 0.2s;
+  -ms-transition: opacity 0.2s;
+  -o-transition: opacity 0.2s;
+  transition: opacity 0.2s; }
   .fader.out {
     opacity: 0; }
 

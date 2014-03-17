@@ -15,7 +15,7 @@
 .graph-content{
   .graph-holder{
     height: 0px;
-    @include transition(height, .2s);
+    @include transition(height .2s);
   }
 
   label{

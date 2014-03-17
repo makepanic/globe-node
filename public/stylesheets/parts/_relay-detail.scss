@@ -1,5 +1,6 @@
 @import "../colors";
 @import "../vars";
+@import "../mixins";
 
 .fast-look{
   border: 1px solid $grey-darkest;
@@ -73,16 +74,13 @@
   }
 }
 .property{
-  h2,h3,h4,h5,h6{
-    .pure-button{
-      display: none;
-      font-size: 70%;
-      float: right;
-    }
+  .show-toggle.pure-button{
+    @include opacity(0);
+    @include transition(opacity .2s);
   }
   &:hover{
-    .pure-button{
-      display: inline-block;
+    .show-toggle{
+      @include opacity(1);
     }
   }
 }
