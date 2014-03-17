@@ -40,5 +40,11 @@ body, .pure-g [class *= "pure-u"], .pure-g-r [class *= "pure-u"]{
     opacity: 0;
   }
 }
+.x-small{
+  font-size: 70% !important;
+}
+.small{
+  font-size: 80% !important;
+}
 
 @import "vendor/font-awesome-4.0.0/font-awesome";

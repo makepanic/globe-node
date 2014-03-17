@@ -67,9 +67,19 @@ block content
                                                     li #{exit_policy_item}
                                             else
                                                 li none
-                                .property
+                                .property.show-container
                                     h5 Advertised Bandwidth
+                                    label.pure-button.x-small.show-toggle(for='extended-bandwidth')
+                                        i.fa.fa-angle-down  more
                                     p.property-content #{model.formattedAdvertisedBandwith}
+                                    input(type='checkbox', id='extended-bandwidth')
+                                    .show-content
+                                        h5 Bandwidth Rate
+                                        p.property-content #{model.formattedBandwidthRate}
+                                        h5 Bandwidth Burst
+                                        p.property-content #{model.formattedBandwidthBurst}
+                                        h5 Observed Bandwidth
+                                        p.property-content #{model.formattedObservedBandwidth}
                                 .property
                                     h5 Last Restarted
                                     p.property-content #{model.last_restarted}

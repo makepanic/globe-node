@@ -1158,6 +1158,19 @@ input {
     .alert.warn a {
       color: white; }
 
+.show-container {
+  position: relative; }
+  .show-container .show-toggle {
+    position: absolute;
+    top: 0;
+    right: 0; }
+  .show-container .show-content {
+    display: none; }
+  .show-container input[type=checkbox] {
+    display: none; }
+  .show-container input[type=checkbox]:checked ~ .show-content {
+    display: block; }
+
 h2 small, h3 small, h4 small, h5 small, h6 small {
   color: #505050;
   font-weight: normal; }
@@ -1315,6 +1328,12 @@ body, .pure-g [class*="pure-u"], .pure-g-r [class*="pure-u"] {
   transition: opacity 0.2s linear; }
   .fader.out {
     opacity: 0; }
+
+.x-small {
+  font-size: 70% !important; }
+
+.small {
+  font-size: 80% !important; }
 
 /*!
  *  Font Awesome 4.0.0

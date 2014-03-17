@@ -1,0 +1,21 @@
+@import "../colors";
+
+.show-container{
+  position: relative;
+
+  .show-toggle{
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .show-content{
+    display: none;
+  }
+  input[type=checkbox]{
+    display: none;
+  }
+  input[type=checkbox]:checked ~ .show-content{
+    display: block;
+  }
+}
