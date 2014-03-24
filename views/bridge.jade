@@ -39,8 +39,8 @@ block content
                                 .property
                                     h5 OR address
                                     ul.property-content.item-list
-                                        if model.or_addresses
-                                            each or_address in model.or_addresses
+                                        if model.formattedOrAddresses
+                                            each or_address in model.formattedOrAddresses
                                                 li #{or_address}
                                         else
                                             li none

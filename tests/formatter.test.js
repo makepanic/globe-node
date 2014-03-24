@@ -22,7 +22,8 @@ exports['checks port'] = function(test){
     var testFn = formatter.port,
         dataEmpty = '';
 
-    test.expect(10);
+    test.expect(11);
+
     test.equals(testFn(undefined), dataEmpty);
     test.equals(testFn(null), dataEmpty);
     test.equals(testFn(0), dataEmpty);
@@ -30,10 +31,12 @@ exports['checks port'] = function(test){
     test.equals(testFn(-1), dataEmpty);
     test.equals(testFn(NaN), dataEmpty);
     test.equals(testFn('string'), dataEmpty);
-    test.equals(testFn('0.0.0.0:80:80'), dataEmpty);
+    test.equals(testFn('0.0.0.0:'), dataEmpty);
 
+    test.equals(testFn('0.0.0.0:80:80'), '80');
     test.equals(testFn('0.0.0.0:8080'), '8080');
     test.equals(testFn('0.0.0.0:21'), '21');
+
     test.done();
 };
 
@@ -79,6 +82,20 @@ exports['checks propFlag'] = function(test){
 
     test.deepEqual(testFn('Foo'), '');
     test.deepEqual(testFn(null), '');
+
+    test.done();
+};
+
+
+exports['checks anonymizeIpAddress'] = function(test) {
+    var testFn = formatter.anonymizeIpAddress;
+
+    test.equals(testFn('128.0.0.1:9000'), 'IPv4:9000', 'test for ipv4');
+    test.equals(testFn('128.0.0.1:80'), 'IPv4:80', 'test for ipv4');
+
+    test.equals(testFn('::ffff:10.0.0.1:9000'), 'IPv6:9000', 'test for ipv6');
+    test.equals(testFn('1:2:3:4:5:6:7:8:80'), 'IPv6:80', 'test for ipv6');
+    test.equals(testFn('[2001:bc8:3431:101::2]:22'), 'IPv6:22', 'test for ipv6');
 
     test.done();
 };
