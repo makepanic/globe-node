@@ -5,7 +5,7 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         nodeunit: {
-            all: ['tests/*.test.js']
+            all: ['tests/**/*.test.js']
         },
         eslint: {
             options: {

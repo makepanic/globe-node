@@ -49,6 +49,7 @@ function buildSearchResult (data, summaries, hashedFingerprint) {
 }
 
 exports.searchNotAlreadyHashed = function(req, res){
+    /*eslint handle-callback-err:0*/
     var cfg = req.query,
         data = {
             title: ['Results for "' + cfg.query + '"'],
@@ -72,7 +73,7 @@ exports.searchNotAlreadyHashed = function(req, res){
         filter: filter
     }).then(function(summaries){
         res.render('search', buildSearchResult(data, summaries, summaries.hashedFingerprint));
-    }, function(err){
+    }, function(){
         data.alert = {
             type: 'info',
             msg: constants.messages.invalidSearchTerm
@@ -82,6 +83,7 @@ exports.searchNotAlreadyHashed = function(req, res){
 };
 
 exports.searchAlreadyHashed = function(req, res){
+    /*eslint handle-callback-err:0*/
     var cfg = req.query,
         data = {
             title: ['Results for "' + cfg.query + '"'],
@@ -106,7 +108,7 @@ exports.searchAlreadyHashed = function(req, res){
         skipFingerprintCheck: true
     }).then(function(summaries){
         res.render('search', buildSearchResult(data, summaries, cfg.query));
-    }, function(err){
+    }, function(){
         data.alert = {
             type: 'info',
             msg: constants.messages.invalidSearchTerm
