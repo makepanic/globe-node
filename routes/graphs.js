@@ -1,4 +1,6 @@
 var bandwidth = require('../lib/onionoo/api/bandwidth'),
+    uptime = require('../lib/onionoo/api/uptime'),
+    clients = require('../lib/onionoo/api/clients'),
     weights = require('../lib/onionoo/api/weights'),
     historyGraph = require('../lib/graphs/historyGraph');
 
@@ -15,6 +17,37 @@ var hasRenderRequirements = function(data, type) {
     };
 
 exports.relay = {
+    uptime: function(req, res){
+        var fingerprint = req.params.fingerprint,
+            period = req.query.period;
+
+        uptime(fingerprint).then(function(uptimeData){
+            if (hasRenderRequirements(uptimeData, 'relays')) {
+                var svgGraph = historyGraph.svg({
+                    dimension: { w: 550, h: 300 },
+                    period: period || uptimeData.relays.periods[0],
+                    data: uptimeData.relays.uptime,
+                    graphs: ['uptime'],
+                    labels: ['uptime'],
+                    tickFormat: 's',
+                    legendPos: [{x:60,y:30}]
+                });
+
+                res.set('Content-Type', 'image/svg+xml');
+                res.send(svgGraph);
+
+            } else {
+                res.status(404).render('error', {
+                    title: 404
+                });
+            }
+
+        }, function(err){
+            res.render('error', {
+                msg: err
+            });
+        });
+    },
     bandwidth: function(req, res) {
         var fingerprint = req.params.fingerprint,
             period = req.query.period;
@@ -98,6 +131,37 @@ exports.bridge = {
                     labels: ['written bytes per second', 'read bytes per second'],
                     tickFormat: 's',
                     legendPos: [{x:60,y:25}, {x:270,y:25}]
+                });
+
+                res.set('Content-Type', 'image/svg+xml');
+                res.send(svgGraph);
+            } else {
+                res.status(404).render('error', {
+                    title: 404
+                });
+            }
+
+        }, function(err){
+            res.render('error', {
+                msg: err
+            });
+        });
+    },
+    clients: function(req, res) {
+        var fingerprint = req.params.fingerprint,
+            period = req.query.period;
+
+        clients(fingerprint).then(function(bandwidthData){
+
+            if (hasRenderRequirements(bandwidthData, 'bridges')) {
+                var svgGraph = historyGraph.svg({
+                    dimension: { w: 1100, h: 300 },
+                    period: period || bandwidthData.bridges.periods[0],
+                    data: bandwidthData.bridges.clients,
+                    graphs: ['averageClients'],
+                    labels: ['concurrent users'],
+                    tickFormat: 's',
+                    legendPos: [{x:60,y:25}]
                 });
 
                 res.set('Content-Type', 'image/svg+xml');

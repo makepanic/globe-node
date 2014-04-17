@@ -32,10 +32,6 @@ function buildSearchResult (data, summaries, hashedFingerprint) {
         relay.formattedCountryFlag = formatter.flaggify(relay.country);
         relay.formattedUptime = formatter.uptimeShort(relay.last_restarted);
         relay.formattedFlags = formatter.onionFlags(relay.flags);
-        if (relay.or_addresses.length) {
-            relay.formattedOrPort = formatter.port(relay.or_addresses[0]);
-        }
-        relay.formattedDirPort = formatter.port(relay.dir_address);
     });
 
     // apply formats for each bridge
