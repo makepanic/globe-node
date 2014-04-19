@@ -87,12 +87,12 @@ exports.relay = {
 
         weights(fingerprint).then(function(historyData){
 
-            if (hasRenderRequirements(historyData)) {
+            if (hasRenderRequirements(historyData, 'relays')) {
 
                 var svgGraph = historyGraph.svg({
                     dimension: { w: 550, h: 300 },
-                    data: historyData.data,
-                    period: period || historyData.periods[0],
+                    period: period || historyData.relays.periods[0],
+                    data: historyData.relays.history,
                     graphs: ['advertisedBandwidth', 'consensusWeightFraction', 'guardProbability', 'exitProbability'],
                     labels: ['advertised bandwidth fraction', 'consensus weight fraction','guard probability', 'exit probability'],
                     tickFormat: 's',

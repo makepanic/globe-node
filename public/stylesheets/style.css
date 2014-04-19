@@ -1062,7 +1062,7 @@ input {
     margin-right: 4px; }
   .datatable .empty {
     text-align: center;
-    color: #a65353; }
+    color: #c96f67; }
 
 .graph-holder {
   overflow: hidden;
@@ -1119,6 +1119,46 @@ input {
   .tabbed-item:first-of-type {
     margin-left: 20px; }
 
+.tabs {
+  position: relative;
+  min-height: 200px;
+  /* This part sucks */
+  clear: both;
+  margin: 25px 0; }
+
+.tab {
+  float: left; }
+  .tab label {
+    border: 1px solid transparent;
+    cursor: pointer;
+    margin: 0;
+    text-align: left;
+    padding: 10px 15px;
+    font-weight: bold;
+    color: #838383;
+    position: relative; }
+    .tab label:hover {
+      color: #7c62a0; }
+  .tab input[type=radio] {
+    display: none; }
+    .tab input[type=radio]:checked ~ label {
+      z-index: 2;
+      border-color: #e4dfe1;
+      border-bottom-color: white;
+      color: #7c62a0; }
+      .tab input[type=radio]:checked ~ label ~ .tab-content {
+        z-index: 1; }
+
+.tab-content {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  background: white;
+  right: 0;
+  bottom: 0;
+  padding: 20px;
+  border-top: 1px solid #e4dfe1; }
+
 .loading-indicator {
   padding: 150px 50px 50px 50px;
   background: url("../img/ajax-loader.gif") no-repeat center center; }
@@ -1153,7 +1193,7 @@ input {
     .alert.info a {
       color: white; }
   .alert.warn {
-    background: #a65353;
+    background: #c96f67;
     color: white; }
     .alert.warn a {
       color: white; }
@@ -1184,10 +1224,13 @@ h2.styled, h3.styled, h4.styled, h5.styled, h6.styled {
 a {
   color: #634e81; }
   a:hover {
-    color: #603675; }
+    color: #4b3b61; }
 
 .align-center {
   text-align: center; }
+
+.align-right {
+  text-align: right; }
 
 .text-content {
   position: relative;
@@ -1209,9 +1252,7 @@ code {
   display: inline-block; }
 
 .c-red {
-  color: #a65353; }
-  .c-red a {
-    color: #733a3a; }
+  color: #c96f67; }
 
 .fast-look {
   border: 1px solid #999999;
@@ -1219,7 +1260,7 @@ code {
   .fast-look.true {
     border-color: #aed6ac; }
   .fast-look.false {
-    border-color: #a65353; }
+    border-color: #c96f67; }
   .fast-look h4 {
     font-weight: normal;
     color: #505050;
@@ -1231,7 +1272,7 @@ code {
     .fast-look p.true {
       color: #8dc58a; }
     .fast-look p.false {
-      color: #844242; }
+      color: #bb4c42; }
     .fast-look p span {
       color: #999999;
       font-size: .9em; }
@@ -1250,7 +1291,7 @@ code {
   .page-properties .true {
     color: #8dc58a; }
   .page-properties .false {
-    color: #844242; }
+    color: #bb4c42; }
   .page-properties h5 {
     font-size: 1em;
     font-weight: normal;

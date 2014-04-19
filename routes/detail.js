@@ -3,6 +3,7 @@ var errors = require('../lib/errors'),
     lookup = require('../lib/onionoo/api/lookup'),
     bandwidth = require('../lib/onionoo/api/bandwidth'),
     weights = require('../lib/onionoo/api/weights'),
+    uniquePeriods = require('../lib/onionoo/util/uniquePeriods'),
     formatter = require('../lib/util/formatter');
 
 exports.bridge = function(req, res){
@@ -96,9 +97,11 @@ exports.relay = function(req, res){
                 data.model.bandwidthGraphUrl = '/relay/bandwidth/' + relay.fingerprint + '.svg';
                 data.model.historyGraphUrl = '/relay/history/' + relay.fingerprint + '.svg';
 
+                data.model.periods = uniquePeriods(results, 'relays');
+
                 // set graph periods
                 data.model.bandwidthPeriods = results.bandwidth.relays.periods;
-                data.model.weightPeriods = results.weights.periods;
+                data.model.weightPeriods = results.weights.relays.periods;
 
                 if (data.model.family.length){
                     data.model.formattedFamily = data.model.family.map(function(val){

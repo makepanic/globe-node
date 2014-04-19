@@ -18,12 +18,15 @@ a{
   color: $purple-darker;
 
   &:hover{
-    color: $torpurple-darker;
+    color: $purple-darkest;
   }
 }
 
 .align-center{
   text-align: center;
+}
+.align-right{
+  text-align: right;
 }
 
 .text-content{
@@ -54,7 +57,4 @@ code{
 
 .c-red{
   color: $red;
-  a{
-    color: $red-darker;
-  }
 }

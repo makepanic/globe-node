@@ -37,3 +37,50 @@
     margin-left: 20px;
   }
 }
+
+// via http://css-tricks.com/functional-css-tabs-revisited/
+.tabs {
+  position: relative;
+  min-height: 200px; /* This part sucks */
+  clear: both;
+  margin: 25px 0;
+}
+.tab {
+  float: left;
+
+  label{
+    border: 1px solid transparent;
+    cursor: pointer;
+    margin: 0;
+    text-align: left;
+    padding: 10px 15px;
+    font-weight: bold;
+    color: $black-lightest;
+    position: relative;
+    &:hover{
+      color: $purple;
+    }
+  }
+  input[type=radio]{
+    display: none;
+    &:checked ~ label{
+      z-index: 2;
+      border-color: $grey-darker;
+      border-bottom-color: $white;
+      color: $purple;
+      & ~ .tab-content{
+        z-index: 1;
+      }
+    }
+  }
+}
+.tab-content {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  background: white;
+  right: 0;
+  bottom: 0;
+  padding: 20px;
+  border-top: 1px solid $grey-darker;
+}

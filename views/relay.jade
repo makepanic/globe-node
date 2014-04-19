@@ -119,6 +119,14 @@ block content
             else
                 .text-content
                     p.align-center.no-width-limit No detail found <i class="fa fa-meh-o"></i>
+
+    .tabs
+        each period, index in model.periods
+            .tab
+                input(type='radio',id='tab-' + index, name='tab-grp', checked)
+                label(for='tab-' + index) #{period.title}
+                .tab-content #{period.key}
+
     .pure-g-r.relay-graphs
         .pure-u-1-2
             .text-content.graph-content
