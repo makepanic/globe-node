@@ -1,4 +1,7 @@
 include mixins/flagList
+include mixins/bandwidth-stats
+include mixins/weight-stats
+include mixins/uptime-stats
 
 extends layout
 
@@ -16,10 +19,10 @@ block content
                         .text-content
                             if model.running
                                 h4 uptime
-                                p !{model.formattedUptimeRestarted}
+                                p !{format.uptimeFull(model.last_restarted)}
                             else
                                 h4 downtime
-                                p !{model.formattedUptimeSeen}
+                                p !{format.uptimeFull(model.last_seen)}
                     .pure-u-1-3
                         .text-content
                             h4 running
@@ -71,15 +74,15 @@ block content
                                     h5 Advertised Bandwidth
                                     label.pure-button.x-small.show-toggle(for='extended-bandwidth')
                                         i.fa.fa-angle-down  more
-                                    p.property-content #{model.formattedAdvertisedBandwith}
+                                    p.property-content #{format.bandwidth(model.advertised_bandwidth)}
                                     input(type='checkbox', id='extended-bandwidth')
                                     .show-content
                                         h5 Bandwidth Rate
-                                        p.property-content #{model.formattedBandwidthRate}
+                                        p.property-content #{format.bandwidth(model.bandwidth_rate)}
                                         h5 Bandwidth Burst
-                                        p.property-content #{model.formattedBandwidthBurst}
+                                        p.property-content #{format.bandwidth(model.bandwidth_burst)}
                                         h5 Observed Bandwidth
-                                        p.property-content #{model.formattedObservedBandwidth}
+                                        p.property-content #{format.bandwidth(model.observed_bandwidth)}
                                 .property
                                     h5 Last Restarted
                                     p.property-content #{model.last_restarted}
@@ -94,7 +97,7 @@ block content
                                 .property
                                     h5 Country
                                     // flaggify country, fullCountry
-                                    p.property-content !{model.formattedCountryFlag} #{countries[model.country]}
+                                    p.property-content !{format.flaggify(model.country)} #{countries[model.country]}
                                 .property
                                     h5 Dir Address
                                     p.property-content #{model.dir_address}
@@ -108,12 +111,12 @@ block content
                                     h5 Family Members
                                     p.property-content
                                         ul.item-list
-                                            if model.formattedFamily
-                                                each family_member in model.formattedFamily
+                                            if model.family
+                                                each family_member in model.family
                                                     li
-                                                        a(href='/relay/' + family_member)
+                                                        a(href='/relay/' + format.familyToFingerprint(family_member))
                                                             i.button.fa.fa-external-link-square
-                                                            = family_member
+                                                            = format.familyToFingerprint(family_member)
                                             else
                                                 li none
             else
@@ -123,32 +126,9 @@ block content
     .tabs
         each period, index in model.periods
             .tab
-                input(type='radio',id='tab-' + index, name='tab-grp', checked)
+                input(type='radio', id='tab-' + index, name='tab-grp', checked)
                 label(for='tab-' + index) #{period.title}
-                .tab-content #{period.key}
-
-    .pure-g-r.relay-graphs
-        .pure-u-1-2
-            .text-content.graph-content
-                h5 Bandwidth
-                if model.bandwidthPeriods
-                    each bandwidthPeriod, index in model.bandwidthPeriods
-                        label(for='bw' + bandwidthPeriod)  #{bandwidthPeriod}
-                        if index === 0
-                            input(type='radio',id='bw' + bandwidthPeriod,name='bandwidth', checked='checked')
-                        else
-                            input(type='radio',id='bw' + bandwidthPeriod,name='bandwidth')
-                        .graph-holder
-                            img(src=model.bandwidthGraphUrl + '?period=' + bandwidthPeriod,alt='Relay bandwidth graph')
-        .pure-u-1-2
-            .text-content.graph-content
-                h5 History
-                if model.weightPeriods
-                    each weightPeriod, index in model.weightPeriods
-                        label(for='we' + weightPeriod)  #{weightPeriod}
-                        if index === 0
-                            input(type='radio',id='we' + weightPeriod, name='weight', checked='checked')
-                        else
-                            input(type='radio',id='we' + weightPeriod, name='weight')
-                        .graph-holder
-                            img(src=model.historyGraphUrl + '?period=' + weightPeriod,alt='Relay history graph')
+                .tab-content
+                    +bandwidthStats(model.bandwidthGraphUrl, period.key, period.avg)
+                    +weightStats(model.historyGraphUrl, period.key, period.avg)
+                    +uptimeStats(0, period.key, period.avg)

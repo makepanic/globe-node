@@ -1,14 +1,15 @@
-mixin bandwidthStats(dateWindow, selectedPeriod)
+mixin bandwidthStats(graphUrl, period, avg)
     .pure-g-r
         .pure-u-1-3
             h3 Bandwidth
             p mean written bytes
             strong
                 span.d3-col.block-0
-                h2 TODO: avgReadHistory
+                = format.bandwidth(avg.readHistory)
             p mean read bytes
             strong
-                span.d3-col.block-0
-                h2 TODO: avgWriteHistory
+                span.d3-col.block-1
+                = format.bandwidth(avg.writeHistory)
         .pure-u-2-3
-            h2 TODO: graph
+            .graph-holder
+                img(src=graphUrl + '?period=' + period,alt='Relay bandwidth graph')

@@ -78,6 +78,8 @@ exports.relay = function(req, res){
                 bandwidth: bandwidth(fingerprint),
                 weights: weights(fingerprint)
             }).then(function(results){
+                data.format = formatter;
+
                 // fill title
                 data.title = ['Details for ' + relay.nickname].concat(data.title);
 
@@ -85,29 +87,11 @@ exports.relay = function(req, res){
                 data.model = relay;
 
                 // apply formatter
-                data.model.formattedUptimeRestarted = formatter.uptimeFull(data.model.last_restarted);
-                data.model.formattedUptimeSeen = formatter.uptimeFull(data.model.last_seen);
-
-                data.model.formattedAdvertisedBandwith = formatter.bandwidth(data.model.advertised_bandwidth);
-                data.model.formattedBandwidthRate = formatter.bandwidth(data.model.bandwidth_rate);
-                data.model.formattedBandwidthBurst = formatter.bandwidth(data.model.bandwidth_burst);
-                data.model.formattedObservedBandwidth = formatter.bandwidth(data.model.observed_bandwidth);
-
-                data.model.formattedCountryFlag = formatter.flaggify(data.model.country);
                 data.model.bandwidthGraphUrl = '/relay/bandwidth/' + relay.fingerprint + '.svg';
                 data.model.historyGraphUrl = '/relay/history/' + relay.fingerprint + '.svg';
 
+                // all available periods
                 data.model.periods = uniquePeriods(results, 'relays');
-
-                // set graph periods
-                data.model.bandwidthPeriods = results.bandwidth.relays.periods;
-                data.model.weightPeriods = results.weights.relays.periods;
-
-                if (data.model.family.length){
-                    data.model.formattedFamily = data.model.family.map(function(val){
-                        return formatter.familyToFingerprint(val);
-                    });
-                }
 
                 res.render('relay', data);
             });

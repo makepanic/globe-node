@@ -1,4 +1,4 @@
-mixin bandwidthStats(dateWindow, selectedPeriod)
+mixin clientStats(dateWindow, period, avg)
     .pure-g-r
         .pure-u-1-3
             h3 Clients
@@ -7,4 +7,4 @@ mixin bandwidthStats(dateWindow, selectedPeriod)
                 span.d3-col.block-0
                 h2 TODO: avg clients
         .pure-u-2-3
-            h2 TODO: clients graph
+            h2 TODO: clients graph #{period}
