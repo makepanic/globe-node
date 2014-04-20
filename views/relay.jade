@@ -130,5 +130,5 @@ block content
                 label(for='tab-' + index) #{period.title}
                 .tab-content
                     +bandwidthStats(model.bandwidthGraphUrl, period.key, period.avg)
-                    +weightStats(model.historyGraphUrl, period.key, period.avg)
+                    +weightStats(model.weightGraphUrl, period.key, period.avg)
                     +uptimeStats(0, period.key, period.avg)

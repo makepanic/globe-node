@@ -1,24 +1,23 @@
-mixin weightStats(dateWindow, period, avg)
+mixin weightStats(graphUrl, period, avg)
     .pure-g-r
         .pure-u-1-3
             h3 Weights
             p mean advertised bandwidth fraction
             strong
                 span.d3-col.block-0
-                h2 TODO: avg advertised bandwidth
+                = format.percent(avg.advertisedBandwidth, 4)
             p mean consensus weight fraction
             strong
                 span.d3-col.block-1
-                h2 TODO: avg consensus weight
-
+                = format.percent(avg.consensusWeightFraction, 4)
             p mean guard probability fraction
             strong
                 span.d3-col.block-2
-                h2 TODO: avg guard prob
+                = format.percent(avg.exitProbability, 4)
             p mean exit probability fraction
             strong
                 span.d3-col.block-3
-                h2 TODO: avg exit prob
+                = format.percent(avg.guardProbability, 4)
         .pure-u-2-3
             .graph-holder
                 img(src=graphUrl + '?period=' + period,alt='Relay bandwidth graph')

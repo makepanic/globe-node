@@ -88,7 +88,7 @@ exports.relay = function(req, res){
 
                 // apply formatter
                 data.model.bandwidthGraphUrl = '/relay/bandwidth/' + relay.fingerprint + '.svg';
-                data.model.historyGraphUrl = '/relay/history/' + relay.fingerprint + '.svg';
+                data.model.weightGraphUrl = '/relay/weight/' + relay.fingerprint + '.svg';
 
                 // all available periods
                 data.model.periods = uniquePeriods(results, 'relays');
