@@ -19,7 +19,10 @@ mixin relaySummaryTable(relays)
                             a(href='/relay/'+relay.fingerprint)
                                 = relay.formattedBandwidth
                         td
-                            a(href='/relay/'+relay.fingerprint) !{relay.formattedUptime}
+                            if relay.running
+                                a(href='/relay/'+relay.fingerprint) !{relay.formattedUptime}
+                            else
+                                a(href='/relay/'+relay.fingerprint, title='Offline') n/a
                         td
                             a(href='/relay/'+relay.fingerprint) !{relay.formattedCountryFlag}
                         td

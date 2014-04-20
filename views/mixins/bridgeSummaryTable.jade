@@ -16,7 +16,10 @@ mixin bridgeSummaryTable(bridges)
                         td
                             a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedBandwidth}
                         td
-                            a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedUptime}
+                            if bridge.running
+                                a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedUptime}
+                            else
+                                a(href='/bridge/'+bridge.hashed_fingerprint, title='Offline') n/a
                         td
                             a(href='/bridge/'+bridge.hashed_fingerprint) !{bridge.formattedFlags}
                         td

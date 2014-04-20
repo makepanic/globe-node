@@ -1243,6 +1243,13 @@ input {
   margin-bottom: 4px;
   margin-right: 10px; }
 
+.boolean {
+  color: #505050; }
+  .boolean.true {
+    color: #519c4d; }
+  .boolean.false {
+    color: #c96f67; }
+
 h2 small, h3 small, h4 small, h5 small, h6 small {
   color: #505050;
   font-weight: normal; }
