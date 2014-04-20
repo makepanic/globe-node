@@ -1240,7 +1240,8 @@ input {
   color: #505050;
   font-size: 25px; }
 .graph-stats .d3-col {
-  margin-bottom: 4px; }
+  margin-bottom: 4px;
+  margin-right: 10px; }
 
 h2 small, h3 small, h4 small, h5 small, h6 small {
   color: #505050;

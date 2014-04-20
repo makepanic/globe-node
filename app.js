@@ -47,7 +47,9 @@ app.get('/bridge/:fingerprint', detail.bridge);
 app.get('/relay/bandwidth/:fingerprint.svg', graphs.relay.bandwidth);
 app.get('/relay/weight/:fingerprint.svg', graphs.relay.weight);
 app.get('/relay/uptime/:fingerprint.svg', graphs.relay.uptime);
+app.get('/bridge/uptime/:fingerprint.svg', graphs.bridge.uptime);
 app.get('/bridge/bandwidth/:fingerprint.svg', graphs.bridge.bandwidth);
+app.get('/bridge/client/:fingerprint.svg', graphs.bridge.clients);
 
 globals.version = '0.0.1';
 app.locals(globals);

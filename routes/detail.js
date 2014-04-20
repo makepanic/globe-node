@@ -3,6 +3,7 @@ var errors = require('../lib/errors'),
     lookup = require('../lib/onionoo/api/lookup'),
     bandwidth = require('../lib/onionoo/api/bandwidth'),
     uptime = require('../lib/onionoo/api/uptime'),
+    clients = require('../lib/onionoo/api/clients'),
     weights = require('../lib/onionoo/api/weights'),
     uniquePeriods = require('../lib/onionoo/util/uniquePeriods'),
     formatter = require('../lib/util/formatter');
@@ -21,28 +22,33 @@ exports.bridge = function(req, res){
 
         // check if result found (found = has hashed_fingerprint)
         if (detail.bridge && detail.bridge.hasOwnProperty('hashed_fingerprint')){
-
             bandwidth(fingerprint).then(function(bandwidthData){
-
                 // has relay details
                 bridge = detail.bridge;
 
-                // fill title
-                data.title = ['Details for ' + bridge.nickname].concat(data.title);
+                data.format = formatter;
 
-                // set view model
-                data.model = bridge;
+                RSVP.hash({
+                    bandwidth: bandwidth(bridge.hashed_fingerprint),
+                    uptime: uptime(bridge.hashed_fingerprint),
+                    clients: clients(bridge.hashed_fingerprint)
+                }).then(function(results){
+                    // fill title
+                    data.title = ['Details for ' + bridge.nickname].concat(data.title);
 
-                // set graph periods
-                data.model.bandwidthPeriods = bandwidthData.bridges.periods;
+                    // set view model
+                    data.model = bridge;
 
-                // apply formatter
-                data.model.formattedUptimeRestarted = formatter.uptimeFull(data.model.last_restarted);
-                data.model.formattedUptimeSeen = formatter.uptimeFull(data.model.last_seen);
-                data.model.formattedAdvertisedBandwith = formatter.bandwidth(data.model.advertised_bandwidth);
-                data.model.bandwidthGraphUrl = '/bridge/bandwidth/' + bridge.hashed_fingerprint + '.svg';
-                res.render('bridge', data);
+                    // apply formatter
+                    data.model.bandwidthGraphUrl = '/bridge/bandwidth/' + bridge.hashed_fingerprint + '.svg';
+                    data.model.uptimeGraphUrl = '/bridge/uptime/' + bridge.hashed_fingerprint + '.svg';
+                    data.model.clientGraphUrl = '/bridge/client/' + bridge.hashed_fingerprint + '.svg';
 
+                    // all available periods
+                    data.model.periods = uniquePeriods(results, 'bridges');
+
+                    res.render('bridge', data);
+                });
             });
         } else {
             // no result found

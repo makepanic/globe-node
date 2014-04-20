@@ -4,7 +4,8 @@ var bandwidth = require('../lib/onionoo/api/bandwidth'),
     weights = require('../lib/onionoo/api/weights'),
     historyGraph = require('../lib/graphs/historyGraph');
 
-var GRAPH_HEIGHT = 200;
+var GRAPH_HEIGHT = 200,
+    GRAPH_WIDTH = 550;
 
 var hasRenderRequirements = function(data, type) {
         var hasRequirements = false;
@@ -26,7 +27,7 @@ exports.relay = {
         uptime(fingerprint).then(function(uptimeData){
             if (hasRenderRequirements(uptimeData, 'relays')) {
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 550, h: GRAPH_HEIGHT },
+                    dimension: { w: GRAPH_WIDTH, h: GRAPH_HEIGHT },
                     period: period || uptimeData.relays.periods[0],
                     data: uptimeData.relays.history,
                     graphs: ['uptime'],
@@ -59,7 +60,7 @@ exports.relay = {
             if (hasRenderRequirements(bandwidthData, 'relays')) {
 
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 550, h: GRAPH_HEIGHT },
+                    dimension: { w: GRAPH_WIDTH, h: GRAPH_HEIGHT },
                     period: period || bandwidthData.relays.periods[0],
                     data: bandwidthData.relays.history,
                     graphs: ['readHistory', 'writeHistory'],
@@ -92,7 +93,7 @@ exports.relay = {
             if (hasRenderRequirements(historyData, 'relays')) {
 
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 550, h: GRAPH_HEIGHT },
+                    dimension: { w: GRAPH_WIDTH, h: GRAPH_HEIGHT },
                     period: period || historyData.relays.periods[0],
                     data: historyData.relays.history,
                     graphs: ['advertisedBandwidth', 'consensusWeightFraction', 'guardProbability', 'exitProbability'],
@@ -118,6 +119,37 @@ exports.relay = {
 };
 
 exports.bridge = {
+    uptime: function(req, res){
+        var fingerprint = req.params.fingerprint,
+            period = req.query.period;
+
+        uptime(fingerprint).then(function(uptimeData){
+            if (hasRenderRequirements(uptimeData, 'bridges')) {
+                var svgGraph = historyGraph.svg({
+                    dimension: { w: GRAPH_WIDTH, h: GRAPH_HEIGHT },
+                    period: period || uptimeData.bridges.periods[0],
+                    data: uptimeData.bridges.history,
+                    graphs: ['uptime'],
+                    labels: ['uptime'],
+                    tickFormat: 's',
+                    legendPos: [{x:60,y:30}]
+                });
+
+                res.set('Content-Type', 'image/svg+xml');
+                res.send(svgGraph);
+
+            } else {
+                res.status(404).render('error', {
+                    title: 404
+                });
+            }
+
+        }, function(err){
+            res.render('error', {
+                msg: err
+            });
+        });
+    },
     bandwidth: function(req, res) {
         var fingerprint = req.params.fingerprint,
             period = req.query.period;
@@ -126,7 +158,7 @@ exports.bridge = {
 
             if (hasRenderRequirements(bandwidthData, 'bridges')) {
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 1100, h: GRAPH_HEIGHT },
+                    dimension: { w: GRAPH_WIDTH, h: GRAPH_HEIGHT },
                     period: period || bandwidthData.bridges.periods[0],
                     data: bandwidthData.bridges.history,
                     graphs: ['readHistory', 'writeHistory'],
@@ -154,12 +186,11 @@ exports.bridge = {
             period = req.query.period;
 
         clients(fingerprint).then(function(bandwidthData){
-
             if (hasRenderRequirements(bandwidthData, 'bridges')) {
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 1100, h: GRAPH_HEIGHT },
+                    dimension: { w: GRAPH_WIDTH, h: GRAPH_HEIGHT },
                     period: period || bandwidthData.bridges.periods[0],
-                    data: bandwidthData.bridges.clients,
+                    data: bandwidthData.bridges.history,
                     graphs: ['averageClients'],
                     labels: ['concurrent users'],
                     tickFormat: 's',

@@ -1,4 +1,7 @@
 include mixins/flagList
+include mixins/bandwidth-stats
+include mixins/uptime-stats
+include mixins/client-stats
 
 extends layout
 
@@ -16,10 +19,10 @@ block content
                         .text-content
                             if model.running
                                 h4 uptime
-                                p !{model.formattedUptimeRestarted}
+                                p !{format.uptimeFull(model.last_restarted)}
                             else
                                 h4 downtime
-                                p !{model.formattedUptimeSeen}
+                                p !{format.uptimeFull(model.last_seen)}
                     .pure-u-1-3
                         .text-content
                             h4 running
@@ -46,7 +49,7 @@ block content
                                             li none
                                 .property
                                     h5 Advertised Bandwidth
-                                    p.property-content #{model.formattedAdvertisedBandwith}
+                                    p.property-content #{format.bandwidth(model.advertised_bandwidth)}
                         .pure-u-1-2
                             .text-content
                                 .property
@@ -61,16 +64,12 @@ block content
             else
                 .text-content
                     p.align-center.no-width-limit No detail found <i class="fa fa-meh-o"></i>
-    .pure-g-r.bridge-graphs
-        .pure-u-1
-            .text-content.graph-content
-                h5 Bandwidth
-                if model.bandwidthPeriods
-                    each bandwidthPeriod, index in model.bandwidthPeriods
-                        label(for='bw' + bandwidthPeriod)  #{bandwidthPeriod}
-                        if index === 0
-                            input(type='radio',id='bw' + bandwidthPeriod,name='bandwidth', checked='checked')
-                        else
-                            input(type='radio',id='bw' + bandwidthPeriod,name='bandwidth')
-                        .graph-holder
-                            img(src=model.bandwidthGraphUrl + '?period=' + bandwidthPeriod,alt='Relay bandwidth graph')
+    .tabs
+        each period, index in model.periods
+            .tab
+                input(type='radio', id='tab-' + index, name='tab-grp', checked)
+                label(for='tab-' + index) #{period.title}
+                .tab-content
+                    +bandwidthStats(model.bandwidthGraphUrl, period.key, period.avg)
+                    +uptimeStats(model.uptimeGraphUrl, period.key, period.avg)
+                    +clientStats(model.clientGraphUrl, period.key, period.avg)
