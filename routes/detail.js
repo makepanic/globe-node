@@ -22,7 +22,7 @@ exports.bridge = function(req, res){
 
         // check if result found (found = has hashed_fingerprint)
         if (detail.bridge && detail.bridge.hasOwnProperty('hashed_fingerprint')){
-            bandwidth(fingerprint).then(function(bandwidthData){
+            bandwidth(fingerprint).then(function(){
                 // has relay details
                 bridge = detail.bridge;
 
