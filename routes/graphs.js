@@ -4,6 +4,8 @@ var bandwidth = require('../lib/onionoo/api/bandwidth'),
     weights = require('../lib/onionoo/api/weights'),
     historyGraph = require('../lib/graphs/historyGraph');
 
+var GRAPH_HEIGHT = 200;
+
 var hasRenderRequirements = function(data, type) {
         var hasRequirements = false;
         if (type) {
@@ -24,9 +26,9 @@ exports.relay = {
         uptime(fingerprint).then(function(uptimeData){
             if (hasRenderRequirements(uptimeData, 'relays')) {
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 550, h: 300 },
+                    dimension: { w: 550, h: GRAPH_HEIGHT },
                     period: period || uptimeData.relays.periods[0],
-                    data: uptimeData.relays.uptime,
+                    data: uptimeData.relays.history,
                     graphs: ['uptime'],
                     labels: ['uptime'],
                     tickFormat: 's',
@@ -57,7 +59,7 @@ exports.relay = {
             if (hasRenderRequirements(bandwidthData, 'relays')) {
 
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 550, h: 300 },
+                    dimension: { w: 550, h: GRAPH_HEIGHT },
                     period: period || bandwidthData.relays.periods[0],
                     data: bandwidthData.relays.history,
                     graphs: ['readHistory', 'writeHistory'],
@@ -81,7 +83,7 @@ exports.relay = {
             });
         });
     },
-    history: function(req, res) {
+    weight: function(req, res) {
         var fingerprint = req.params.fingerprint,
             period = req.query.period;
 
@@ -90,7 +92,7 @@ exports.relay = {
             if (hasRenderRequirements(historyData, 'relays')) {
 
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 550, h: 300 },
+                    dimension: { w: 550, h: GRAPH_HEIGHT },
                     period: period || historyData.relays.periods[0],
                     data: historyData.relays.history,
                     graphs: ['advertisedBandwidth', 'consensusWeightFraction', 'guardProbability', 'exitProbability'],
@@ -124,7 +126,7 @@ exports.bridge = {
 
             if (hasRenderRequirements(bandwidthData, 'bridges')) {
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 1100, h: 300 },
+                    dimension: { w: 1100, h: GRAPH_HEIGHT },
                     period: period || bandwidthData.bridges.periods[0],
                     data: bandwidthData.bridges.history,
                     graphs: ['readHistory', 'writeHistory'],
@@ -155,7 +157,7 @@ exports.bridge = {
 
             if (hasRenderRequirements(bandwidthData, 'bridges')) {
                 var svgGraph = historyGraph.svg({
-                    dimension: { w: 1100, h: 300 },
+                    dimension: { w: 1100, h: GRAPH_HEIGHT },
                     period: period || bandwidthData.bridges.periods[0],
                     data: bandwidthData.bridges.clients,
                     graphs: ['averageClients'],

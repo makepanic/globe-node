@@ -45,7 +45,8 @@ app.get('/bridge/:fingerprint', detail.bridge);
 
 // graphs
 app.get('/relay/bandwidth/:fingerprint.svg', graphs.relay.bandwidth);
-app.get('/relay/weight/:fingerprint.svg', graphs.relay.history);
+app.get('/relay/weight/:fingerprint.svg', graphs.relay.weight);
+app.get('/relay/uptime/:fingerprint.svg', graphs.relay.uptime);
 app.get('/bridge/bandwidth/:fingerprint.svg', graphs.bridge.bandwidth);
 
 globals.version = '0.0.1';

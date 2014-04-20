@@ -1121,7 +1121,7 @@ input {
 
 .tabs {
   position: relative;
-  min-height: 2400px;
+  min-height: 1100px;
   /* This part sucks */
   clear: both;
   margin: 25px 0; }
@@ -1229,6 +1229,18 @@ input {
   .d3-col.block-3 {
     background-color: #d62728;
     border: 1px solid #ab1f20; }
+
+.graph-stats h3 {
+  margin-bottom: 5px; }
+.graph-stats p {
+  color: #838383;
+  padding: 0;
+  margin: 0; }
+.graph-stats strong {
+  color: #505050;
+  font-size: 25px; }
+.graph-stats .d3-col {
+  margin-bottom: 4px; }
 
 h2 small, h3 small, h4 small, h5 small, h6 small {
   color: #505050;

@@ -2,6 +2,7 @@ var errors = require('../lib/errors'),
     RSVP = require('rsvp'),
     lookup = require('../lib/onionoo/api/lookup'),
     bandwidth = require('../lib/onionoo/api/bandwidth'),
+    uptime = require('../lib/onionoo/api/uptime'),
     weights = require('../lib/onionoo/api/weights'),
     uniquePeriods = require('../lib/onionoo/util/uniquePeriods'),
     formatter = require('../lib/util/formatter');
@@ -76,7 +77,8 @@ exports.relay = function(req, res){
 
             RSVP.hash({
                 bandwidth: bandwidth(fingerprint),
-                weights: weights(fingerprint)
+                weights: weights(fingerprint),
+                uptime: uptime(fingerprint)
             }).then(function(results){
                 data.format = formatter;
 
@@ -89,6 +91,7 @@ exports.relay = function(req, res){
                 // apply formatter
                 data.model.bandwidthGraphUrl = '/relay/bandwidth/' + relay.fingerprint + '.svg';
                 data.model.weightGraphUrl = '/relay/weight/' + relay.fingerprint + '.svg';
+                data.model.uptimeGraphUrl = '/relay/uptime/' + relay.fingerprint + '.svg';
 
                 // all available periods
                 data.model.periods = uniquePeriods(results, 'relays');
