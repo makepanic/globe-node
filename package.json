@@ -20,13 +20,13 @@
     "url": "https://github.com/makepanic/globe-node"
   },
   "dependencies": {
+    "d3": "^3.4.6",
     "express": "3.1.1",
     "jade": "*",
-    "rsvp": "~2.0.4",
-    "request": "~2.30.0",
-    "moment": "~2.5.0",
-    "d3": "~3.3.13",
-    "lodash": "~2.4.1"
+    "lodash": "^2.4.1",
+    "moment": "^2.5.1",
+    "request": "^2.34.0",
+    "rsvp": "^2.0.4"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

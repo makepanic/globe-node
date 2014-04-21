@@ -51,7 +51,7 @@ app.get('/bridge/uptime/:fingerprint.svg', graphs.bridge.uptime);
 app.get('/bridge/bandwidth/:fingerprint.svg', graphs.bridge.bandwidth);
 app.get('/bridge/client/:fingerprint.svg', graphs.bridge.clients);
 
-globals.version = '0.0.1';
+globals.version = '0.1.0';
 app.locals(globals);
 
 http.createServer(app).listen(app.get('port'), function(){
