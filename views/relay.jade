@@ -1,4 +1,5 @@
 include mixins/flagList
+include mixins/tip
 include mixins/bandwidth-stats
 include mixins/weight-stats
 include mixins/uptime-stats
@@ -13,24 +14,29 @@ block content
                 .fast-look.pure-g-r(class=model.running)
                     .pure-u-1-3
                         .text-content
-                            h4 nickname
+                            h4.has-tip nickname
+                                +tip('This is the nickname that the Tor relay operator chose.', 'Nickname')
                             p #{model.nickname}
                     .pure-u-1-3
                         .text-content
                             if model.running
-                                h4 uptime
+                                h4.has-tip uptime
+                                    +tip('The time since this relay is online.', 'Uptime')
                                 p !{format.uptimeFull(model.last_restarted)}
                             else
-                                h4 downtime
+                                h4.has-tip downtime
+                                    +tip('The time since this relay was last seen online.', 'Downtime')
                                 p !{format.uptimeFull(model.last_seen)}
                     .pure-u-1-3
                         .text-content
-                            h4 running
+                            h4.has-tip running
+                                +tip('Whether this relay is listed in the current Tor directory or not.', 'Running')
                             p(class=model.running) #{model.running}
                 .page-properties
                     .text-content
                         .property
-                            h5 Fingerprint
+                            h5.has-tip Fingerprint
+                                +tip('20-byte unique identifier of the relay.', 'Fingerprint')
                             p.align-center.no-width-limit #{model.fingerprint}
 
                     +flagList(model.flags, model.inLatestConsensus)
@@ -39,7 +45,8 @@ block content
                         .pure-u-1-2
                             .text-content
                                 .property
-                                    h5 OR address
+                                    h5.has-tip OR address
+                                        +tip('Addresses and ports where the relay listens for incoming connections from clients and other relays.', 'Onion-routing addresses')
                                     ul.property-content.item-list
                                         if model.or_addresses
                                             each or_address in model.or_addresses
@@ -47,11 +54,12 @@ block content
                                         else
                                             li none
                                 .property
-                                    h5 Exit Policy Summary
+                                    h5.has-tip Exit Policy Summary
                                         if model.exit_policy_summary.accept
                                             strong.true  accept
                                         else
                                             strong.false  reject
+                                        +tip('Port summary of exit connections that the relay is going to accept or reject.', 'Exit policy summary')
 
                                     if model.exit_policy_summary.accept
                                         ul.property-content.item-list
@@ -62,7 +70,8 @@ block content
                                             each reject in model.exit_policy_summary.reject
                                                 li #{reject}
                                 .property
-                                    h5 Exit Policy
+                                    h5.has-tip Exit Policy
+                                        +tip('Policy of exit connections that the relay is going to accept or reject.', 'Exit policy')
                                     .property-content
                                         ul.item-list
                                             if model.exit_policy
@@ -71,7 +80,8 @@ block content
                                             else
                                                 li none
                                 .property.show-container
-                                    h5 Advertised Bandwidth
+                                    h5.has-tip Advertised Bandwidth
+                                        +tip('Bandwidth that the relay is willing and able to provide in bytes per second.', 'Advertised bandwidth')
                                     label.pure-button.x-small.show-toggle(for='extended-bandwidth')
                                         i.fa.fa-angle-down  more
                                     p.property-content #{format.bandwidth(model.advertised_bandwidth)}
@@ -84,31 +94,39 @@ block content
                                         h5 Observed Bandwidth
                                         p.property-content #{format.bandwidth(model.observed_bandwidth)}
                                 .property
-                                    h5 Last Restarted
+                                    h5.has-tip Last Restarted
+                                        +tip('Date and time when the relay was last (re-)started.', 'Last restarted')
                                     p.property-content #{model.last_restarted}
                         .pure-u-1-2
                             .text-content
                                 .property
-                                    h5 Contact
+                                    h5.has-tip Contact
+                                        +tip('These are the contact details of the Tor relay operator', 'Contact info')
                                     p.property-content #{model.contact}
                                 .property
-                                    h5 Platform
+                                    h5.has-tip Platform
+                                        +tip('What OS and Tor version the relay is using', 'Platform')
                                     p.property-content #{model.platform}
                                 .property
-                                    h5 Country
+                                    h5.has-tip Country
+                                        +tip("Country as found in a GeoIP database by resolving the relay's first onion-routing address.", 'Country')
                                     // flaggify country, fullCountry
                                     p.property-content !{format.flaggify(model.country)} #{countries[model.country]}
                                 .property
-                                    h5 Dir Address
+                                    h5.has-tip Dir Address
+                                        +tip('Address and port where the relay listens for directory requests.', 'Directory port')
                                     p.property-content #{model.dir_address}
                                 .property
-                                    h5 AS Number
+                                    h5.has-tip AS Number
+                                        +tip('Autonomous System Number', 'AS Number')
                                     p.property-content #{model.as_number}
                                 .property
-                                    h5 AS Name
+                                    h5.has-tip AS Name
+                                        +tip('Autonomous System Name', 'AS Name')
                                     p.property-content #{model.as_name}
                                 .property
-                                    h5 Family Members
+                                    h5.has-tip Family Members
+                                        +tip('Other family members of this relay.', 'Family Members')
                                     p.property-content
                                         ul.item-list
                                             if model.family

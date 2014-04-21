@@ -1130,6 +1130,7 @@ input {
   float: right; }
   .tab label {
     border: 1px solid transparent;
+    background: white;
     cursor: pointer;
     margin: 0;
     text-align: left;
@@ -1249,6 +1250,32 @@ input {
     color: #519c4d; }
   .boolean.false {
     color: #c96f67; }
+
+.has-tip {
+  position: relative; }
+  .has-tip:hover .tip {
+    display: block; }
+  .has-tip .tip {
+    top: 0;
+    left: 0;
+    z-index: 100;
+    position: absolute;
+    display: none;
+    border: 1px solid #634e81;
+    background: white;
+    line-height: 18px;
+    max-width: 375px; }
+    .has-tip .tip p {
+      font-size: 14px;
+      margin: 0;
+      padding: 5px; }
+    .has-tip .tip .title {
+      padding: 5px;
+      text-transform: none;
+      text-align: left;
+      background-color: #634e81;
+      font-size: 14px;
+      color: white; }
 
 h2 small, h3 small, h4 small, h5 small, h6 small {
   color: #505050;

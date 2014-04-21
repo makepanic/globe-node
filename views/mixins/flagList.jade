@@ -1,10 +1,14 @@
+include tip
+
 mixin flagList(flags, inLatestConsensus)
     .text-content
         .property
             if inLatestConsensus
-                h5 Flags
+                h5.has-tip Flags
+                    +tip('Flags that the directory authorities assigned to this relay.', 'Flags')
             else
-                h5 Flags (old)
+                h5.has-tip Flags (old)
+                    +tip('Flags that the directory authorities assigned to this relay.', 'Flags')
             .pure-g-r.flags-list
                 unless inLatestConsensus
                     .pure-u-1
