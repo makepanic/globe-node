@@ -3,4 +3,6 @@
 [![Dependency Status](https://david-dm.org/makepanic/globe-node.svg)](https://david-dm.org/makepanic/globe-node)
 [![Code Climate](https://codeclimate.com/github/makepanic/globe-node.png)](https://codeclimate.com/github/makepanic/globe-node)
 
-Node.js application to explore and use the Tor onionoo API
+Node.js application to explore and use the Tor onionoo API.
+
+Latest version is available on [globe-node.herokuapp.com](https://globe-node.herokuapp.com/).
