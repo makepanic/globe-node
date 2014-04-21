@@ -29,7 +29,7 @@
     "moment": "^2.5.1",
     "morgan": "^1.0.0",
     "request": "^2.34.0",
-    "rsvp": "^2.0.4",
+    "rsvp": "^3.0.6",
     "static-favicon": "^1.0.2"
   },
   "devDependencies": {
