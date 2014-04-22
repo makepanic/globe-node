@@ -32,7 +32,7 @@ exports.relay = {
                     data: uptimeData.relays.history,
                     graphs: ['uptime'],
                     labels: ['uptime'],
-                    tickFormat: 's',
+                    tickFormat: '%',
                     legendPos: [{x:60,y:30}]
                 });
 
@@ -98,7 +98,7 @@ exports.relay = {
                     data: historyData.relays.history,
                     graphs: ['advertisedBandwidth', 'consensusWeightFraction', 'guardProbability', 'exitProbability'],
                     labels: ['advertised bandwidth fraction', 'consensus weight fraction','guard probability', 'exit probability'],
-                    tickFormat: 's',
+                    tickFormat: '.2%',
                     legendPos: [{x:80,y:45},{x:80,y:30},{x:270,y:30}, {x:270,y:45}]
                 });
 
@@ -131,7 +131,7 @@ exports.bridge = {
                     data: uptimeData.bridges.history,
                     graphs: ['uptime'],
                     labels: ['uptime'],
-                    tickFormat: 's',
+                    tickFormat: '%',
                     legendPos: [{x:60,y:30}]
                 });
 
