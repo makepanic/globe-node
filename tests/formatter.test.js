@@ -1,4 +1,6 @@
-var formatter = require('../lib/util/formatter');
+var formatter = require('../lib/util/formatter'),
+    moment = require('moment').utc,
+    sinon = require('sinon');
 
 exports['checks familyToFingerprint'] = function(test){
     var scope = null,
@@ -93,6 +95,64 @@ exports['checks percent'] = function(test){
     test.deepEqual(testFn(undefined), '');
     test.deepEqual(testFn('Foo'), '');
     test.deepEqual(testFn(null), '');
+
+    test.done();
+};
+
+exports['checks uptimeFull'] = function(test){
+    var testFn = formatter.uptimeFull,
+        clock;
+
+    test.deepEqual(testFn(null), '');
+
+    clock = sinon.useFakeTimers(moment('2014-04-07 16:26:00').valueOf());
+    test.deepEqual(testFn('2014-04-07 08:00:00', 'long'), '8<span>hours</span> 26<span>minutes</span>', 'uptime correctly computed');
+    clock.restore();
+
+    test.done();
+};
+exports['checks uptimeShort'] = function(test){
+    var testFn = formatter.uptimeShort,
+        clock;
+
+    test.deepEqual(testFn(null), '');
+
+    clock = sinon.useFakeTimers(moment('2014-04-07 16:26:00').valueOf());
+    test.deepEqual(testFn('2014-04-07 08:00:00', 'long'), '8<span>h</span> 26<span>m</span>', 'uptime correctly computed');
+    clock.restore();
+
+    test.done();
+};
+exports['checks onionFlags'] = function(test){
+    var testFn = formatter.onionFlags,
+        dataEmpty = '';
+
+    test.deepEqual(testFn(undefined),        dataEmpty, 'test for undefined');
+    test.deepEqual(testFn(null),             dataEmpty, 'test for null');
+    test.deepEqual(testFn(0),                dataEmpty, 'test for 0');
+    test.deepEqual(testFn(1),                dataEmpty, 'test for 1');
+    test.deepEqual(testFn(-1),               dataEmpty, 'test for -1');
+    test.deepEqual(testFn(NaN),              dataEmpty, 'test for NaN');
+    test.deepEqual(testFn('string'),         dataEmpty, 'test for "string"');
+
+    test.deepEqual(testFn(['Fast', 'Exit']), '<span class="fa fa-bolt" title="Fast"></span><span class="fa fa-sign-out" title="Exit"></span>', 'test for correct flag formatting');
+
+    test.done();
+};
+
+exports['checks flaggify'] = function(test){
+    var testFn = formatter.flaggify,
+        dataEmpty = '<span title="n/a" data-tooltip class="country-flag empty_png"></span>';
+
+    test.deepEqual(testFn(undefined),        dataEmpty, 'test for undefined');
+    test.deepEqual(testFn(null),             dataEmpty, 'test for null');
+    test.deepEqual(testFn(0),                dataEmpty, 'test for 0');
+    test.deepEqual(testFn(1),                dataEmpty, 'test for 1');
+    test.deepEqual(testFn(-1),               dataEmpty, 'test for -1');
+    test.deepEqual(testFn(NaN),              dataEmpty, 'test for NaN');
+    test.deepEqual(testFn('string'),         dataEmpty, 'test for "string"');
+
+    test.deepEqual(testFn('de'), '<span title="Germany" data-tooltip class="country-flag de_png"></span>',   'test for "de"');
 
     test.done();
 };

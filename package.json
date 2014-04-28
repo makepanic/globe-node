@@ -30,6 +30,7 @@
     "morgan": "^1.0.0",
     "request": "^2.34.0",
     "rsvp": "^3.0.6",
+    "sinon": "^1.9.1",
     "static-favicon": "^1.0.2"
   },
   "devDependencies": {

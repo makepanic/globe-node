@@ -13,7 +13,8 @@ module.exports = function(grunt) {
             },
             target: [
                 'routes/**/*.js',
-                'lib/**/*.js'
+                'lib/**/*.js',
+                'tests/**/*.js'
             ]
         },
 

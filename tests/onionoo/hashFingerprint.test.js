@@ -1,4 +1,4 @@
-var hashFingerprint = require('../lib/onionoo/util/hashFingerprint');
+var hashFingerprint = require('../../lib/onionoo/util/hashFingerprint');
 
 exports['hash valid fingerprints and compare'] = function(test){
     test.expect(2);
@@ -12,7 +12,7 @@ exports['hash invalid fingerprints'] = function(test) {
 
     var scope = null,
         callingFunction = function(val){
-            hashFingerprint(val)
+            hashFingerprint(val);
         };
 
     test.throws(callingFunction.bind(scope, null));
