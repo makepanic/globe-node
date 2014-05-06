@@ -1,21 +1,20 @@
-
-/**
- * Module dependencies.
- */
-
-var express = require('express'),
+var connection = require('./lib/db/connection'),
+    pkg = require('./package.json'),
+    express = require('express'),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
     errorHandler = require('errorhandler'),
-    favicon = require('static-favicon')
-  , routes = require('./routes')
-  , detail = require('./routes/detail')
-  , search = require('./routes/search')
-  , top10 = require('./routes/top10')
-  , http = require('http')
-  , path = require('path')
-  , globals = require('./lib/globalData')
-  , graphs = require('./routes/graphs');
+    favicon = require('static-favicon'),
+    featureFlags = require('./lib/middleware/featureFlags'),
+    handle404 = require('./lib/middleware/handle404'),
+    routes = require('./routes'),
+    detail = require('./routes/detail'),
+    search = require('./routes/search'),
+    top10 = require('./routes/top10'),
+    http = require('http'),
+    path = require('path'),
+    globals = require('./lib/globalData'),
+    graphs = require('./routes/graphs');
 
 var app = express();
 
@@ -27,6 +26,7 @@ app.use(favicon());
 app.use(morgan('dev'));
 app.use(bodyParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(featureFlags());
 
 // development only
 if ('development' == app.get('env')) {
@@ -53,33 +53,21 @@ app.get('/bridge/uptime/:fingerprint.svg', graphs.bridge.uptime);
 app.get('/bridge/bandwidth/:fingerprint.svg', graphs.bridge.bandwidth);
 app.get('/bridge/client/:fingerprint.svg', graphs.bridge.clients);
 
-globals.version = '0.1.0';
+globals.version = pkg.version;
 app.locals = globals;
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+// init connection and start http server
+connection.init().then(function (err, data) {
+    console.log('connection ready');
+    if (err) {
+        throw err;
+    } else {
+        connection.initSyncTask();
+        http.createServer(app).listen(app.get('port'), function(){
+            console.log('Express server listening on port ' + app.get('port'));
+        });
+    }
 });
 
 // resource not found handling
-app.use(function(req, res, next){
-    res.status(404);
-
-    // respond with html page
-    if (req.accepts('html')) {
-        res.render('error', {
-            title: 404
-        });
-        return;
-    }
-
-    // respond with json
-    if (req.accepts('json')) {
-        res.send({
-            error: 'Not found'
-        });
-        return;
-    }
-
-    // default to plain-text. send()
-    res.type('txt').send('Not found');
-});
+app.use(handle404());

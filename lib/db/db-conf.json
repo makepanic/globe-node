@@ -1,0 +1,6 @@
+{
+    "ip": "mongodb://localhost:27017/",
+    "db": "onionoo",
+    "syncInterval": 86400000,
+    "onionooBaseUrl": "https://onionoo.torproject.org/"
+}
