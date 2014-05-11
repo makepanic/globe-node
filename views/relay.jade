@@ -82,7 +82,7 @@ block content
                                 .property.show-container
                                     h5.has-tip Advertised Bandwidth
                                         +tip('Bandwidth that the relay is willing and able to provide in bytes per second.', 'Advertised bandwidth')
-                                    label.pure-button.x-small.show-toggle(for='extended-bandwidth')
+                                    label.pure-button.x-small(for='extended-bandwidth')
                                         i.fa.fa-angle-down  more
                                     p.property-content #{format.bandwidth(model.advertised_bandwidth)}
                                     input(type='checkbox', id='extended-bandwidth')

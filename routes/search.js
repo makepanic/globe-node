@@ -63,6 +63,12 @@ exports.searchNotAlreadyHashed = function(req, res){
 
     data.query = cfg.query;
     data.filter = filter;
+    // write on data.filter because filter is used for searching in
+    data.group = {
+        country: cfg.groupCountry ? cfg.groupCountry === 'on' : false,
+        family: cfg.groupFamily ? cfg.groupFamily === 'on' : false,
+        contact: cfg.groupContact ? cfg.groupContact === 'on' : false
+    };
 
     search({
         query: cfg.query,
@@ -97,6 +103,12 @@ exports.searchAlreadyHashed = function(req, res){
 
     data.query = cfg.query;
     data.filter = filter;
+    // write on data.filter because filter is used for searching in
+    data.group = {
+        country: cfg.groupCountry ? cfg.groupCountry === 'on' : false,
+        family: cfg.groupFamily ? cfg.groupFamily === 'on' : false,
+        contact: cfg.groupContact ? cfg.groupContact === 'on' : false
+    };
 
     search({
         query: cfg.query,

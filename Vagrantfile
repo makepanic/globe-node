@@ -13,5 +13,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # or https://wiki.debian.org/Veewee
   config.vm.box_url = "http://basebox.libera.cc/debian-wheezy-64.box"
 
+  # app port
   config.vm.network :forwarded_port, guest: 3000, host: 3000
+  # node debugger port
+  config.vm.network :forwarded_port, guest: 8080, host: 8080
 end

@@ -1,4 +1,5 @@
-var connection = require('./lib/db/connection'),
+var program = require('commander'),
+    connection = require('./lib/db/connection'),
     pkg = require('./package.json'),
     express = require('express'),
     bodyParser = require('body-parser'),
@@ -15,6 +16,11 @@ var connection = require('./lib/db/connection'),
     path = require('path'),
     globals = require('./lib/globalData'),
     graphs = require('./routes/graphs');
+
+program
+    .version(pkg.version)
+    .option('-n, --nosync', 'Disable db automatically syncing')
+    .parse(process.argv);
 
 var app = express();
 
@@ -57,12 +63,16 @@ globals.version = pkg.version;
 app.locals = globals;
 
 // init connection and start http server
-connection.init().then(function (err, data) {
+connection.init(program.nosync).then(function (err, data) {
     console.log('connection ready');
     if (err) {
         throw err;
     } else {
-        connection.initSyncTask();
+
+        if (!program.nosync) {
+            connection.initSyncTask();
+        }
+
         http.createServer(app).listen(app.get('port'), function(){
             console.log('Express server listening on port ' + app.get('port'));
         });
