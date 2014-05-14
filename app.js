@@ -14,6 +14,7 @@ var program = require('commander'),
     top10 = require('./routes/top10'),
     http = require('http'),
     path = require('path'),
+    compass = require('./routes/compass'),
     globals = require('./lib/globalData'),
     graphs = require('./routes/graphs');
 
@@ -36,7 +37,7 @@ app.use(featureFlags());
 
 // development only
 if ('development' == app.get('env')) {
-  app.use(errorHandler());
+    app.use(errorHandler());
 }
 
 // static urls
@@ -63,21 +64,20 @@ globals.version = pkg.version;
 app.locals = globals;
 
 // init connection and start http server
-connection.init(program.nosync).then(function (err, data) {
+connection.init(program.nosync).then(function (resolveData) {
     console.log('connection ready');
-    if (err) {
-        throw err;
-    } else {
 
-        if (!program.nosync) {
-            connection.initSyncTask();
-        }
+    // routes that need db access
+    app.get('/compass/filter', compass.filter(resolveData.collections));
 
-        http.createServer(app).listen(app.get('port'), function(){
-            console.log('Express server listening on port ' + app.get('port'));
-        });
+    if (!program.nosync) {
+        connection.initSyncTask();
     }
-});
+
+    http.createServer(app).listen(app.get('port'), function () {
+        console.log('Express server listening on port ' + app.get('port'));
+    });
 
 // resource not found handling
-app.use(handle404());
+    app.use(handle404());
+});
