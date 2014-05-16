@@ -1,6 +1,5 @@
 var filter = require('../lib/db/onionoo-mongo/filter'),
-    group = require('../lib/db/onionoo-mongo/group'),
-    sort = new (require('node-sort'))();
+    group = require('../lib/db/onionoo-mongo/group');
 
 function createFilterRequestFn(collections) {
     var DISPLAY_LIMIT = 10;
@@ -75,7 +74,7 @@ function createGroupRequestFn(collections) {
     return function (req, res) {
         group(collections, {}).then(function (result) {
             // sort by consensus_weight_fraction
-            result.relays = sort.mergeSort(result.relays, function (a, b) {
+            result.relays = result.relays.sort(function (a, b) {
                 return b.consensus_weight_fraction - a.consensus_weight_fraction;
             });
 
