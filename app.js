@@ -69,6 +69,7 @@ connection.init(program.nosync).then(function (resolveData) {
 
     // routes that need db access
     app.get('/compass/filter', compass.filter(resolveData.collections));
+    app.get('/compass/group', compass.group(resolveData.collections));
 
     if (!program.nosync) {
         connection.initSyncTask();
