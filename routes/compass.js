@@ -1,11 +1,18 @@
+/*eslint camelcase:0, no-console:0 */
+
 var filter = require('../lib/db/onionoo-mongo/filter'),
-    group = require('../lib/db/onionoo-mongo/group');
+    group = require('../lib/db/onionoo-mongo/group'),
+    speeds = require('../lib/db/onionoo-mongo/speeds');
 
 function createFilterRequestFn(collections) {
     var DISPLAY_LIMIT = 10;
 
     return function (req, res) {
-        filter(collections, {}).then(function (result) {
+        filter(collections, {
+            filter: {
+                exitSpeed: speeds.FAST_EXIT_ANY_NETWORK
+            }
+        }).then(function (result) {
 
             var relay,
                 notDisplayed = {
@@ -64,8 +71,10 @@ function createFilterRequestFn(collections) {
                 bridges: result.bridges.length,
                 relays: result.relays.length
             });
+        }, function (err) {
+            console.error(err);
         });
-    }
+    };
 }
 
 function createGroupRequestFn(collections) {
@@ -145,7 +154,7 @@ function createGroupRequestFn(collections) {
                 relays: result.relays.length
             });
         });
-    }
+    };
 }
 
 exports.filter = createFilterRequestFn;

@@ -81,4 +81,6 @@ connection.init(program.nosync).then(function (resolveData) {
 
 // resource not found handling
     app.use(handle404());
+}, function (err) {
+    console.error(err);
 });
