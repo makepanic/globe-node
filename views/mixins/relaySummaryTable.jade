@@ -2,33 +2,36 @@ mixin relaySummaryTable(relays)
     table.relay-summary-list.datatable
         thead
             tr
-                th Nickname
-                th Advertised Bandwidth
-                th Uptime
+                th
+                th.align-left Nickname
+                th.align-left Advertised Bandwidth
+                th.align-left Uptime
                 th Country
-                th Flags
-                th Running
+                th.align-left Flags
         tbody
             if relays.length
                 each relay in relays
                     tr
-                        td.bold
-                            a(href='/relay/'+relay.fingerprint)
+                        td
+                            a.align-center(href='/relay/' + relay.fingerprint)
+                                if relay.running
+                                    .d3-col.block-2
+                                else
+                                    .d3-col.block-3
+                        td
+                            a.nick(href='/relay/'+relay.fingerprint)
                                 = relay.nickname
                         td
-                            a(href='/relay/'+relay.fingerprint)
-                                = relay.formattedBandwidth
+                            a(href='/relay/'+relay.fingerprint) #{format.bandwidth(relay.advertised_bandwidth)}
                         td
                             if relay.running
-                                a(href='/relay/'+relay.fingerprint) !{relay.formattedUptime}
+                                a(href='/relay/'+relay.fingerprint) !{format.uptimeShort(relay.last_restarted)}
                             else
                                 a(href='/relay/'+relay.fingerprint, title='Offline') n/a
+                        td.align-center
+                            a(href='/relay/'+relay.fingerprint) !{format.flaggify(relay.country)}
                         td
-                            a(href='/relay/'+relay.fingerprint) !{relay.formattedCountryFlag}
-                        td
-                            a(href='/relay/'+relay.fingerprint) !{relay.formattedFlags}
-                        td
-                            a(href='/relay/' + relay.fingerprint) !{relay.running}
+                            a(href='/relay/'+relay.fingerprint) !{format.onionFlags(relay.flags)}
             else
                 tr
                     td(colspan='7', class='empty no-a') No relays found :(

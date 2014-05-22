@@ -2,52 +2,68 @@
 @import "../vars";
 @import "../mixins";
 
-.datatable{
-  margin-top: 2em;
-  margin-bottom: 2em;
-  width: 100%;
-  td{
-    padding: 0;
+.datatable {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    width: 100%;
+    font-size: 14px;
+    color: #222;
 
-    // td that doesn't contain an anchor that uses padding
-    &.no-a{
-      padding: 10px 0px;
+    .d3-col {
+        margin: 0 2px;
     }
 
-    a{
-      padding: 10px 0px;
-      display: block;
-      text-decoration: none;
-      color: inherit;
+    .nick {
+        font-size: 15px;
+        color: black;
     }
-  }
 
-  thead{
-    th{
-      cursor: pointer;
-    }
-  }
-  tbody{
-    td{
-      text-align: center;
-    }
-    tr{
-      cursor: pointer;
-
-      &:hover{
-        td{
-          background: $purple;
-          color: $white;
+    th, td {
+        a, p{
+            display: block;
+            padding: 10px 5px;
+            text-decoration: none;
+            color: inherit;
+            margin: 0;
         }
-      }
     }
-  }
-  .fa{
-    margin-right: 4px;
-  }
 
-  .empty{
-    text-align: center;
-    color: $red;
-  }
+    td {
+        padding: 0;
+        // td that doesn't contain an anchor that uses padding
+        &.no-a {
+            padding: 10px 0px;
+        }
+    }
+
+    thead {
+        th {
+            text-align: center;
+            padding: 10px 5px;
+            cursor: pointer;
+        }
+    }
+    tbody {
+        tr {
+            border-bottom: 1px solid $grey;
+            cursor: pointer;
+            &:hover {
+                .nick, td, .fa {
+                    color: $black-darker;
+                }
+                td {
+                    background: $white-darker;
+                }
+            }
+        }
+    }
+    .fa {
+        margin-right: 4px;
+        color: $black;
+    }
+
+    .empty {
+        text-align: center;
+        color: $red;
+    }
 }

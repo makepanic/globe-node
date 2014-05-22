@@ -1,0 +1,58 @@
+mixin relayCompassTable(relays, notDisplayed)
+    table.relay-summary-list.datatable
+        thead
+            tr
+                th
+                th.align-left Nickname
+                th Consensus Weights
+                th Advertised Bandwidth
+                th Guard Prob.
+                th Middle Prob.
+                th Exit Prob.
+                th Country
+                th.align-left Flags
+        if relays.length
+            tbody
+                each relay in relays
+                    tr
+                        td
+                            a(href='/relay/'+relay.fingerprint)
+                                if relay.running
+                                    .d3-col.block-2(title='This relay is listed in the current Tor directory.')
+                                else
+                                    .d3-col.block-3(title="This relay isn't listed in the current Tor directory.")
+                        td
+                            a.nick(href='/relay/'+relay.fingerprint) #{relay.nickname}
+                        td.align-center
+                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.consensus_weight_fraction, 4)}
+                        td.align-center
+                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.advertised_bandwidth_fraction, 4)}
+                        td.align-center
+                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.guard_probability, 4)}
+                        td.align-center
+                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.middle_probability, 4)}
+                        td.align-center
+                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.exit_probability, 4)}
+                        td.align-center
+                            a(href='/relay/'+relay.fingerprint) !{format.flaggify(relay.country, 4)}
+                        td
+                            a(href='/relay/'+relay.fingerprint) !{format.onionFlags(relay.flags, 4)}
+            tfoot
+                tr
+                    td
+                    td
+                        p #{notDisplayed.number} other relays
+                    td.align-center
+                        p #{format.percent(notDisplayed.consensus_weight_fraction, 4)}
+                    td.align-center
+                        p #{format.percent(notDisplayed.advertised_bandwidth_fraction, 4)}
+                    td.align-center
+                        p #{format.percent(notDisplayed.guard_probability, 4)}
+                    td.align-center
+                        p #{format.percent(notDisplayed.middle_probability, 4)}
+                    td.align-center
+                        p #{format.percent(notDisplayed.exit_probability, 4)}
+        else
+            tbody
+                tr
+                    td(colspan='7', class='empty no-a') No relays found :(

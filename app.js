@@ -1,32 +1,43 @@
 var program = require('commander'),
     connection = require('./lib/db/connection'),
     pkg = require('./package.json'),
+    globals = require('./lib/globalData'),
+    format = require('./lib/util/formatter'),
+    http = require('http'),
+    path = require('path'),
+
+    // express
     express = require('express'),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
     errorHandler = require('errorhandler'),
     favicon = require('static-favicon'),
+
+    // custom middleware
     featureFlags = require('./lib/middleware/featureFlags'),
     handle404 = require('./lib/middleware/handle404'),
+    normalizeQuery = require('./lib/middleware/normalize-query'),
+
+    // routes
     routes = require('./routes'),
     detail = require('./routes/detail'),
     search = require('./routes/search'),
     top10 = require('./routes/top10'),
-    http = require('http'),
-    path = require('path'),
     compass = require('./routes/compass'),
-    globals = require('./lib/globalData'),
+    searchCompass = require('./routes/searchCompass'),
     graphs = require('./routes/graphs');
 
+// init cli option handling
 program
     .version(pkg.version)
     .option('-n, --nosync', 'Disable db automatically syncing')
+    .option('-p, --port <portNum>', 'Set the port where the web server should listen for requests.', '3000')
     .parse(process.argv);
 
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', parseInt(program.port, 10));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(favicon());
@@ -61,6 +72,7 @@ app.get('/bridge/bandwidth/:fingerprint.svg', graphs.bridge.bandwidth);
 app.get('/bridge/client/:fingerprint.svg', graphs.bridge.clients);
 
 globals.version = pkg.version;
+globals.format = format;
 app.locals = globals;
 
 // init connection and start http server
@@ -70,6 +82,14 @@ connection.init(program.nosync).then(function (resolveData) {
     // routes that need db access
     app.get('/compass/filter', compass.filter(resolveData.collections));
     app.get('/compass/group', compass.group(resolveData.collections));
+
+    app.get('/search-compass',
+        normalizeQuery({
+            checkbox: ['onlyExits', 'groupCountry', 'groupFamily', 'groupContact'],
+            empty: ['as', 'family', 'country', 'flag', 'type', 'query'],
+            boolean: ['running']
+        }),
+        searchCompass.searchCompass(resolveData.collections));
 
     if (!program.nosync) {
         connection.initSyncTask();

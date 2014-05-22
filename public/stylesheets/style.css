@@ -1044,27 +1044,38 @@ input {
 .datatable {
   margin-top: 2em;
   margin-bottom: 2em;
-  width: 100%; }
+  width: 100%;
+  font-size: 14px;
+  color: #222; }
+  .datatable .d3-col {
+    margin: 0 2px; }
+  .datatable .nick {
+    font-size: 15px;
+    color: black; }
+  .datatable th a, .datatable th p, .datatable td a, .datatable td p {
+    display: block;
+    padding: 10px 5px;
+    text-decoration: none;
+    color: inherit;
+    margin: 0; }
   .datatable td {
     padding: 0; }
     .datatable td.no-a {
       padding: 10px 0px; }
-    .datatable td a {
-      padding: 10px 0px;
-      display: block;
-      text-decoration: none;
-      color: inherit; }
   .datatable thead th {
+    text-align: center;
+    padding: 10px 5px;
     cursor: pointer; }
-  .datatable tbody td {
-    text-align: center; }
   .datatable tbody tr {
+    border-bottom: 1px solid #eeeeee;
     cursor: pointer; }
+    .datatable tbody tr:hover .nick, .datatable tbody tr:hover td, .datatable tbody tr:hover .fa {
+      color: #1c1c1c; }
     .datatable tbody tr:hover td {
-      background: #7c62a0;
-      color: white; }
+      background: #f7f7f7; }
   .datatable .fa {
-    margin-right: 4px; }
+    margin-right: 4px;
+    color: #363636; }
   .datatable .empty {
     text-align: center;
     color: #c96f67; }
@@ -1294,6 +1305,9 @@ a {
 .align-center {
   text-align: center; }
 
+.align-left {
+  text-align: left !important; }
+
 .align-right {
   text-align: right; }
 
@@ -1404,7 +1418,10 @@ code {
   color: #505050; }
 
 body, .pure-g [class*="pure-u"], .pure-g-r [class*="pure-u"] {
-  font-family: "Open Sans","lucida grande","Segoe UI",arial,verdana, "lucida sans unicode",tahoma,sans-serif !important; }
+  font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, sans-serif !important; }
+
+body {
+  background: #f7f7f7; }
 
 .logo {
   background: url("../images/globe-logo.png") no-repeat center center;
@@ -1417,7 +1434,7 @@ body, .pure-g [class*="pure-u"], .pure-g-r [class*="pure-u"] {
     text-indent: -9999px; }
 
 .center-wrapper {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto; }
 
 .width-full {
@@ -1427,7 +1444,8 @@ body, .pure-g [class*="pure-u"], .pure-g-r [class*="pure-u"] {
   position: relative; }
 
 .outlet {
-  max-width: 1200px;
+  background-color: white;
+  max-width: 1300px;
   margin: 0 auto; }
 
 .fader {

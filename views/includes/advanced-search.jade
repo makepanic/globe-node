@@ -39,6 +39,9 @@
                     .pure-u-1-3
                         label(for='s-family') Family
                         input#s-family(type=text, name='family', placeholder='A59E1E7C7EAEE083D756EE1FF6EC31CA3D8651D7', value=filter.family)
+                    .pure-u-1
+                        input#onlyExit(type='checkbox', name='onlyExits', checked=filter.onlyExits ? 'checked' : undefined)
+                        label(for='onlyExit') Select only relays and bridges suitable for exit position
         hr
         .pure-g-r.search-filters
             .pure-u-1-12

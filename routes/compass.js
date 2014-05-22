@@ -12,7 +12,7 @@ function createFilterRequestFn(collections) {
             filter: {
                 exitSpeed: speeds.FAST_EXIT_ANY_NETWORK
             }
-        }).then(function (result) {
+        }).then(function(result){
 
             var relay,
                 notDisplayed = {

@@ -26,8 +26,6 @@ exports.bridge = function(req, res){
                 // has relay details
                 bridge = detail.bridge;
 
-                data.format = formatter;
-
                 RSVP.hash({
                     bandwidth: bandwidth(bridge.hashed_fingerprint),
                     uptime: uptime(bridge.hashed_fingerprint),
