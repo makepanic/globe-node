@@ -964,7 +964,7 @@ table {
   background: transparent;
   border: 0;
   width: 100%; }
-  .search-control button:hover, .search-control i:hover {
+  .search-control button:hover, .search-control button.hover, .search-control i:hover, .search-control i.hover {
     color: white; }
 
 .advanced-search {
@@ -1076,6 +1076,8 @@ input {
   .datatable .fa {
     margin-right: 4px;
     color: #363636; }
+    .datatable .fa.fa-minus {
+      color: #999999; }
   .datatable .empty {
     text-align: center;
     color: #c96f67; }
@@ -1286,6 +1288,15 @@ input {
       background-color: #634e81;
       font-size: 14px;
       color: white; }
+
+.country-flag-list {
+  position: relative;
+  text-align: left; }
+  .country-flag-list .country-flag {
+    position: absolute;
+    left: 0; }
+  .country-flag-list:hover .country-flag {
+    position: relative; }
 
 h2 small, h3 small, h4 small, h5 small, h6 small {
   color: #505050;

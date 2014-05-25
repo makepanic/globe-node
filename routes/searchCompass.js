@@ -1,15 +1,28 @@
+/* eslint no-console:0 */
+
 var search = require('../lib/onionoo/api/search'),
     formatter = require('../lib/util/formatter'),
-    filter = require('../lib/db/onionoo-mongo/filter');
+    filter = require('../lib/db/onionoo-mongo/filter'),
+    group = require('../lib/db/onionoo-mongo/group');
+
+var isGroupRequest = function (groupObj) {
+    var isGroupRequest = false;
+    // loop through all fields and stop if true value is found
+    Object.keys(groupObj).forEach(function (key) {
+        if (groupObj[key]) {
+            isGroupRequest = true;
+            return false;
+        }
+        return true;
+    });
+    return isGroupRequest;
+};
 
 exports.searchCompass = function (collections) {
     return function (req, res) {
         /*eslint handle-callback-err:0*/
 
-        console.log('got', req.query);
-
         var cfg = req.query,
-            config = {},
             data = {
                 title: ['Results for "' + cfg.query + '"'],
                 query: '',
@@ -17,32 +30,44 @@ exports.searchCompass = function (collections) {
             },
             requestFilter = {};
 
-        console.log('using filter', requestFilter);
+        console.log('using cfg', cfg);
+
+        // remove $ prefix on family if exists
+        if (cfg.family && typeof cfg.family === 'string' && cfg.family[0] === '$' && cfg.family.length > 1) {
+            cfg.family = cfg.family.substring(1);
+        }
 
         requestFilter = {
             country: cfg.country,
             as: cfg.as ? cfg.as : null,
             exitSpeed: null,
             inactive: cfg.running,
+            running: cfg.running,
             guards: null,
-            exit: cfg.onlyExits,
+            exit: cfg.exit,
             family: cfg.family,
             speed: null
         };
 
         data.query = cfg.query;
-        data.filter = requestFilter;
-        // write on data.filter because filter is used for searching in
-        data.group = {
-            country: cfg.groupCountry,
-            family: cfg.groupFamily,
-            contact: cfg.groupContact
+
+        data.advSearch = {
+            filter: requestFilter,
+            group: {
+                country: cfg.groupCountry,
+                family: cfg.groupFamily,
+                contact: cfg.groupContact,
+                as: cfg.groupAS
+            },
+            actions: {
+                limit: cfg.limit
+            }
         };
 
-        if (!data.group.country && !data.group.family && !data.group.contact) {
-
+        if (!isGroupRequest(data.advSearch.group)) {
             // no grouping, use simple results
             filter(collections, {
+                displayAmount: cfg.limit,
                 filter: requestFilter
             }).then(function (result) {
                 data.result = result;
@@ -51,8 +76,19 @@ exports.searchCompass = function (collections) {
                 res.send(e);
             });
         } else {
-            // grouping
-            res.send({});
+            // grouping, use grouped results
+            group(collections, {
+                displayAmount: cfg.limit,
+                filter: requestFilter,
+                group: data.advSearch.group
+            }).then(function (result) {
+                data.result = result;
+                res.render('search-results/group', data);
+            }, function (e) {
+                // grouping
+                console.error(e);
+                res.send({});
+            });
         }
     };
 };

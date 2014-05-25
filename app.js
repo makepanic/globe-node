@@ -6,19 +6,19 @@ var program = require('commander'),
     http = require('http'),
     path = require('path'),
 
-    // express
+// express
     express = require('express'),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
     errorHandler = require('errorhandler'),
     favicon = require('static-favicon'),
 
-    // custom middleware
+// custom middleware
     featureFlags = require('./lib/middleware/featureFlags'),
     handle404 = require('./lib/middleware/handle404'),
     normalizeQuery = require('./lib/middleware/normalize-query'),
 
-    // routes
+// routes
     routes = require('./routes'),
     detail = require('./routes/detail'),
     search = require('./routes/search'),
@@ -30,11 +30,17 @@ var program = require('commander'),
 // init cli option handling
 program
     .version(pkg.version)
-    .option('-n, --nosync', 'Disable db automatically syncing')
-    .option('-p, --port <portNum>', 'Set the port where the web server should listen for requests.', '3000')
+    .option('-n, --nosync', 'disable db automatically syncing')
+    .option('-db, --dburl [dbUrl]', 'set the database url [mongodb://localhost:27017/]', 'mongodb://localhost:27017/')
+    .option('-p, --port <portNum>', 'set the port where the web server should listen for requests.', '3000')
     .parse(process.argv);
 
 var app = express();
+
+// overwrite dburl if env
+if (process.env.DBURL) {
+    program.dburl = process.env.DBURL;
+}
 
 // all environments
 app.set('port', parseInt(program.port, 10));
@@ -71,12 +77,23 @@ app.get('/bridge/uptime/:fingerprint.svg', graphs.bridge.uptime);
 app.get('/bridge/bandwidth/:fingerprint.svg', graphs.bridge.bandwidth);
 app.get('/bridge/client/:fingerprint.svg', graphs.bridge.clients);
 
+// some global variables for the search form
+globals.advSearch = {
+    actions: {},
+    group: {},
+    filter: {}
+};
 globals.version = pkg.version;
 globals.format = format;
+
+// make the globals object accessable for every template
 app.locals = globals;
 
 // init connection and start http server
-connection.init(program.nosync).then(function (resolveData) {
+connection.init({
+    skipReload: program.nosync,
+    dbUrl: program.dburl
+}).then(function (resolveData) {
     console.log('connection ready');
 
     // routes that need db access
@@ -85,7 +102,8 @@ connection.init(program.nosync).then(function (resolveData) {
 
     app.get('/search-compass',
         normalizeQuery({
-            checkbox: ['onlyExits', 'groupCountry', 'groupFamily', 'groupContact'],
+            integer: ['limit'],
+            checkbox: ['exit', 'groupAS', 'groupCountry', 'groupFamily', 'groupContact'],
             empty: ['as', 'family', 'country', 'flag', 'type', 'query'],
             boolean: ['running']
         }),

@@ -4,8 +4,8 @@ mixin relaySummaryTable(relays)
             tr
                 th
                 th.align-left Nickname
-                th.align-left Advertised Bandwidth
                 th.align-left Uptime
+                th.align-left Advertised Bandwidth
                 th Country
                 th.align-left Flags
         tbody
@@ -22,12 +22,12 @@ mixin relaySummaryTable(relays)
                             a.nick(href='/relay/'+relay.fingerprint)
                                 = relay.nickname
                         td
-                            a(href='/relay/'+relay.fingerprint) #{format.bandwidth(relay.advertised_bandwidth)}
-                        td
                             if relay.running
                                 a(href='/relay/'+relay.fingerprint) !{format.uptimeShort(relay.last_restarted)}
                             else
                                 a(href='/relay/'+relay.fingerprint, title='Offline') n/a
+                        td
+                            a(href='/relay/'+relay.fingerprint) #{format.bandwidth(relay.advertised_bandwidth)}
                         td.align-center
                             a(href='/relay/'+relay.fingerprint) !{format.flaggify(relay.country)}
                         td

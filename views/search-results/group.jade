@@ -1,0 +1,9 @@
+extends ../layout
+include ../mixins/relayCompassGroupTable
+
+block content
+    .pure-g
+        .pure-u-1
+            .text-content
+                h3 Relays
+                +relayCompassGroupTable(result.displayed.relays, result.notDisplayed.relays, result.uiFlags)

@@ -1,11 +1,13 @@
 extends ../layout
 include ../mixins/relayCompassTable
+include ../mixins/bridgeCompassTable
 
 block content
     .pure-g
         .pure-u-1
-            h2 No Group
-            p bridges: #{result.numBridges}
-            p relays: #{result.numRelays}
             .text-content
-                +relayCompassTable(result.displayed, result.notDisplayed.relays)
+                h3 Relays
+                +relayCompassTable(result.displayed.relays, result.notDisplayed.relays)
+
+                h3 Bridges
+                +bridgeCompassTable(result.displayed.bridges, result.notDisplayed.bridges)

@@ -1,4 +1,4 @@
-mixin relayCompassTable(relays, notDisplayed)
+mixin bridgeCompassTable(relays, notDisplayed)
     table.relay-summary-list.datatable
         thead
             tr
@@ -9,11 +9,9 @@ mixin relayCompassTable(relays, notDisplayed)
                 th Guard Prob.
                 th Middle Prob.
                 th Exit Prob.
+                th.align-left Uptime
                 th Country
-                th
-                    i.fa.fa-sign-out(title='Exit')
-                th
-                    i.fa.fa-shield(title='Guard')
+                th.align-left Flags
         if relays.length
             tbody
                 each relay in relays
@@ -36,14 +34,15 @@ mixin relayCompassTable(relays, notDisplayed)
                             a(href='/relay/'+relay.fingerprint) #{format.percent(relay.middle_probability, 4)}
                         td.align-center
                             a(href='/relay/'+relay.fingerprint) #{format.percent(relay.exit_probability, 4)}
+                        td
+                            if relay.running
+                                a(href='/relay/'+relay.fingerprint) !{format.uptimeShort(relay.last_restarted)}
+                            else
+                                a(href='/relay/'+relay.fingerprint, title='Offline') n/a
                         td.align-center
                             a(href='/relay/'+relay.fingerprint) !{format.flaggify(relay.country, 4)}
-                        td.align-center
-                            a(href='/relay/'+relay.fingerprint)
-                                i(class="fa fa-#{~relay.flags.indexOf('Exit') ? 'check' : 'minus'}")
-                        td.align-center
-                            a(href='/relay/'+relay.fingerprint)
-                                i(class="fa fa-#{~relay.flags.indexOf('Guard') ? 'check' : 'minus'}")
+                        td
+                            a(href='/relay/'+relay.fingerprint) !{format.onionFlags(relay.flags, 4)}
             tfoot
                 tr
                     td
@@ -62,4 +61,4 @@ mixin relayCompassTable(relays, notDisplayed)
         else
             tbody
                 tr
-                    td(colspan='7', class='empty no-a') No relays found :(
+                    td(colspan='9', class='empty no-a') No bridges found :(

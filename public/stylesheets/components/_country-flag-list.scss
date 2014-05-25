@@ -1,0 +1,12 @@
+.country-flag-list{
+    position: relative;
+    text-align: left;
+
+    .country-flag{
+        position: absolute;
+        left: 0;
+    }
+    &:hover .country-flag{
+        position: relative;
+    }
+}

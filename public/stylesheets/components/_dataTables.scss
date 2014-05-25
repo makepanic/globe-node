@@ -60,6 +60,9 @@
     .fa {
         margin-right: 4px;
         color: $black;
+        &.fa-minus{
+            color: $grey-darkest;
+        }
     }
 
     .empty {
