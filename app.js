@@ -31,7 +31,7 @@ var program = require('commander'),
 program
     .version(pkg.version)
     .option('-n, --nosync', 'disable db automatically syncing')
-    .option('-db, --dburl [dbUrl]', 'set the database url [mongodb://localhost:27017/]', 'mongodb://localhost:27017/')
+    .option('-db, --dburl [dbUrl]', 'set the database url [mongodb://localhost:27017/onionoo]', 'mongodb://localhost:27017/onionoo')
     .option('-p, --port <portNum>', 'set the port where the web server should listen for requests.', '3000')
     .parse(process.argv);
 
@@ -41,6 +41,8 @@ var app = express();
 if (process.env.DBURL) {
     program.dburl = process.env.DBURL;
 }
+
+console.log('connectiong via', program.dburl);
 
 // all environments
 app.set('port', parseInt(program.port, 10));
