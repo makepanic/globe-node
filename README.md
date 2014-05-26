@@ -14,4 +14,18 @@ See `node app.js --help` for more information.
 
 __nosync__ (`-n` or `--nosync`)
 
+*default is `false`*
+
 Disables clearing the database and reloading the onionoo dump.
+
+__port__ (`-p 3000` or `--port 3000`)
+
+*default is `3000`*
+
+Sets the port where the application server should listen for requests
+
+__database url__ (`-db mongodb://localhost:27017/onionoo` or `--dburl mongodb://localhost:27017/onionoo`)
+
+*default is `mongodb://localhost:27017/onionoo`* 
+
+Sets the mongodb database url.
