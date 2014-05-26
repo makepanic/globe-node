@@ -37,10 +37,10 @@ program
 
 var app = express();
 
-// overwrite dburl if env
-if (process.env.DBURL) {
-    program.dburl = process.env.DBURL;
-}
+// overwrite dburl if in env
+if (process.env.DBURL) { program.dburl = process.env.DBURL; }
+// overwrite port if in env
+if (process.env.PORT) { program.port = process.env.PORT; }
 
 // all environments
 app.set('port', parseInt(program.port, 10));
