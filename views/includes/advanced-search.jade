@@ -30,7 +30,7 @@
                                 option(value=country.key, selected=advSearch.filter.country == country.key)
                                     = country.value
                     .pure-u-1-3
-                        label(for='s-flag') Flag
+                        label(for='s-flag') Flag #{advSearch.filter.flag}
                         select#s-flag(name='flag')
                             option(value='')
                             each flag in flagsArray
@@ -42,6 +42,11 @@
                     .pure-u-1
                         input#exit(type='checkbox', name='exit', checked=advSearch.filter.exit ? 'checked' : undefined)
                         label(for='exit') Select only relays and bridges suitable for exit position
+                        select(name='exitSpeed')
+                            option(value='') all exit relays
+                            option(value='FAST_EXIT', selected=advSearch.filter.exitSpeed == 'FAST_EXIT') fast exit relays
+                            option(value='ALMOST_FAST_EXIT', selected=advSearch.filter.exitSpeed == 'ALMOST_FAST_EXIT') almost fast exit relays
+                            option(value='FAST_EXIT_ANY_NETWORK', selected=advSearch.filter.exitSpeed == 'FAST_EXIT_ANY_NETWORK') fast exit relays any network
         hr
         .pure-g-r.search-filters
             .pure-u-1-12

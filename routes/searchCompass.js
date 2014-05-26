@@ -40,13 +40,14 @@ exports.searchCompass = function (collections) {
         requestFilter = {
             country: cfg.country,
             as: cfg.as ? cfg.as : null,
-            exitSpeed: null,
+            exitSpeed: cfg.exitSpeed,
             inactive: cfg.running,
             running: cfg.running,
             guards: null,
             exit: cfg.exit,
             family: cfg.family,
-            speed: null
+            speed: null,
+            flag: cfg.flag
         };
 
         data.query = cfg.query;

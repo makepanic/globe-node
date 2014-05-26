@@ -103,7 +103,7 @@ connection.init({
         normalizeQuery({
             integer: ['limit'],
             checkbox: ['exit', 'groupAS', 'groupCountry', 'groupFamily', 'groupContact'],
-            empty: ['as', 'family', 'country', 'flag', 'type', 'query'],
+            empty: ['exitSpeed', 'as', 'family', 'country', 'flag', 'type', 'query'],
             boolean: ['running']
         }),
         searchCompass.searchCompass(connectionData.collections));
