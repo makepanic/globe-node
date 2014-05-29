@@ -4,8 +4,8 @@
 var expect = require('expect.js');
 
 describe('exit-speed', function () {
-    var exitSpeedFilter = require('../../../src/lib/db/filters/exit-speed'),
-        speeds = require('../../../src/lib/db/onionoo-mongo/speeds');
+    var exitSpeedFilter = require('../../../../src/lib/db/filters/exit-speed'),
+        speeds = require('../../../../src/lib/db/onionoo-mongo/speeds');
 
     it('tests with empty values', function () {
         expect(exitSpeedFilter([], speeds.ALMOST_FAST_EXIT.PORTS))

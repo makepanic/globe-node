@@ -15,10 +15,11 @@ curl https://www.npmjs.org/install.sh | sudo clean=no sh
 #npm install -g nodemon
 
 # install node inspector for debugging
-npm install -g node-inspector
+npm install -g node-inspector grunt-cli
 
 # cd into the app dir
 cd /vagrant/
+
 # install app dependencies
 npm install
 
@@ -29,4 +30,4 @@ npm install
 #node-inspector & node --debug app.js -n
 
 # start app without syncing db
-node app.js --nosync
+#node app.js --nosync

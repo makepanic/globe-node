@@ -23,7 +23,7 @@ module.exports = function(grunt) {
             report: {
                 options: {
                     reporter: 'html-cov',
-                    output: 'coverage.html'
+                    output: 'src/public/coverage.html'
                 }
             },
             ci: {

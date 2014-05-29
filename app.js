@@ -2,6 +2,7 @@
 
 var program = require('commander'),
     pkg = require('./package.json'),
+    conf = require('./config'),
     http = require('http'),
     path = require('path'),
 
@@ -53,7 +54,7 @@ app.use(favicon(path.join(__dirname, 'src/public/images/favicon.ico')));
 app.use(morgan('dev'));
 app.use(bodyParser());
 app.use(express.static(path.join(__dirname, 'src/public')));
-app.use(featureFlags());
+app.use(featureFlags(conf.FEATURES));
 
 // development only
 if (app.get('env') === 'development') {

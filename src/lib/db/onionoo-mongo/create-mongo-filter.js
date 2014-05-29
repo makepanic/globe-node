@@ -11,7 +11,7 @@ var addToOptionIf = function (target, targetField, checkValue, assignedValue) {
 
 module.exports = function (filterOptions) {
     var dbFilterOptions = {},
-        hasExitSpeedFilter = filterOptions.exitSpeed !== null,
+        hasExitSpeedFilter = filterOptions.exitSpeed !== null && filterOptions.exitSpeed !== undefined,
         notFaster = hasExitSpeedFilter && filterOptions.exitSpeed.NOT_FASTER;
 //        hasSameNetworkFilter = hasExitSpeedFilter && filterOptions.exitSpeed.MAX_PER_NETWORK;
 

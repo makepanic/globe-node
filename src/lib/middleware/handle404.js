@@ -1,5 +1,6 @@
 module.exports = function () {
     return function (req, res) {
+        // set response status to 404
         res.status(404);
 
         // respond with html page
