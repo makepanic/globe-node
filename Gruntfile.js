@@ -4,39 +4,52 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        nodeunit: {
-            all: ['tests/**/*.test.js']
-        },
         eslint: {
             options: {
                 config: 'eslint.json'
             },
-            target: [
-                'routes/**/*.js',
-                'lib/**/*.js',
-                'tests/**/*.js'
+            all: [
+                'src/**/*.js',
+                '!src/**/vendor/*.js',
+                'test/**/*.js',
+                'app.js'
             ]
         },
-
-        coverage: {
+        mochacov: {
             options: {
-                thresholds: {
-                    'statements': 90,
-                    'branches': 90,
-                    'lines': 90,
-                    'functions': 90
-                },
-                dir: 'coverage',
-                root: 'tests'
+                files: 'test/**/*.test.js',
+                ui: 'bdd'
+            },
+            report: {
+                options: {
+                    reporter: 'html-cov',
+                    output: 'coverage.html'
+                }
+            },
+            ci: {
+                options: {
+                    reporter: 'tap'
+                }
+            },
+            dev: {
+                options: {
+                    reporter: 'dot'
+                }
+            }
+        },
+        watch: {
+            scripts: {
+                files: ['src/**/*.js', 'test/**/*.test.js'],
+                tasks: ['eslint', 'mochacov:dev'],
+                options: {
+                    spawn: false
+                }
             }
         }
     });
 
-
-
-    grunt.registerTask('cov', ['coverage']);
-    grunt.registerTask('default', ['eslint', 'nodeunit']);
-
-    grunt.registerTask('test', ['eslint', 'nodeunit']);
+    grunt.registerTask('default', ['eslint', 'mochacov:report']);
+    grunt.registerTask('dev', ['eslint', 'mochacov:dev', 'watch']);
+    grunt.registerTask('test', ['eslint', 'mochacov:ci']);
 
 };

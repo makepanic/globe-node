@@ -1,31 +1,34 @@
+/* eslint no-console: 0 */
+
 var program = require('commander'),
-    connection = require('./lib/db/connection'),
     pkg = require('./package.json'),
-    globals = require('./lib/globalData'),
-    format = require('./lib/util/formatter'),
     http = require('http'),
     path = require('path'),
+
+    globals = require('./src/lib/globalData'),
+    connection = require('./src/lib/db/connection'),
+    format = require('./src/lib/util/formatter'),
 
 // express
     express = require('express'),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
     errorHandler = require('errorhandler'),
-    favicon = require('static-favicon'),
+    favicon = require('serve-favicon'),
 
 // custom middleware
-    featureFlags = require('./lib/middleware/featureFlags'),
-    handle404 = require('./lib/middleware/handle404'),
-    normalizeQuery = require('./lib/middleware/normalize-query'),
-    renderIf = require('./lib/middleware/render-if'),
+    featureFlags = require('./src/lib/middleware/featureFlags'),
+    handle404 = require('./src/lib/middleware/handle404'),
+    normalizeQuery = require('./src/lib/middleware/normalize-query'),
+    renderIf = require('./src/lib/middleware/render-if'),
 
 // routes
-    routes = require('./routes'),
-    detail = require('./routes/detail'),
-    search = require('./routes/search'),
-    top10 = require('./routes/top10'),
-    searchCompass = require('./routes/searchCompass'),
-    graphs = require('./routes/graphs');
+    routes = require('./src/routes'),
+    detail = require('./src/routes/detail'),
+    search = require('./src/routes/search'),
+    top10 = require('./src/routes/top10'),
+    searchCompass = require('./src/routes/searchCompass'),
+    graphs = require('./src/routes/graphs');
 
 // init cli option handling
 program
@@ -44,16 +47,16 @@ if (process.env.PORT) { program.port = process.env.PORT; }
 
 // all environments
 app.set('port', parseInt(program.port, 10));
-app.set('views', __dirname + '/views');
+app.set('views', path.join(__dirname, 'src/views'));
 app.set('view engine', 'jade');
-app.use(favicon());
+app.use(favicon(path.join(__dirname, 'src/public/images/favicon.ico')));
 app.use(morgan('dev'));
 app.use(bodyParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'src/public')));
 app.use(featureFlags());
 
 // development only
-if ('development' == app.get('env')) {
+if (app.get('env') === 'development') {
     app.use(errorHandler());
 }
 
