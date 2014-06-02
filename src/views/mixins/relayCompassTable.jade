@@ -3,13 +3,41 @@ mixin relayCompassTable(relays, notDisplayed)
         thead
             tr
                 th
-                th.align-left Nickname
-                th Consensus Weights
-                th Advertised Bandwidth
-                th Guard Prob.
-                th Middle Prob.
-                th Exit Prob.
-                th Country
+                th.align-left
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "nickname")}', title='sort by nickname')
+                        | Nickname
+                        if requestQuery.sortBy === 'nickname'
+                            != format.sortIndicator('alpha', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "consensus_weight_fraction")}', title='sort by consensus weights')
+                        | Consensus Weights
+                        if requestQuery.sortBy === 'consensus_weight_fraction'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "advertised_bandwidth_fraction")}', title='sort by advertised bandwidth')
+                        | Advertised Bandwidth
+                        if requestQuery.sortBy === 'advertised_bandwidth_fraction'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "guard_probability")}', title='sort by guard probability')
+                        | Guard Prob.
+                        if requestQuery.sortBy === 'guard_probability'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "middle_probability")}', title='sort by middle probability')
+                        | Middle Prob.
+                        if requestQuery.sortBy === 'middle_probability'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "exit_probability")}', title='sort by exit probability')
+                        | Exit Prob.
+                        if requestQuery.sortBy === 'exit_probability'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "country")}', title='sort by country')
+                        | Country
+                        if requestQuery.sortBy === 'country'
+                            != format.sortIndicator('alpha', normRequestQuery.sortAsc)
                 th
                     i.fa.fa-sign-out(title='Exit')
                 th

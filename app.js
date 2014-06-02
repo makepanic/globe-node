@@ -35,7 +35,7 @@ var program = require('commander'),
 program
     .version(pkg.version)
     .option('-n, --nosync', 'disable db automatically syncing')
-    .option('-db, --dburl [dbUrl]', 'set the mongodb database url [mongodb://localhost:27017/onionoo]', 'mongodb://localhost:27017/onionoo')
+    .option('-db, --dburl [dbUrl]', 'set the mongodb database url [' + conf.DB.URL + ']', conf.DB.URL)
     .option('-p, --port <portNum>', 'sets the port where the application server should listen for requests', '3000')
     .parse(process.argv);
 
@@ -108,7 +108,7 @@ connection.init({
             integer: ['limit'],
             checkbox: ['exit', 'groupAS', 'groupCountry', 'groupFamily', 'groupContact'],
             empty: ['exitSpeed', 'as', 'family', 'country', 'flag', 'type', 'query'],
-            boolean: ['running']
+            boolean: ['sortAsc', 'running']
         }),
         searchCompass.searchCompass(connectionData.collections));
 

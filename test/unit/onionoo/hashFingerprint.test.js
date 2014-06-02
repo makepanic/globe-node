@@ -1,6 +1,7 @@
 /* global describe, it */
 
-var expect = require('expect.js');
+var expect = require('expect.js'),
+    assert = require('assert');
 
 describe('hashFingerprint', function() {
     var hashFingerprint = require('../../../src/lib/onionoo/util/hashFingerprint');

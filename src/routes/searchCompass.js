@@ -22,7 +22,7 @@ exports.searchCompass = function (collections) {
     return function (req, res) {
         /*eslint handle-callback-err:0*/
 
-        var cfg = req.query,
+        var cfg = req.normQuery,
             data = {
                 title: ['Results for "' + cfg.query + '"'],
                 query: '',
@@ -51,6 +51,8 @@ exports.searchCompass = function (collections) {
         };
 
         data.query = cfg.query;
+        data.requestQuery = req.query;
+        data.normRequestQuery = req.normQuery;
 
         data.advSearch = {
             filter: requestFilter,
@@ -68,6 +70,8 @@ exports.searchCompass = function (collections) {
         if (!isGroupRequest(data.advSearch.group)) {
             // no grouping, use simple results
             filter(collections, {
+                sortBy: cfg.sortBy,
+                sortAsc: cfg.sortAsc,
                 displayAmount: cfg.limit,
                 filter: requestFilter
             }).then(function (result) {
@@ -79,6 +83,8 @@ exports.searchCompass = function (collections) {
         } else {
             // grouping, use grouped results
             group(collections, {
+                sortBy: cfg.sortBy,
+                sortAsc: cfg.sortAsc,
                 displayAmount: cfg.limit,
                 filter: requestFilter,
                 group: data.advSearch.group

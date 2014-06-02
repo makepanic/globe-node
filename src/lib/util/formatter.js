@@ -1,10 +1,12 @@
 // TODO: xss escape
 var _ = require('lodash'),
+    querystring = require('querystring'),
     errors = require('../errors'),
     is40CharHex = require('./../onionoo/util/is40CharHex'),
     uptimeCalculator = require('./UptimeCalculator'),
     countryFlag = require('./countryFlag'),
-    globals = require('../globalData');
+    globals = require('../globalData'),
+    clone = require('./clone');
 
 exports.uptimeFull = function(value) {
     if(!value){
@@ -117,4 +119,31 @@ exports.percent = function(val, precision) {
         fixed = (val * 100).toFixed(precision) + '%';
     }
     return fixed;
+};
+
+/**
+ * Function that generates a sort query with a given query object and field that should be used to sort.
+ * @param {Object} query Query object
+ * @param {String} field Field to sort
+ * @return {String} Created querystring
+ */
+exports.searchQuery = function (query, field) {
+    var queryClone = clone(query),
+        invert = queryClone.sortBy === field,
+        sortAsc = queryClone.sortAsc === 'true' || queryClone.sortAsc === true;
+
+    queryClone.sortBy = field;
+
+    if (invert) {
+        queryClone.sortAsc = '' + !sortAsc;
+    } else {
+        queryClone.sortAsc = 'false';
+    }
+    return querystring.stringify(queryClone);
+};
+
+exports.sortIndicator = function (type, asc) {
+    type = type || 'amount';
+
+    return '<i class="fa fa-sort-' + type + '-' + (asc ? 'asc' : 'desc') + '"></i>';
 };

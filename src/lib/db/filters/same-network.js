@@ -53,7 +53,5 @@ module.exports = function (items, maxPerNetwork) {
 
     return [].concat.apply([], Object.keys(netData).map(function (key) {
         return netData[key];
-    })).sort(function (a, b) {
-        return b.consensus_weight_fraction - a.consensus_weight_fraction;
-    });
+    }));
 };

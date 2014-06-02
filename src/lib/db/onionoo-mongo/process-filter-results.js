@@ -1,8 +1,21 @@
 /* eslint camelcase:0 */
 
-var RSVP = require('rsvp');
+var RSVP = require('rsvp'),
+    _ = require('lodash');
 
 module.exports = function (filterResults) {
+    if (!_.isArray(filterResults.relays)) {
+        filterResults.relays = [];
+    }
+    if (!_.isArray(filterResults.bridges)) {
+        filterResults.bridges = [];
+    }
+    if (!_.isFunction(filterResults.sortFn)) {
+        filterResults.sortFn = function (a, b) {
+            return b.consensus_weight_fraction - a.consensus_weight_fraction;
+        };
+    }
+
     return new RSVP.Promise(function (resolve) {
         var relay,
             displayed = {
@@ -30,10 +43,12 @@ module.exports = function (filterResults) {
             return val !== null && val !== undefined && val !== -1;
         }
 
+        // sort filter results
+        filterResults.relays = filterResults.relays.sort(filterResults.sortFn);
+
         // generate aggregated filterResults
         for (var index = 0, max = filterResults.relays.length; index < max; index++) {
             relay = filterResults.relays[index];
-
             if (index >= displayLimit) {
                 // is not displayed
                 notDisplayed.relays.number++;

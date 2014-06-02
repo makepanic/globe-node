@@ -36,24 +36,24 @@ describe('normalize-query', function () {
 
         middleware(req, null, this.next);
 
-        expect(req.query.checkOn).to.be(true);
-        expect(req.query.checkOff).to.be(false);
-        expect(req.query.checkMisc).to.be(null);
+        expect(req.normQuery.checkOn).to.be(true);
+        expect(req.normQuery.checkOff).to.be(false);
+        expect(req.normQuery.checkMisc).to.be(null);
 
-        expect(req.query.boolTrue).to.be(true);
-        expect(req.query.boolFalse).to.be(false);
-        expect(req.query.strBoolTrue).to.be(true);
-        expect(req.query.strBoolFalse).to.be(false);
-        expect(req.query.boolMisc).to.be(null);
+        expect(req.normQuery.boolTrue).to.be(true);
+        expect(req.normQuery.boolFalse).to.be(false);
+        expect(req.normQuery.strBoolTrue).to.be(true);
+        expect(req.normQuery.strBoolFalse).to.be(false);
+        expect(req.normQuery.boolMisc).to.be(null);
 
-        expect(req.query.filledField).to.be('filled');
-        expect(req.query.emptyField).to.be(null);
-        expect(req.query.miscField).to.be(null);
+        expect(req.normQuery.filledField).to.be('filled');
+        expect(req.normQuery.emptyField).to.be(null);
+        expect(req.normQuery.miscField).to.be(null);
 
-        expect(req.query.int1).to.be(10);
-        expect(req.query.int2).to.be(-10);
-        expect(req.query.intStr).to.be(null);
-        expect(req.query.intMisc).to.be(null);
+        expect(req.normQuery.int1).to.be(10);
+        expect(req.normQuery.int2).to.be(-10);
+        expect(req.normQuery.intStr).to.be(null);
+        expect(req.normQuery.intMisc).to.be(null);
 
         expect(this.next.called).to.be(true);
     });

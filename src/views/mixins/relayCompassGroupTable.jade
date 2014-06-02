@@ -2,14 +2,49 @@ mixin relayCompassGroupTable(relays, notDisplayed, uiFlags)
     table.relay-summary-list.datatable
         thead
             tr
-                th Country
-                th.align-left Fingerprints
-                th.align-left Autonomous System
-                th Consensus Weights
-                th Advertised Bandwidth
-                th Guard Prob.
-                th Middle Prob.
-                th Exit Prob.
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "country")}', title='sort by country')
+                        | Country
+                        if requestQuery.sortBy === 'country'
+                            if uiFlags.hasCountryFlags
+                                != format.sortIndicator('alpha', normRequestQuery.sortAsc)
+                            else
+                                != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th.align-left
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "fingerprint")}', title='sort by fingerprints')
+                        | Fingerprints
+                        if requestQuery.sortBy === 'fingerprint'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th.align-left
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "as_number")}', title='sort by autonomous system')
+                        | Autonomous System
+                        if requestQuery.sortBy === 'as_number'
+                            != format.sortIndicator('alpha', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "consensus_weight_fraction")}', title='consensus weights')
+                        | Consensus Weights
+                        if requestQuery.sortBy === 'consensus_weight_fraction'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "advertised_bandwidth_fraction")}', title='sort by advertised bandwidth')
+                        | Advertised Bandwidth
+                        if requestQuery.sortBy === 'advertised_bandwidth_fraction'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "guard_probability")}', title='sort by guard probability')
+                        | Guard Prob.
+                        if requestQuery.sortBy === 'guard_probability'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "middle_probability")}', title='sort by middle probability')
+                        | Middle Prob.
+                        if requestQuery.sortBy === 'middle_probability'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "exit_probability")}', title='sort by exit probability')
+                        | Exit Prob.
+                        if requestQuery.sortBy === 'exit_probability'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
         if relays.length
             tbody
                 each relay in relays

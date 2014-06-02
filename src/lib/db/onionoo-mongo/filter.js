@@ -2,16 +2,18 @@
 
 var RSVP = require('rsvp'),
     _ = require('lodash'),
+    getSortType = require('../../util/get-sort-type'),
     processFilterResults = require('./process-filter-results'),
     createMongoFilter = require('./create-mongo-filter'),
 // filters
     speeds = require('./speeds'),
     exitSpeedFilter = require('../filters/exit-speed'),
-    sameNetworkFilter = require('../filters/same-network');
+    sameNetworkFilter = require('../filters/same-network'),
+    createSortFn = require('../../util/create-sort-fn');
 
 var defaultOpts = {
-    sort: 'consensus_weight_fraction',
-    sortAscending: false,
+    sortBy: 'consensus_weight_fraction',
+    sortAsc: false,
     displayAmount: 10,
     filter: {
         exitSpeed: null,
@@ -33,9 +35,11 @@ module.exports = function (collections, methodOpts) {
         bridges = collections.bridges,
         hasExitSpeedFilter,
         hasSameNetworkFilter,
-        dbOpts;
+        dbOpts,
+        sortFnType = getSortType(opts.sortBy),
+        sortFn = (createSortFn[sortFnType] ? createSortFn[sortFnType] : createSortFn.numeric)(opts.sortBy, opts.sortAsc);
 
-    sortObj[opts.sort] = opts.sortAscending ? 1 : -1;
+    sortObj[opts.sortBy] = opts.sortAsc ? 1 : -1;
 
     if (filterOpts.exitSpeed) {
         // get exitSpeed object for given string
@@ -72,6 +76,7 @@ module.exports = function (collections, methodOpts) {
         }
 
         return processFilterResults({
+            sortFn: sortFn,
             displayLimit: opts.displayAmount,
             relays: filteredRelays,
             bridges: []
