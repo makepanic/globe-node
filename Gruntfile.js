@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
@@ -38,11 +38,18 @@ module.exports = function(grunt) {
             }
         },
         watch: {
+            reload: {
+                files: ['src/views/**/*.jade', 'src/public/stylesheets/**/*.scss'],
+                options: {
+                    livereload: true
+                }
+            },
             scripts: {
                 files: ['src/**/*.js', 'test/**/*.test.js'],
                 tasks: ['eslint', 'mochacov:dev'],
                 options: {
-                    spawn: false
+                    spawn: false,
+                    livereload: true
                 }
             }
         }

@@ -18,6 +18,12 @@ __nosync__ (`-n` or `--nosync`)
 
 Disables clearing the database and reloading the onionoo dump.
 
+__dev__ (`-d` or `--dev`)
+
+*default is `false`*
+
+If true, enables some development features like livereload.
+
 __port__ (`-p 3000` or `--port 3000`)
 
 *default is `3000`*

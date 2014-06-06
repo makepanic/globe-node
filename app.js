@@ -34,6 +34,7 @@ var program = require('commander'),
 // init cli option handling
 program
     .version(pkg.version)
+    .option('-d, --dev', 'uses development settings')
     .option('-n, --nosync', 'disable db automatically syncing')
     .option('-db, --dburl [dbUrl]', 'set the mongodb database url [' + conf.DB.URL + ']', conf.DB.URL)
     .option('-p, --port <portNum>', 'sets the port where the application server should listen for requests', '3000')
@@ -89,6 +90,7 @@ globals.advSearch = {
 };
 globals.version = pkg.version;
 globals.format = format;
+globals.DEV = !!program.dev;
 
 // make the globals object accessable for every template
 app.locals = globals;

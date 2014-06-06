@@ -41,7 +41,7 @@
                         input#s-family(type=text, name='family', placeholder='A59E1E7C7EAEE083D756EE1FF6EC31CA3D8651D7', value=advSearch.filter.family)
                     .pure-u-1
                         input#exit(type='checkbox', name='exit', checked=advSearch.filter.exit ? 'checked' : undefined)
-                        label(for='exit') Select only relays and bridges suitable for exit position
+                        label(for='exit') only relays and bridges suitable for exit position:
                         select(name='exitSpeed')
                             option(value='') all exit relays
                             option(value='FAST_EXIT', selected=advSearch.filter.exitSpeed == 'FAST_EXIT') fast exit relays
@@ -53,18 +53,17 @@
                 strong Group
             .pure-u-11-12
                 input#groupCountry(name='groupCountry', type='checkbox', checked=advSearch.group.country ? 'checked' : undefined)
-                label(for='groupCountry') Group results by country
+                label(for='groupCountry') by country
                 input#groupAS(name='groupAS', type='checkbox', checked=advSearch.group.as ? 'checked' : undefined)
-                label(for='groupAS') Group results by AS
+                label(for='groupAS') by AS
                 input#groupFamily(name='groupFamily', type='checkbox', checked=advSearch.group.family ? 'checked' : undefined)
-                label(for='groupFamily') Group results by family
+                label(for='groupFamily') by family
                 input#groupContact(name='groupContact', type='checkbox', checked=advSearch.group.contact ? 'checked' : undefined)
-                label(for='groupContact') Group results by contact
+                label(for='groupContact') by contact
         hr
         .pure-g-r.search-filters
             .pure-u-1-12
-                strong Actions
+                strong Limit
             .pure-u-11-12
-                label(for='limit') Limit number of results
                 input#limit(name='limit', type='text', pattern='[0-9]+', value=advSearch.actions.limit >= 0 ? advSearch.actions.limit : '10')
-                small 0 for all results
+                label(for='limit')  (0 for all results)
