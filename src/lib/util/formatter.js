@@ -166,20 +166,20 @@ exports.buildSearchQuery = function (groupedBy, group, query) {
     if (typeof query === 'string') {
         searchQuery.push('query=' + query);
     }
-    if (groupedBy.hasGroupAS) {
+    if (groupedBy.hasGroupAS && group.as_number[0][0] !== null) {
         searchQuery.push('as=' + group.as_number[0][0]);
     }
-    if (groupedBy.hasGroupCountry) {
+    if (groupedBy.hasGroupCountry && group.country[0][0] !== null) {
         searchQuery.push('country=' + group.country[0][0]);
     }
-    if (groupedBy.hasGroupContact) {
+    if (groupedBy.hasGroupContact && group.contact[0][0] !== null) {
         searchQuery.push('contact=' + group.contact[0][0]);
     }
-    if (groupedBy.hasGroupFamily) {
+    if (groupedBy.hasGroupFamily && group.family[0][0] !== null) {
         searchQuery.push('family=' + group.family[0][0]);
     }
 
-    return '/search-compass?limit=10&' + searchQuery.join('&');
+    return '/search-compass?limit=10' + (searchQuery.length ? '&' + searchQuery.join('&') : '');
 };
 
 exports.sortIndicator = function (type, asc) {

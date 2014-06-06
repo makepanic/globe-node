@@ -156,7 +156,8 @@ module.exports = function (collections, methodOpts) {
     aggregatePipe.push({
         $group: {
             _id: groupFields,
-            fingerprints: { $push: '$$ROOT' },
+//            fingerprints: { $push: '$$ROOT' },
+            fingerprints: {$push: '$fingerprint'},
             consensus_weight_fraction: {$sum: '$consensus_weight_fraction'},
             advertised_bandwidth_fraction: {$sum: '$advertised_bandwidth_fraction'},
             guard_probability: {$sum: '$guard_probability'},

@@ -44,8 +44,10 @@ gulp.task('cover', function () {
             debugDirectory: 'debug'
         }))
         .pipe(mocha({
-            timeout: 8000,
+            // 5 min (in the vagrant image it can take a long time)
+            timeout: 5 * 60 * 1000,
             ui: 'bdd',
+            bail: true,
             reporter: 'spec'
         }))
         .pipe(cover.gather())
@@ -63,8 +65,10 @@ gulp.task('cover-no-db', function () {
             debugDirectory: 'debug'
         }))
         .pipe(mocha({
-            timeout: 8000,
+            // 5 min (in the vagrant image it can take a long time)
+            timeout: 5 * 60 * 1000,
             ui: 'bdd',
+            bail: true,
             reporter: 'spec',
             grep: '@db',
             invert: true
@@ -101,8 +105,8 @@ gulp.task('sass', ['clean'], function () {
         .pipe(sass())
         .pipe(concat('style.min.css'))
         .pipe(minifyCSS())
-        // css prefix for latest firefox esr and browser versions that have >5% browser usages
-        .pipe(prefix('Firefox ESR'))
+        // see https://github.com/postcss/autoprefixer#browsers
+        .pipe(prefix('> 1%', 'last 2 versions', 'Firefox ESR', 'Opera 12.1'))
         .pipe(gulp.dest('build/css'))
         .pipe(livereload({auto: false}));
 });
