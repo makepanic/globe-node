@@ -113,6 +113,8 @@ function reloadData() {
                 }, function (err) {
                     reject(err);
                 });
+            }, function (err) {
+                reject(err);
             });
         }, function (err) {
             console.error(err);
@@ -129,6 +131,7 @@ function reloadData() {
  */
 function init(opts) {
     var skipReloadData = opts.skipReload,
+        waitForReload = !!opts.waitForReload,
         dbUrl = opts.dbUrl;
 
     assert(typeof dbUrl === 'string', 'Expected a database url.');
@@ -141,31 +144,40 @@ function init(opts) {
             if (err) {
                 console.error(err);
                 reject(err);
-                return;
+            } else {
+                database = db;
+
+                // create collections for relays and bridges
+                RSVP.hash({
+                    relays: RSVP.denodeify(database.createCollection.bind(database))('relays'),
+                    bridges: RSVP.denodeify(database.createCollection.bind(database))('bridges')
+                }).then(function (createdCollections) {
+
+                    collections = createdCollections;
+
+                    var resolveData = {
+                        database: database,
+                        isLocked: isLocked,
+                        collections: createdCollections
+                    };
+
+                    if (!skipReloadData) {
+                        // Lock the database and start the initial onionoo data loading.
+                        // We don't wait for it to complete and resolve immediately.
+                        lock();
+                        if (waitForReload) {
+                            reloadData().then(function () {
+                                resolve(resolveData);
+                            });
+                        } else {
+                            reloadData();
+                        }
+                    }
+                    if (!waitForReload) {
+                        resolve(resolveData);
+                    }
+                });
             }
-            database = db;
-
-            // create collections for relays and bridges
-            RSVP.hash({
-                relays: RSVP.denodeify(database.createCollection.bind(database))('relays'),
-                bridges: RSVP.denodeify(database.createCollection.bind(database))('bridges')
-            }).then(function (createdCollections) {
-
-                collections = createdCollections;
-
-                var resolveData = {
-                    isLocked: isLocked,
-                    collections: createdCollections
-                };
-
-                if (!skipReloadData) {
-                    // Lock the database and start the initial onionoo data loading.
-                    // We don't wait for it to complete and resolve immediately.
-                    lock();
-                    reloadData();
-                }
-                resolve(resolveData);
-            });
         });
     });
 }

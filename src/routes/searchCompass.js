@@ -36,6 +36,10 @@ exports.searchCompass = function (collections) {
         if (cfg.family && typeof cfg.family === 'string' && cfg.family[0] === '$' && cfg.family.length > 1) {
             cfg.family = cfg.family.substring(1);
         }
+        // add AS to as filter
+        if (cfg.as && cfg.as.substring(0, 2) === 'AS') {
+            cfg.as = cfg.as.substring(2);
+        }
 
         requestFilter = {
             country: cfg.country,

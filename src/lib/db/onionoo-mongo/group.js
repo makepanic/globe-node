@@ -1,4 +1,4 @@
-/*eslint camelcase:0, no-console:0 */
+/*eslint camelcase:0 */
 
 var RSVP = require('rsvp'),
     getSortType = require('../../util/get-sort-type'),
@@ -16,6 +16,7 @@ var defaultOpts = {
         displayAmount: 10,
         group: {},
         filter: {
+            exitSpeed: null,
             inactive: null,
             guards: null,
             exit: null,
@@ -24,7 +25,7 @@ var defaultOpts = {
             country: null,
             speed: null
         }
-    },
+    }/*,
     relayReduceFn = function (relay, prev) {
         prev.consensus_weight_fraction += relay.consensus_weight_fraction;
         prev.advertised_bandwidth_fraction += relay.advertised_bandwidth_fraction;
@@ -35,7 +36,7 @@ var defaultOpts = {
         prev.as_number[relay.as_number] = prev.as_number[relay.as_number] ? prev.as_number[relay.as_number] + 1 : 1;
         prev.as_name[relay.as_name] = prev.as_name[relay.as_name] ? prev.as_name[relay.as_name] + 1 : 1;
         prev.country[relay.country] = prev.country[relay.country] ? prev.country[relay.country] + 1 : 1;
-    };
+    }*/;
 
 module.exports = function (collections, methodOpts) {
     var opts = _.merge({}, defaultOpts, methodOpts),
@@ -103,10 +104,6 @@ module.exports = function (collections, methodOpts) {
 
     sortObj[opts.sortBy] = opts.sortAsc ? 1 : -1;
 
-    console.log('opts', opts);
-    console.log('sorting', sortObj);
-    console.log('filtering', dbOpts);
-
     return RSVP.hash({
         relays: RSVP.denodeify(relays.group.bind(relays))(
             // keys
@@ -115,8 +112,8 @@ module.exports = function (collections, methodOpts) {
             dbOpts,
             // initial object
             initialOps,
-            // reduce func
-            relayReduceFn)
+            // reduce func ( via relayReduceFn.toString().replace(/[ \n]/g, '') )
+            'function(relay,prev){prev.consensus_weight_fraction+=relay.consensus_weight_fraction;prev.advertised_bandwidth_fraction+=relay.advertised_bandwidth_fraction;prev.guard_probability+=relay.guard_probability;prev.middle_probability+=relay.middle_probability;prev.exit_probability+=relay.exit_probability;prev.fingerprints.push(relay);prev.as_number[relay.as_number]=prev.as_number[relay.as_number]?prev.as_number[relay.as_number]+1:1;prev.as_name[relay.as_name]=prev.as_name[relay.as_name]?prev.as_name[relay.as_name]+1:1;prev.country[relay.country]=prev.country[relay.country]?prev.country[relay.country]+1:1;}')
     }).then(function (results) {
         // manually filtering :(
         var filteredRelays = results.relays;

@@ -21,7 +21,7 @@ module.exports = function (items, maxPerNetwork) {
             numAddresses++;
 
             if (numAddresses > 1) {
-                console.warn('%s has more than one IPv4 OR address - %s', relay.fingerprint, orAddresses.join(', '));
+                console.log('%s has more than one IPv4 OR address - %s', relay.fingerprint, orAddresses.join(', '));
                 return;
             }
 

@@ -1,4 +1,4 @@
-/* eslint camelcase:0 */
+/* eslint camelcase:0, no-underscore-dangle: 0 */
 
 var RSVP = require('rsvp'),
     _ = require('lodash');
@@ -49,6 +49,12 @@ module.exports = function (filterResults) {
         // generate aggregated filterResults
         for (var index = 0, max = filterResults.relays.length; index < max; index++) {
             relay = filterResults.relays[index];
+
+            // remove "private" fields
+            delete relay._id;
+            delete relay.exit_policy_summary._accept;
+            delete relay.exit_policy_summary._accept_range;
+
             if (index >= displayLimit) {
                 // is not displayed
                 notDisplayed.relays.number++;

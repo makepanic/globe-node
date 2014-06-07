@@ -50,9 +50,6 @@ module.exports = function (collections, methodOpts) {
     hasExitSpeedFilter = filterOpts.exitSpeed !== null;
     hasSameNetworkFilter = hasExitSpeedFilter && filterOpts.exitSpeed.MAX_PER_NETWORK;
 
-    console.log('sorting', sortObj);
-    console.log('filtering', dbOpts);
-
     return RSVP.hash({
         relays: RSVP.denodeify(relays
             .find(dbOpts)

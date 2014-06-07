@@ -4,8 +4,7 @@ var config = require('../../../../config').ONIONOO,
 
 module.exports = function(path) {
     return new RSVP.Promise(function(resolve, reject){
-        request({
-            url: config.BASE_URL + path,
+        request.get(config.BASE_URL + path, {
             timeout: config.REQUEST_TIMEOUT
         }, function(err, resp, body){
             var parsedBody;

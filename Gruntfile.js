@@ -26,6 +26,15 @@ module.exports = function (grunt) {
                     output: 'src/public/coverage.html'
                 }
             },
+            ciNoDb: {
+                options: {
+                    reporter: 'tap',
+
+                    // without db tests
+                    grep: '@db',
+                    invert: true
+                }
+            },
             ci: {
                 options: {
                     reporter: 'tap'
@@ -58,5 +67,6 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['eslint', 'mochacov:report']);
     grunt.registerTask('dev', ['eslint', 'mochacov:dev', 'watch']);
     grunt.registerTask('test', ['eslint', 'mochacov:ci']);
+    grunt.registerTask('test-no-db', ['eslint', 'mochacov:ciNoDb']);
 
 };

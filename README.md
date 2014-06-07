@@ -35,3 +35,28 @@ __database url__ (`-db mongodb://localhost:27017/onionoo` or `--dburl mongodb://
 *default is `mongodb://localhost:27017/onionoo`* 
 
 Sets the mongodb database url.
+
+##Grunt
+
+__default__ (`grunt`)
+
+- runs tests, linting and generates coverage
+
+__dev__ (`grunt dev`)
+
+like `default`
+
+- tests using [`dot` reporter](https://visionmedia.github.io/mocha/#dot-matrix-reporter)
+- watches for code changes and reruns linting, tests and uses livereload to refresh the browser
+
+__test__ (`grunt test`)
+
+like `default`
+
+- tests using [TAP](https://en.wikipedia.org/wiki/Test_Anything_Protocol) reporter
+
+__test (no database)__ (`grunt test-no-db`)
+
+like `test`
+
+- skips test tagged with `@db`
