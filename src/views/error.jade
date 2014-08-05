@@ -5,6 +5,13 @@ block content
             .text-content
                 if title
                     h2.styled #{title}
-                else
+                if msg
+                    p #{msg}
+                if error
                     h2.styled Error
-                p #{msg}
+                    p You found an error :( . Please report the following message:
+                    pre
+                        = error.message
+                    hr
+                    pre
+                        = error.stack

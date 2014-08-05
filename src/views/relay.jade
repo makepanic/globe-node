@@ -132,9 +132,13 @@ block content
                                                 if model.family
                                                     each family_member in model.family
                                                         li
+                                                        - try {
                                                             a(href='/relay/' + format.familyToFingerprint(family_member))
                                                                 i.button.fa.fa-external-link-square
                                                                 = format.familyToFingerprint(family_member)
+                                                        - } catch (e) {
+                                                            = family_member
+                                                        - }
                                                 else
                                                     li none
             else

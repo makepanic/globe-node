@@ -38,6 +38,16 @@ mixin relayCompassTable(relays, notDisplayed)
                         | Country
                         if requestQuery.sortBy === 'country'
                             != format.sortIndicator('alpha', normRequestQuery.sortAsc)
+                th.align-left
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "tor")}', title='sort by Tor version')
+                        | Tor version
+                        if requestQuery.sortBy === 'tor'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "osString")}', title='sort by operating system')
+                        | OS
+                        if requestQuery.sortBy === 'osString'
+                            != format.sortIndicator('alpha', normRequestQuery.sortAsc)
                 th
                     i.fa.fa-sign-out(title='Exit')
                 th
@@ -58,6 +68,7 @@ mixin relayCompassTable(relays, notDisplayed)
                             a(href='/relay/'+relay.fingerprint) #{format.percent(relay.consensus_weight_fraction, 4)}
                         td.align-center
                             a(href='/relay/'+relay.fingerprint) #{format.percent(relay.advertised_bandwidth_fraction, 4)}
+                                | (#{format.bandwidth(relay.advertised_bandwidth)})
                         td.align-center
                             a(href='/relay/'+relay.fingerprint) #{format.percent(relay.guard_probability, 4)}
                         td.align-center
@@ -66,6 +77,11 @@ mixin relayCompassTable(relays, notDisplayed)
                             a(href='/relay/'+relay.fingerprint) #{format.percent(relay.exit_probability, 4)}
                         td.align-center
                             a(href='/relay/'+relay.fingerprint) !{format.flaggify(relay.country, 4)}
+                        td.align-left
+                            a(href='/relay/'+relay.fingerprint, title='using #{relay.client}') #{relay.tor}
+                        td.align-center
+                            if relay.osString
+                                a(href='/relay/' + relay.fingerprint, title=relay.meta ? relay.meta : undefined) #{relay.osString}
                         td.align-center
                             a(href='/relay/'+relay.fingerprint)
                                 i(class="fa fa-#{~relay.flags.indexOf('Exit') ? 'check' : 'minus'}")

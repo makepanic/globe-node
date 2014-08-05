@@ -11,11 +11,14 @@ apt-get -y -t wheezy-backports install nodejs-legacy
 # via https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#backports
 curl https://www.npmjs.org/install.sh | sudo clean=no sh
 
+# install gulp for asset pipeline
+npm install -g gulp
+
 # install nodemon for re/starting the app
 #npm install -g nodemon
 
 # install node inspector for debugging
-npm install -g node-inspector grunt-cli
+#npm install -g node-inspector
 
 # cd into the app dir
 cd /vagrant/

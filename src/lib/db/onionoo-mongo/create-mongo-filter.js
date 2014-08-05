@@ -1,11 +1,25 @@
 /* eslint camelcase:0 */
 
 var speeds = require('./speeds'),
-    _ = require('lodash');
+    _ = require('lodash-node');
 
+/**
+ * Add a value to a target after checking if another value exists and it isn't empty
+ * @param {Object} target Mongodb filter object
+ * @param {String} targetField Mongodb filter object field
+ * @param {*} checkValue Value to check
+ * @param {*} assignedValue Mongodb filter expression
+ * @return {void}
+ */
 var addToOptionIf = function (target, targetField, checkValue, assignedValue) {
     if (checkValue !== undefined && checkValue !== null) {
-        target[targetField] = _.isFunction(assignedValue) ? assignedValue() : assignedValue;
+        if (_.isArray(checkValue)) {
+            if (checkValue.length) {
+                target[targetField] = _.isFunction(assignedValue) ? assignedValue(checkValue) : assignedValue;
+            }
+        } else {
+            target[targetField] = _.isFunction(assignedValue) ? assignedValue(checkValue) : assignedValue;
+        }
     }
 };
 
@@ -14,11 +28,6 @@ module.exports = function (filterOptions) {
         hasExitSpeedFilter = filterOptions.exitSpeed !== null && filterOptions.exitSpeed !== undefined,
         notFaster = hasExitSpeedFilter && filterOptions.exitSpeed.NOT_FASTER;
 //        hasSameNetworkFilter = hasExitSpeedFilter && filterOptions.exitSpeed.MAX_PER_NETWORK;
-
-    if (filterOptions.inactive === null || filterOptions.inactive === false) {
-        // only running
-        dbFilterOptions.running = true;
-    }
 
     // apply exit speed filters
     if (hasExitSpeedFilter) {
@@ -41,14 +50,37 @@ module.exports = function (filterOptions) {
             dbFilterOptions.advertised_bandwidth = {
                 $gt: filterOptions.exitSpeed.ADVERTISED_BANDWIDTH
             };
-
         }
     }
 
+
+    if (_.isString(filterOptions.query)) {
+        var query = filterOptions.query;
+        // copy of onionoo RequestHandler.java.filterBySearchTerm
+        if (query.length) {
+            if (query[0] === '$') {
+                /* Search is for $-prefixed fingerprint. */
+                dbFilterOptions.fingerprint = query.substring(1).toUpperCase();
+            } else {
+                dbFilterOptions.$or = [
+                    /* Nickname matches. */
+                    {nickname: {$regex: new RegExp('.*' + query.toLowerCase() + '.*') }},
+                    /* Non-$-prefixed fingerprint matches. */
+                    {fingerprint: {$regex: new RegExp('^' + query.toUpperCase()) }},
+                    {or_addresses: {$elemMatch: {$regex: new RegExp('^' + query.toLowerCase()) }}},
+                    {exit_addresses: {$elemMatch: {$regex: new RegExp('^' + query.toLowerCase()) }}}
+                ];
+            }
+        }
+    }
     addToOptionIf(dbFilterOptions, 'guard_probability', filterOptions.guards, { $gt: 0 });
+    addToOptionIf(dbFilterOptions, 'flags', filterOptions.flag, filterOptions.flag);
+    addToOptionIf(dbFilterOptions, 'running', filterOptions.running, filterOptions.running);
     addToOptionIf(dbFilterOptions, 'exit_probability', filterOptions.exit, { $gt: 0 });
     addToOptionIf(dbFilterOptions, 'as_number', filterOptions.as, filterOptions.as);
     addToOptionIf(dbFilterOptions, 'country', filterOptions.country, filterOptions.country);
+    addToOptionIf(dbFilterOptions, 'os', filterOptions.os, {$in: filterOptions.os});
+    addToOptionIf(dbFilterOptions, 'tor', filterOptions.tor, {$in: filterOptions.tor});
     addToOptionIf(dbFilterOptions, 'family', filterOptions.family, function () {
         return '$' + filterOptions.family.toUpperCase();
     });

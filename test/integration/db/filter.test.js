@@ -1,6 +1,7 @@
 /* global describe, it, before, after */
 
-var testFixture = require('../../fixtures/compass-testdata.json'),
+var speeds = require('../../../src/lib/db/onionoo-mongo/speeds'),
+    testFixture = require('../../fixtures/compass-testdata.json'),
     connection = require('../../../src/lib/db/connection'),
     filter = require('../../../src/lib/db/onionoo-mongo/filter'),
     testConfig = require('../config'),
@@ -22,10 +23,10 @@ function cleanCloseConnection(database, callback) {
     });
 }
 
-describe('database filter @db', function () {
+describe('database filter @db @imp', function () {
     before(function (done) {
         // stub request.get to return the testFixture
-        sinon.stub(request, 'get').yields(null, {
+        sinon.stub(request, 'get').yieldsAsync(null, {
             statusCode: 200
         }, JSON.stringify(testFixture));
         done();
@@ -63,6 +64,40 @@ describe('database filter @db', function () {
             }
         }).then(function (result) {
             expect(result.displayed.relays.length).to.be(0);
+            done();
+        }, function (err) {
+            done(err);
+        }).catch(function (err) {
+            done(err);
+        });
+    });
+
+    it('tests with an os filter (windows)', function (done) {
+        filter(this.collections, {
+            filter: {
+                os: ['Windows']
+            }
+        }).then(function (result) {
+            result.displayed.relays.forEach(function (relay) {
+                expect(relay.platform).to.contain('Windows');
+            });
+            done();
+        }, function (err) {
+            done(err);
+        }).catch(function (err) {
+            done(err);
+        });
+    });
+
+    it('tests with an os filter (linux)', function (done) {
+        filter(this.collections, {
+            filter: {
+                os: ['Linux']
+            }
+        }).then(function (result) {
+            result.displayed.relays.forEach(function (relay) {
+                expect(relay.platform).to.contain('Linux');
+            });
             done();
         }, function (err) {
             done(err);
@@ -115,6 +150,20 @@ describe('database filter @db', function () {
             displayAmount: 3
         }).then(function (result) {
             expect(result.displayed.relays.length).to.be(3);
+            done();
+        }).catch(function (err) {
+            done(err);
+        });
+    });
+
+    it('tests with filter exitspeed FAST_EXIT', function (done) {
+        filter(this.collections, {
+            filter: {
+                exitSpeed: 'FAST_EXIT'
+            }
+        }).then(function (result) {
+            expect(result.displayed.relays.length).to.be(1);
+            expect(result.displayed.relays[0].nickname).to.be('AkamaiTor2');
             done();
         }).catch(function (err) {
             done(err);

@@ -5,3 +5,5 @@ block content
             .text-content
                 h2.styled Please wait
                 p Globe is currently updating its onionoo dataset. This can take a while.
+                if remaining
+                    p Looking at the last update durations, it should be ready in <code>#{remaining.toFixed(0)}</code> ms.

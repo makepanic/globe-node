@@ -2,7 +2,7 @@ var bandwidth = require('../lib/onionoo/api/bandwidth'),
     uptime = require('../lib/onionoo/api/uptime'),
     clients = require('../lib/onionoo/api/clients'),
     weights = require('../lib/onionoo/api/weights'),
-    historyGraph = require('../lib/graphs/historyGraph');
+    historyGraph = require('../lib/graphs/history-graph');
 
 var GRAPH_HEIGHT = 200,
     GRAPH_WIDTH = 550;

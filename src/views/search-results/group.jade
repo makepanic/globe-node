@@ -5,5 +5,7 @@ block content
     .pure-g
         .pure-u-1
             .text-content
-                h3 Relays
+                h3 Relays<small>, grouped by #{format.groupFlagList(result.uiFlags)}</small>
+                    if result.uiFlags.hasGroupFamily
+                        i.fa.fa-info-circle(title='Because relays can be in multiple families, be aware that the result list can contain more than 100% for aggregated values (consensus weight, advertised bandwidth, ...). In addition, if you search for something, it will show all families that the result relays list.')
                 +relayCompassGroupTable(result.displayed.relays, result.notDisplayed.relays, result.uiFlags)

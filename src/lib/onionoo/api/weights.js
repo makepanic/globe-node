@@ -1,8 +1,8 @@
-var hashFingerprint = require('../util/hashFingerprint'),
+var hashFingerprint = require('../util/hash-fingerprint'),
     RSVP = require('rsvp'),
     compute3DaysPeriod = require('../util/computePeriod/3Days'),
-    processHistoryResponse = require('../util/processHistoryResponse'),
-    getJSON = require('../util/getJSON');
+    processHistoryResponse = require('../util/process-history'),
+    getJSON = require('../util/get-JSON');
 
 /**
  * Uses the onionoo api to request weight documents for a fingerprint.

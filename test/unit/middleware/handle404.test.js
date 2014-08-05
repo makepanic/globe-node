@@ -30,7 +30,7 @@ describe('handle404', function () {
 
         expect(this.status.calledWith(404)).to.be(true);
         expect(type.calledWith('txt')).to.be(true);
-        expect(this.send.calledWith('Not found')).to.be(true);
+        expect(this.send.calledWith('Resource not found')).to.be(true);
     });
 
     it('tests if it renders html if user accepts', function () {
@@ -45,7 +45,8 @@ describe('handle404', function () {
 
         expect(this.status.calledWith(404)).to.be(true);
         expect(this.render.calledWith('error', {
-            title: 404
+            title: 404,
+            msg: 'Resource not found'
         })).to.be(true);
     });
 
@@ -64,7 +65,7 @@ describe('handle404', function () {
 
         expect(this.status.calledWith(404)).to.be(true);
         expect(this.send.calledWith({
-            error: 'Not found'
+            error: 'Resource not found'
         })).to.be(true);
     });
 });

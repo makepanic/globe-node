@@ -1,0 +1,66 @@
+@import "vars";
+@import "colors";
+
+// set font for everything
+body, .pure-g [class *= "pure-u"], .pure-g-r [class *= "pure-u"] {
+    font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, sans-serif !important;
+}
+body{
+    background: $white-darker;
+}
+
+.logo {
+    background: url('#{$img-dir}/globe-logo.png') no-repeat center center;
+    width: 72px;
+    height: 21px;
+    display: block;
+
+    h1 {
+        margin: 0;
+        padding: 0;
+        text-indent: -9999px;
+
+    }
+}
+
+.center-wrapper {
+    max-width: $max-width;
+    margin: 0 auto;
+}
+
+.width-full {
+    width: 100%;
+}
+
+.content {
+    position: relative;
+}
+
+.outlet {
+    background-color: $white;
+    max-width: $max-width;
+    margin: 0 auto;
+}
+
+@media(max-width: 999px) {
+    .outlet{
+        max-width: 98%;
+    }
+}
+.fader {
+    opacity: 1;
+    transition: opacity .2s;
+
+    &.out {
+        opacity: 0;
+    }
+}
+
+.x-small {
+    font-size: 70% !important;
+}
+
+.small {
+    font-size: 80% !important;
+}
+

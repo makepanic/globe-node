@@ -1,4 +1,6 @@
 mixin relayCompassGroupTable(relays, notDisplayed, uiFlags)
+    if uiFlags.hasGroupFamily
+        h4.c-red
     table.relay-summary-list.datatable
         thead
             tr
@@ -16,12 +18,15 @@ mixin relayCompassGroupTable(relays, notDisplayed, uiFlags)
                         if requestQuery.sortBy === 'fingerprint'
                             != format.sortIndicator('numeric', normRequestQuery.sortAsc)
                 th.align-left
-                    a(href='search-compass?#{format.searchQuery(requestQuery, "as_number")}', title='sort by autonomous system')
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "as_number")}', title='sort by autonomous system (only compares as_number)')
                         | Autonomous System
                         if requestQuery.sortBy === 'as_number'
-                            != format.sortIndicator('alpha', normRequestQuery.sortAsc)
+                            if uiFlags.hasGroupAS
+                                != format.sortIndicator('alpha', normRequestQuery.sortAsc)
+                            else
+                                != format.sortIndicator('numeric', normRequestQuery.sortAsc)
                 th
-                    a(href='search-compass?#{format.searchQuery(requestQuery, "consensus_weight_fraction")}', title='consensus weights')
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "consensus_weight_fraction")}', title='sort by consensus weights')
                         | Consensus Weights
                         if requestQuery.sortBy === 'consensus_weight_fraction'
                             != format.sortIndicator('numeric', normRequestQuery.sortAsc)
@@ -45,34 +50,89 @@ mixin relayCompassGroupTable(relays, notDisplayed, uiFlags)
                         | Exit Prob.
                         if requestQuery.sortBy === 'exit_probability'
                             != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th.align-left
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "contact")}', title='sort by contact')
+                        | Contact
+                        if requestQuery.sortBy === 'contact'
+                            if uiFlags.hasGroupContact
+                                != format.sortIndicator('alpha', normRequestQuery.sortAsc)
+                            else
+                                != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th.align-left
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "family")}', title='sort by family')
+                        | Family
+                        if requestQuery.sortBy === 'family'
+                            if uiFlags.hasGroupFamily
+                                != format.sortIndicator('alpha', normRequestQuery.sortAsc)
+                            else
+                                != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "tor")}', title='sort by tor version')
+                        | Tor versions
+                        if requestQuery.sortBy === 'tor'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "os")}', title='sort by operating system')
+                        | OS
+                        if requestQuery.sortBy === 'os'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th
         if relays.length
             tbody
                 each relay in relays
                     tr
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint)
+                            p
                                 if uiFlags.hasCountryFlags
-                                    != format.flaggify(Object.keys(relay.country)[0])
+                                    != format.flaggify(relay.country[0][0])
                                 else
-                                    = Object.keys(relay.country).length
+                                    = relay.country.length
                         td
-                            a(href='/relay/'+relay.fingerprint) #{relay.fingerprints.length}
+                            p #{relay.fingerprints.length}
                         td
-                            a(href='/relay/'+relay.fingerprint)
-                                if uiFlags.hasOneASNumber
-                                    | #{Object.keys(relay.as_number)[0]} #{Object.keys(relay.as_name)[0]}
+                            p
+                                if uiFlags.hasGroupAS
+                                    if relay.as_number[0][0] === null
+                                        code no as
+                                    else
+                                        | #{relay.as_number[0][0]} #{relay.as_name[0][0]}
                                 else
-                                    | #{Object.keys(relay.as_number).length}
+                                    | #{relay.as_number.length}
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.consensus_weight_fraction, 4)}
+                            p #{format.percent(relay.consensus_weight_fraction, 4)}
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.advertised_bandwidth_fraction, 4)}
+                            p #{format.percent(relay.advertised_bandwidth_fraction, 4)}
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.guard_probability, 4)}
+                            p #{format.percent(relay.guard_probability, 4)}
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.middle_probability, 4)}
+                            p #{format.percent(relay.middle_probability, 4)}
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.exit_probability, 4)}
+                            p #{format.percent(relay.exit_probability, 4)}
+                        td
+                            p
+                                if uiFlags.hasGroupContact
+                                    if relay.contact[0][0] === null
+                                        code no contact
+                                    else
+                                        | #{relay.contact[0][0]}
+                                else
+                                    | #{relay.contact.length}
+                        td
+                            p
+                                if uiFlags.hasGroupFamily
+                                    if relay.family[0][0] === null
+                                        code no family
+                                    else
+                                        | #{relay.family[0][0]}
+                                else
+                                    | #{relay.family.length}
+                        td.align-center
+                            p #{relay.tor.length}
+                        td.align-center
+                            p #{relay.os.length}
+                        td.align-center
+                            a.hover-display(href=format.buildSearchQuery(uiFlags, relay, query), title='click to show all fingerprints in this grouped item')
+                                i.fa.fa-search
             tfoot
                 tr
                     td

@@ -1,3 +1,18 @@
+var version = require('../util/compare-version');
+var number = function (a, b) {
+    /* eslint no-else-return: 0 */
+    if (a === undefined || b === undefined) {
+        if (a === undefined && b === undefined) {
+            return 0;
+        }
+        if (a === undefined && b !== undefined) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
+    return a - b;
+};
 /**
  * Creates a sort function for numeric sorting.
  * @param {String} property Property to check while sorting
@@ -6,9 +21,9 @@
  */
 exports.numeric = function (property, asc) {
     return asc ? function (a, b) {
-        return a[property] - b[property];
+        return number(a[property], b[property]);
     } : function (a, b) {
-        return b[property] - a[property];
+        return number(b[property], a[property]);
     };
 };
 /**
@@ -19,35 +34,58 @@ exports.numeric = function (property, asc) {
  */
 exports.string = function (property, asc) {
     return asc ? function (a, b) {
-        return (a[property] || '').toLowerCase().localeCompare((b[property] || '').toLowerCase());
+        return (a[property] || '').localeCompare(b[property] || '');
     } : function (a, b) {
-        return (b[property] || '').toLowerCase().localeCompare((a[property] || '').toLowerCase());
+        return (b[property] || '').localeCompare(a[property] || '');
     };
 };
-exports.firstObjectKeyString = function (property, asc) {
+exports.firstArrayEntry = function (property, asc) {
     return asc ? function (a, b) {
-        var firstKeyA = Object.keys(a[property])[0],
-            firstKeyB = Object.keys(b[property])[0];
+        var firstKeyA = a[property],
+            firstKeyB = b[property];
 
-        return firstKeyA.toLowerCase().localeCompare(firstKeyB.toLowerCase());
+        if (!firstKeyA && !firstKeyB || !firstKeyA.length && !firstKeyB.length || firstKeyA[0][0] === null && firstKeyB[0][0] === null) {
+            return 0;
+        }
+        if (!firstKeyA && firstKeyB || !firstKeyA.length && firstKeyB.length || firstKeyA[0][0] === null && firstKeyB[0][0] !== null) {
+            return -1;
+        }
+        if (firstKeyB && !firstKeyB || firstKeyA.length && !firstKeyB.length || firstKeyA[0][0] !== null && firstKeyB[0][0] === null) {
+            return 1;
+        }
+        return firstKeyA[0][0].localeCompare(firstKeyB[0][0]);
     } : function (a, b) {
-        var firstKeyA = Object.keys(a[property])[0],
-            firstKeyB = Object.keys(b[property])[0];
-        return firstKeyB.toLowerCase().localeCompare(firstKeyA.toLowerCase());
+        var firstKeyA = a[property],
+            firstKeyB = b[property];
+
+
+        if (!firstKeyA && !firstKeyB || !firstKeyA.length && !firstKeyB.length || firstKeyA[0][0] === null && firstKeyB[0][0] === null) {
+            return 0;
+        }
+        if (!firstKeyA && firstKeyB || !firstKeyA.length && firstKeyB.length || firstKeyA[0][0] === null && firstKeyB[0][0] !== null) {
+            return 1;
+        }
+        if (firstKeyB && !firstKeyB || firstKeyA.length && !firstKeyB.length || firstKeyA[0][0] !== null && firstKeyB[0][0] === null) {
+            return -1;
+        }
+
+        return firstKeyB[0][0].localeCompare(firstKeyA[0][0]);
     };
 };
-exports.objectKeysLength = function (property, asc) {
-    return asc ? function (a, b) {
-        return Object.keys(a[property]).length - Object.keys(b[property]).length;
-    } : function (a, b) {
-        return Object.keys(b[property]).length - Object.keys(a[property]).length;
-    };
-};
 
+// Compare array length
 exports.arrayLength = function (property, asc) {
     return asc ? function (a, b) {
         return a[property].length - b[property].length;
     } : function (a, b) {
         return b[property].length - a[property].length;
+    };
+};
+
+exports.version = function (property, asc) {
+    return asc ? function (a, b) {
+        return version(a[property], b[property]);
+    } : function (a, b) {
+        return version(b[property], a[property]);
     };
 };

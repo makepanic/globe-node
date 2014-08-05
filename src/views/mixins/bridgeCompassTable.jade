@@ -1,61 +1,69 @@
-mixin bridgeCompassTable(relays, notDisplayed)
+mixin bridgeCompassTable(bridges, notDisplayed)
     table.relay-summary-list.datatable
         thead
             tr
                 th
-                th.align-left Nickname
-                th Consensus Weights
-                th Advertised Bandwidth
-                th Guard Prob.
-                th Middle Prob.
-                th Exit Prob.
+                th.align-left
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "nickname")}', title='sort by nickname')
+                        | Nickname
+                        if requestQuery.sortBy === 'nickname'
+                            != format.sortIndicator('alpha', normRequestQuery.sortAsc)
                 th.align-left Uptime
-                th Country
+                th Advertised bandwidth
+                th.align-left
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "tor")}', title='sort by Tor version')
+                        | Tor version
+                        if requestQuery.sortBy === 'tor'
+                            != format.sortIndicator('numeric', normRequestQuery.sortAsc)
+                th.align-left
+                    a(href='search-compass?#{format.searchQuery(requestQuery, "osString")}', title='sort by operating system')
+                        | OS
+                        if requestQuery.sortBy === 'osString'
+                            != format.sortIndicator('alpha', normRequestQuery.sortAsc)
                 th.align-left Flags
-        if relays.length
+                th
+                    i.fa.fa-sign-out(title='Exit')
+                th
+                    i.fa.fa-shield(title='Guard')
+        if bridges.length
             tbody
-                each relay in relays
+                each bridge in bridges
+                    - var bridgeUrl = '/bridge/' + bridge.hashed_fingerprint;
                     tr
                         td
-                            a(href='/relay/'+relay.fingerprint)
-                                if relay.running
+                            a(href=bridgeUrl)
+                                if bridge.running
                                     .d3-col.block-2(title='This relay is listed in the current Tor directory.')
                                 else
                                     .d3-col.block-3(title="This relay isn't listed in the current Tor directory.")
                         td
-                            a.nick(href='/relay/'+relay.fingerprint) #{relay.nickname}
-                        td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.consensus_weight_fraction, 4)}
-                        td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.advertised_bandwidth_fraction, 4)}
-                        td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.guard_probability, 4)}
-                        td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.middle_probability, 4)}
-                        td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.exit_probability, 4)}
+                            a.nick(href=bridgeUrl) #{bridge.nickname}
                         td
-                            if relay.running
-                                a(href='/relay/'+relay.fingerprint) !{format.uptimeShort(relay.last_restarted)}
+                            if bridge.running
+                                a(href=bridgeUrl) !{format.uptimeShort(bridge.last_restarted)}
                             else
-                                a(href='/relay/'+relay.fingerprint, title='Offline') n/a
+                                a(href=bridgeUrl, title='Offline') n/a
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) !{format.flaggify(relay.country, 4)}
+                            a(href=bridgeUrl) #{format.bandwidth(bridge.advertised_bandwidth)}
                         td
-                            a(href='/relay/'+relay.fingerprint) !{format.onionFlags(relay.flags, 4)}
+                            a(href=bridgeUrl, title='using #{bridge.client}') #{bridge.tor}
+                        td
+                            if bridge.osString
+                                a(href=bridgeUrl, title=bridge.meta ? bridge.meta : undefined) #{bridge.osString}
+                        td
+                            a(href=bridgeUrl) !{format.onionFlags(bridge.flags, 4)}
+                        td.align-center
+                            a(href=bridgeUrl)
+                                i(class="fa fa-#{~bridge.flags.indexOf('Exit') ? 'check' : 'minus'}")
+                        td.align-center
+                            a(href=bridgeUrl)
+                                i(class="fa fa-#{~bridge.flags.indexOf('Guard') ? 'check' : 'minus'}")
             tfoot
                 tr
                     td
                     td
-                        p #{notDisplayed.number} other relays
-                    td.align-center
-                        p #{format.percent(notDisplayed.consensus_weight_fraction, 4)}
-                    td.align-center
-                        p #{format.percent(notDisplayed.advertised_bandwidth_fraction, 4)}
-                    td.align-center
-                        p #{format.percent(notDisplayed.guard_probability, 4)}
-                    td.align-center
-                        p #{format.percent(notDisplayed.middle_probability, 4)}
+                        p #{notDisplayed.number} other bridges
+                    td
                     td.align-center
                         p #{format.percent(notDisplayed.exit_probability, 4)}
         else

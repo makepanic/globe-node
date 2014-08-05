@@ -1,6 +1,7 @@
 /*eslint camelcase:0, no-console:0 */
 
-var filter = require('../lib/db/onionoo-mongo/filter'),
+var logger = require('../../logger'),
+    filter = require('../lib/db/onionoo-mongo/filter'),
     group = require('../lib/db/onionoo-mongo/group'),
     speeds = require('../lib/db/onionoo-mongo/speeds');
 
@@ -47,7 +48,7 @@ function createFilterRequestFn(collections) {
                 } else {
                     var precision = 8;
 
-                    console.log('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s',
+                    logger.info('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s',
                             index + 1,
                         relay.consensus_weight_fraction.toFixed(precision),
                         relay.advertised_bandwidth_fraction.toFixed(precision),
@@ -61,7 +62,7 @@ function createFilterRequestFn(collections) {
                 }
             }
 
-            console.log(
+            logger.info(
                 'other relays',
                 notDisplayed.relays
             );
@@ -72,7 +73,7 @@ function createFilterRequestFn(collections) {
                 relays: result.relays.length
             });
         }, function (err) {
-            console.error(err);
+            logger.error(err);
         });
     };
 }
@@ -124,7 +125,7 @@ function createGroupRequestFn(collections) {
                 } else {
                     var precision = 8;
 
-                    console.log(logFormat,
+                    logger.info(logFormat,
                             index + 1,
                         relay.consensus_weight_fraction.toFixed(precision),
                         relay.advertised_bandwidth_fraction.toFixed(precision),
@@ -137,7 +138,7 @@ function createGroupRequestFn(collections) {
                 }
             }
 
-            console.log('%s\t%s\t%s\t%s\t%s\t%s\trelays: %s\trelay groups:%s',
+            logger.info('%s\t%s\t%s\t%s\t%s\t%s\trelays: %s\trelay groups:%s',
                 '',
                 notDisplayed.relays.consensus_weight_fraction.toFixed(precision),
                 notDisplayed.relays.advertised_bandwidth_fraction.toFixed(precision),

@@ -7,4 +7,5 @@ mixin clientStats(graphUrl, period, avg)
                 span.d3-col.block-0
                 = avg.averageClients
         .pure-u-2-3
-            img(src=graphUrl + '?period=' + period,alt='Relay bandwidth graph')
+            .graph-holder
+                img(src=graphUrl + '?period=' + period,alt='Relay bandwidth graph')

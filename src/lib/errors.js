@@ -1,4 +1,4 @@
-var _ = require('lodash'),
+var _ = require('lodash-node'),
     OnionooErrors = require('./onionoo/errors');
 
 module.exports = _.merge({

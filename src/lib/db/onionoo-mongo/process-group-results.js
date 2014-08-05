@@ -1,7 +1,7 @@
 /* eslint camelcase:0 */
 
 var RSVP = require('rsvp'),
-    _ = require('lodash');
+    _ = require('lodash-node');
 
 module.exports = function (filterResults) {
     if (!_.isArray(filterResults.relays)) {
@@ -30,7 +30,9 @@ module.exports = function (filterResults) {
                     advertised_bandwidth_fraction: 0,
                     guard_probability: 0,
                     middle_probability: 0,
-                    exit_probability: 0
+                    exit_probability: 0,
+                    tor: 0,
+                    os: 0
                 },
                 bridges: {}
             };

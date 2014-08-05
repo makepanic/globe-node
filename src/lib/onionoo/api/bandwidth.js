@@ -1,7 +1,7 @@
-var hashFingerprint = require('../util/hashFingerprint'),
-    processHistoryResponse = require('../util/processHistoryResponse'),
+var hashFingerprint = require('../util/hash-fingerprint'),
+    processHistoryResponse = require('../util/process-history'),
     RSVP = require('rsvp'),
-    getJSON = require('../util/getJSON');
+    getJSON = require('../util/get-JSON');
 
 /**
  * Uses the onionoo api to request bandwidth documents for a fingerprint.
@@ -9,24 +9,18 @@ var hashFingerprint = require('../util/hashFingerprint'),
  * @param {Boolean} [isHashed=false] Flag that tells the function the fingerprint is already hashed.
  * @returns {RSVP.Promise} Promise that resolves with relays and bridges bandwidth details.
  */
-module.exports = function(fingerprint, isHashed) {
-    return new RSVP.Promise(function(resolve, reject){
-        var hashedFingerprint = fingerprint;
+module.exports = function (fingerprint, isHashed) {
+    var hashedFingerprint = fingerprint;
 
-        if (!isHashed) {
-            try {
-                hashedFingerprint = hashFingerprint(fingerprint);
-            } catch (hashErr) {
-                reject(hashErr);
-            }
-        }
-        hashedFingerprint = hashedFingerprint.toUpperCase();
+    if (!isHashed) {
+        hashedFingerprint = hashFingerprint(fingerprint);
+    }
+    hashedFingerprint = hashedFingerprint.toUpperCase();
 
-        getJSON('bandwidth?lookup=' + hashedFingerprint).then(function(result){
-            resolve(processHistoryResponse({
-                readHistory: 'read_history',
-                writeHistory: 'write_history'
-            }, result));
-        });
+    return getJSON('bandwidth?lookup=' + hashedFingerprint).then(function (result) {
+        return processHistoryResponse({
+            readHistory: 'read_history',
+            writeHistory: 'write_history'
+        }, result);
     });
 };

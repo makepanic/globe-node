@@ -12,11 +12,16 @@ describe('normalize-query', function () {
     });
 
     it('tests the normalizer', function () {
-        var middleware = normalizeQuery({
+        var empties = {arr1: [1,2,3], arr2: [4,5,6]},
+            middleware = normalizeQuery({
                 checkbox: ['checkOn', 'checkOff', 'checkMisc'],
                 boolean: ['strBoolTrue', 'strBoolFalse', 'boolTrue', 'boolFalse', 'boolMisc'],
                 empty: ['filledField', 'emptyField', 'miscField'],
-                integer: ['int1', 'int2', 'intStr', 'intMisc']
+                integer: ['int1', 'int2', 'intStr', 'intMisc'],
+                array: [
+                    {param: 'arr1', defaultsTo: empties.arr1},
+                    {param: 'arr2', defaultsTo: empties.arr2}
+                ]
             }),
             req = {
                 query: {
@@ -30,7 +35,8 @@ describe('normalize-query', function () {
                     emptyField: '',
                     int1: '10',
                     int2: '-10',
-                    intStr: 'foobar'
+                    intStr: 'foobar',
+                    arr1: []
                 }
             };
 
@@ -54,6 +60,9 @@ describe('normalize-query', function () {
         expect(req.normQuery.int2).to.be(-10);
         expect(req.normQuery.intStr).to.be(null);
         expect(req.normQuery.intMisc).to.be(null);
+
+        expect(req.normQuery.arr1).to.eql([1,2,3]);
+        expect(req.normQuery.arr2).to.eql([4,5,6]);
 
         expect(this.next.called).to.be(true);
     });

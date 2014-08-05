@@ -1,6 +1,6 @@
 var defaults = require('../defaults'),
     moment = require('moment').utc,
-    _ = require('lodash');
+    _ = require('lodash-node');
 
 exports.details = function(result){
     var details = {

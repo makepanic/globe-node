@@ -1,13 +1,13 @@
-var hashFingerprint = require('../util/hashFingerprint'),
+var hashFingerprint = require('../util/hash-fingerprint'),
     normalize = require('./../util/normalize'),
     RSVP = require('rsvp'),
-    getJSON = require('../util/getJSON');
+    getJSON = require('../util/get-JSON');
 
 /**
  * Uses the onionoo api to lookup detail documents for a fingerprint.
- * @param {String} fingerprint Fingerprint.
- * @param {Boolean} [isHashed=false] Flag that tells the function the fingerprint is already hashed.
- * @returns {RSVP.Promise} Promise that resolves with found relay and bridge.
+ * @param {String} fingerprint Fingerprint to lookup
+ * @param {Boolean} isHashed Flag if the fingerprint is already hashed
+ * @return {rsvp$umd$$RSVP.Promise} Promise that resolves with the lookup result
  */
 module.exports = function(fingerprint, isHashed) {
     return new RSVP.Promise(function(resolve, reject){

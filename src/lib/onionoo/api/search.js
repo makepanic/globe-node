@@ -1,8 +1,8 @@
 var RSVP = require('rsvp'),
-    _ = require('lodash'),
-    getJSON = require('../util/getJSON'),
-    is40CharHex = require('../util/is40CharHex'),
-    hashFingerprint = require('../util/hashFingerprint'),
+    _ = require('lodash-node'),
+    getJSON = require('../util/get-JSON'),
+    is40CharHex = require('../util/is-fingerprint'),
+    hashFingerprint = require('../util/hash-fingerprint'),
     normalize = require('./../util/normalize');
 
 module.exports = function(options){

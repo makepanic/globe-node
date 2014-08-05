@@ -1,15 +1,34 @@
 /* eslint no-console:0 */
 
-var MongoClient = require('mongodb').MongoClient,
+var logger = require('../../../logger'),
+    MongoClient = require('mongodb').MongoClient,
     RSVP = require('rsvp'),
-    getJSON = require('../onionoo/util/getJSON'),
+    globalData = require('../global-data'),
+    getJSON = require('../onionoo/util/get-JSON'),
+    parsePlatform = require('../util/parse-platform'),
     conf = require('../../../config'),
-    assert = require('assert');
+    assert = require('assert'),
+    _ = require('lodash-node'),
+    retry = require('qretry');
 
 var locked = false,
     database = null,
-    collections = {};
+    collections = {},
+    currentUpdateStarted = -1,
+    updateDurations = [];
 
+function remainingUpdateDuration() {
+    if (updateDurations.length === 0) {
+        // return 0 if no duration was stored (initial update)
+        return 0;
+    }
+    var allDurations = _.reduce(updateDurations, function (sum, duration) {
+            return sum + duration;
+        }),
+        avgDuration = allDurations / updateDurations.length;
+
+    return avgDuration - (Date.now() - currentUpdateStarted);
+}
 
 /**
  * Function that indicates if the database is locked for access
@@ -24,7 +43,7 @@ function isLocked() {
  */
 function lock() {
     locked = true;
-    console.log('db locked');
+    logger.info('db locked');
 }
 /**
  * Function that allows to "unlock" the database
@@ -32,7 +51,7 @@ function lock() {
  */
 function unlock() {
     locked = false;
-    console.log('db unlocked');
+    logger.info('db unlocked');
 }
 
 /**
@@ -40,12 +59,26 @@ function unlock() {
  * @return {*} Promise that resolves after all collections are "cleared"
  */
 function clearCollections() {
-    console.log('removing old collections');
-
     return RSVP.all([
         RSVP.denodeify(collections.relays.remove.bind(collections.relays))(),
         RSVP.denodeify(collections.bridges.remove.bind(collections.bridges))()
     ]);
+}
+
+function isReadyToClearAndInsert() {
+    return new RSVP.Promise(function (resolve, reject) {
+        database.collection('$cmd.sys.inprog').findOne(function (err, data) {
+            if (err) {
+                throw err;
+            }
+            if (data.inprog.length) {
+                // reject if there are any running commands
+                reject();
+            } else {
+                resolve();
+            }
+        });
+    });
 }
 
 /**
@@ -54,70 +87,169 @@ function clearCollections() {
  */
 function reloadData() {
     return new RSVP.Promise(function (resolve, reject) {
-        console.log('Downloading details dump from onionoo. ' +
+        assert(!!database, 'To reload data the database has to exist');
+
+        var downloadStarted = Date.now();
+        logger.info('Downloading details dump from onionoo. ' +
             'This could take a while, depending on your internet connection.');
 
         // load onionoo data
         getJSON('details').then(function (result) {
-            console.log('Download completed.');
+            // store time before dataset update
+            currentUpdateStarted = Date.now();
 
-            // lock database before sync
+            // add current download duration
+            logger.info('Download finished. Took %s ms', Date.now() - downloadStarted);
+
+            // set lock flag before sync
             lock();
 
-            // remove old collection if exists
-            clearCollections().then(function () {
-                var //result = dump,
-                    insertPromises = [];
+            retry(isReadyToClearAndInsert).then(function () {
 
-                // prepare data for easier later queries
-                result.relays.forEach(function (relay) {
-                    var target = relay.exit_policy_summary.accept ? 'accept' : 'reject';
+                // check if any
+                // remove old collection if exists
+                clearCollections().then(function () {
+                    var //result = dump,
+                        insertPromises = [],
+                        osMap = {},
+                        versions = {};
 
-                    relay.exit_policy_summary['_' + target] = [];
-                    relay.exit_policy_summary['_' + target + '_range'] = [];
+                    // prepare data for easier later queries
+                    // result.relays.forEach(function(relay){
+                    for (var relayIndex = 0; relayIndex < result.relays.length; relayIndex++) {
+                        /* eslint camelcase:0 */
+                        var relay = result.relays[relayIndex],
+                            target = relay.exit_policy_summary.accept ? 'accept' : 'reject';
 
-                    relay.exit_policy_summary[target].forEach(function (portRange) {
-                        var range = portRange.split('-');
+                        // extract os
+                        if (relay.platform) {
+                            try {
+                                var parsedPlatform = parsePlatform(relay.platform);
+                                relay.tor = parsedPlatform.tor;
+                                relay.git = parsedPlatform.git;
+                                relay.meta = parsedPlatform.meta;
+                                relay.arch = parsedPlatform.arch;
+                                relay.os = parsedPlatform.os;
+                                relay.version = parsedPlatform.version;
+                                relay.client = parsedPlatform.client;
+                                relay.osString = parsedPlatform.osString;
 
-                        if (range.length === 2) {
-                            // is port range
-                            var start = parseInt(range[0], 10),
-                                end = parseInt(range[1], 10);
+                                // add array with null for group by family
+                                relay.family = relay.family ? relay.family : [null];
+                                // add null if no contact for group by contact
+                                relay.contact = relay.contact ? relay.contact : null;
+                                // add null if no contact for group by contact
+                                relay.country = relay.country ? relay.country : null;
+                                // add null if no contact for group by contact
+                                relay.as_number = relay.as_number ? relay.as_number : null;
 
-                            relay.exit_policy_summary['_' + target + '_range'].push({
-                                start: start,
-                                end: end
-                            });
-                        } else {
-                            relay.exit_policy_summary['_' + target].push(parseInt(portRange, 10));
+                                osMap[relay.os] = osMap[relay.os] >= 0 ? osMap[relay.os] + 1 : 1;
+                                versions[relay.tor] = versions[relay.tor] >= 0 ? versions[relay.tor] + 1 : 1;
+                            } catch (e) {
+                                logger.info(relay.nickname, e.message);
+                            }
                         }
+
+                        relay.exit_policy_summary['_' + target] = [];
+                        relay.exit_policy_summary['_' + target + '_range'] = [];
+
+                        for (var portRangeIndex = 0; portRangeIndex < relay.exit_policy_summary[target].length; portRangeIndex++) {
+                            var portRange = relay.exit_policy_summary[target][portRangeIndex],
+                                range = portRange.split('-');
+
+                            if (range.length === 2) {
+                                // is port range
+                                var start = parseInt(range[0], 10),
+                                    end = parseInt(range[1], 10);
+
+                                relay.exit_policy_summary['_' + target + '_range'].push({
+                                    start: start,
+                                    end: end
+                                });
+                            } else {
+                                relay.exit_policy_summary['_' + target].push(parseInt(portRange, 10));
+                            }
+                        }
+                    }
+
+                    // result.bridges.forEach(function(bridge)
+                    for (var bridgeIndex = 0; bridgeIndex < result.bridges.length; bridgeIndex++) {
+                        var bridge = result.bridges[bridgeIndex];
+                        if (bridge.platform) {
+                            try {
+                                var parsedBridgePlatform = parsePlatform(bridge.platform);
+                                bridge.tor = parsedBridgePlatform.tor;
+                                bridge.git = parsedBridgePlatform.git;
+                                bridge.meta = parsedBridgePlatform.meta;
+                                bridge.arch = parsedBridgePlatform.arch;
+                                bridge.os = parsedBridgePlatform.os;
+                                bridge.version = parsedBridgePlatform.version;
+                                bridge.client = parsedBridgePlatform.client;
+                                bridge.osString = parsedBridgePlatform.osString;
+
+                                osMap[relay.os] = osMap[relay.os] >= 0 ? osMap[relay.os] + 1 : 1;
+                                versions[relay.tor] = versions[relay.tor] >= 0 ? versions[relay.tor] + 1 : 1;
+                            } catch (e) {
+                                logger.warn(e.message);
+                            }
+                        }
+
+                    }
+
+
+                    var valNumMapFn = function (result, value, key) {
+                            result.push({val: key, num: value});
+                        },
+                        mapFn = function (obj) {
+                            return obj.val;
+                        }, sortFn = function (a, b) {
+                            return b.num - a.num;
+                        };
+
+                    globalData.search.os = _.transform(osMap, valNumMapFn, []).sort(sortFn).map(mapFn);
+                    globalData.search.tor = _.transform(versions, valNumMapFn, []).sort(sortFn).map(mapFn);
+
+                    logger.info('overwrote available os:', JSON.stringify(globalData.search.os));
+                    logger.info('overwrote available tor versions:', JSON.stringify(globalData.search.tor));
+
+                    if (result.relays.length) {
+                        insertPromises.push(RSVP.denodeify(collections.relays.insert.bind(collections.relays))(result.relays, {}));
+                    }
+                    if (result.bridges.length) {
+                        insertPromises.push(RSVP.denodeify(collections.bridges.insert.bind(collections.bridges))(result.bridges, {}));
+                    }
+
+                    RSVP.all(insertPromises).then(function () {
+                        // unlock database after sync
+                        unlock();
+
+                        updateDurations.push(Date.now() - currentUpdateStarted);
+                        if (updateDurations.length > 10) {
+                            // remove oldest value from array if length > 10
+                            updateDurations.splice(0, 1);
+                        }
+                        currentUpdateStarted = -1;
+                        // log update durations
+                        logger.info('Download finished. Took %s ms', updateDurations[updateDurations.length - 1]);
+
+                        // resolve with database and created collection
+                        resolve();
+
+                    }, function (err) {
+                        logger.info(err.message);
+                        reject(err);
                     });
-                });
-
-                if (result.relays.length) {
-                    insertPromises.push(RSVP.denodeify(collections.relays.insert.bind(collections.relays))(result.relays, {}));
-                }
-                if (result.bridges.length) {
-                    insertPromises.push(RSVP.denodeify(collections.bridges.insert.bind(collections.bridges))(result.bridges, {}));
-                }
-
-                RSVP.all(insertPromises).then(function () {
-                    console.log('Insert completed.');
-
-                    // unlock database after sync
-                    unlock();
-
-                    // resolve with database and created collection
-                    resolve();
-
                 }, function (err) {
+                    logger.warn(err.message);
                     reject(err);
                 });
             }, function (err) {
+                logger.warn(err.message);
                 reject(err);
             });
+
         }, function (err) {
-            console.error(err);
+            logger.error(err.message);
             reject(err);
         });
     });
@@ -137,12 +269,12 @@ function init(opts) {
     assert(typeof dbUrl === 'string', 'Expected a database url.');
 
     return new RSVP.Promise(function (resolve, reject) {
-        console.log('connecting to mongodb');
+        logger.info('connecting to mongodb');
 
         // connect to db
         MongoClient.connect(dbUrl, function (err, db) {
             if (err) {
-                console.error(err);
+                logger.error(err);
                 reject(err);
             } else {
                 database = db;
@@ -187,9 +319,7 @@ function init(opts) {
  * @return {void}
  */
 function initSyncTask() {
-    console.log('init sync task');
     setTimeout(function syncTimeout() {
-        console.log('initSyncTask reload Data');
         reloadData().then(function () {
             initSyncTask();
         });
@@ -197,9 +327,11 @@ function initSyncTask() {
 }
 
 module.exports = {
+    remainingUpdateDuration: remainingUpdateDuration,
     init: init,
     initSyncTask: initSyncTask,
     lock: lock,
     unlock: unlock,
-    isLocked: isLocked
+    isLocked: isLocked,
+    reloadData: reloadData
 };

@@ -123,5 +123,4 @@ exports.searchAlreadyHashed = function(req, res){
         };
         res.render('search', data);
     });
-
 };

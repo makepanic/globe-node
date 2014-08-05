@@ -1,7 +1,7 @@
 /* eslint camelcase:0, no-underscore-dangle: 0 */
 
 var RSVP = require('rsvp'),
-    _ = require('lodash');
+    _ = require('lodash-node');
 
 module.exports = function (filterResults) {
     if (!_.isArray(filterResults.relays)) {
@@ -18,6 +18,7 @@ module.exports = function (filterResults) {
 
     return new RSVP.Promise(function (resolve) {
         var relay,
+            bridge,
             displayed = {
                 relays: [],
                 bridges: []
@@ -32,11 +33,14 @@ module.exports = function (filterResults) {
                     middle_probability: 0,
                     exit_probability: 0
                 },
-                bridges: {}
+                bridges: {
+                    number: 0,
+                    advertised_bandwidth: 0
+                }
             };
 
         if (displayLimit <= 0) {
-            displayLimit = filterResults.relays.length;
+            displayLimit = Math.max(filterResults.relays.length, filterResults.bridges.length);
         }
 
         function canAdd(val) {
@@ -65,6 +69,17 @@ module.exports = function (filterResults) {
                 notDisplayed.relays.exit_probability += canAdd(relay.exit_probability) ? relay.exit_probability : 0;
             } else {
                 displayed.relays.push(relay);
+            }
+        }
+
+        for (var bridgeIndex = 0; bridgeIndex < filterResults.bridges.length; bridgeIndex++) {
+            bridge = filterResults.bridges[bridgeIndex];
+
+            if (bridgeIndex >= displayLimit) {
+                notDisplayed.bridges.number++;
+                notDisplayed.bridges.advertised_bandwidth += canAdd(bridge.advertised_bandwidth) ? bridge.advertised_bandwidth : 0;
+            } else {
+                displayed.bridges.push(bridge);
             }
         }
 

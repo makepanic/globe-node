@@ -21,4 +21,16 @@ describe('search query test', function () {
             sortAsc: true
         }, 'nickname')).to.be('sortBy=nickname&nickname=foo&sortAsc=false');
     });
+    it('tests for tor array values', function () {
+        expect(searchQuery({
+            tor: ['0.1.0', '0.1.1', '0.2.0'],
+            nickname: 'foo'
+        }, 'fingerprint')).to.be('nickname=foo&sortBy=fingerprint&sortAsc=false&tor%5B%5D=0.1.0&tor%5B%5D=0.1.1&tor%5B%5D=0.2.0');
+    });
+    it('tests for os array values', function () {
+        expect(searchQuery({
+            os: ['Windows', 'Linux', 'OpenBSD'],
+            nickname: 'foo'
+        }, 'fingerprint')).to.be('nickname=foo&sortBy=fingerprint&sortAsc=false&os%5B%5D=Windows&os%5B%5D=Linux&os%5B%5D=OpenBSD');
+    });
 });

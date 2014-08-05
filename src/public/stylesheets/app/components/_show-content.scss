@@ -1,0 +1,13 @@
+@import "../colors";
+
+.show-container{
+  .show-content{
+    display: none;
+  }
+  & > input[type=checkbox]{
+    display: none;
+    &:checked ~ .show-content{
+      display: block;
+    }
+  }
+}

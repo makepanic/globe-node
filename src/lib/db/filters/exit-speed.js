@@ -1,6 +1,5 @@
-var range = require('../../util/range'),
-    assert = require('assert'),
-    _ = require('lodash');
+var assert = require('assert'),
+    _ = require('lodash-node');
 
 module.exports = function (items, requiredPorts) {
     assert(_.isArray(items), 'ExitSpeedFilter needs items array');
@@ -16,9 +15,9 @@ module.exports = function (items, requiredPorts) {
             filteredObjects = [];
 
         // create array with all ports
-        portRanges.forEach(function (portRange) {
-            ports = ports.concat(range(portRange.start, portRange.end + 1));
-        });
+        for (var prI = 0, prLength = portRanges.length; prI < prLength; prI++) {
+            ports = ports.concat(_.range(portRanges[prI].start, portRanges[prI].end + 1));
+        }
 
         // create "hashmap" for easier issubset equivalent
         portsObj = ports.reduce(function (acc, key) {

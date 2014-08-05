@@ -7,9 +7,9 @@ describe('create-sort-fn', function () {
     var createSortFn = require('../../../src/lib/util/create-sort-fn');
     var numeric = createSortFn.numeric,
         string = createSortFn.string,
-        firstObjectKeyString = createSortFn.firstObjectKeyString,
-        objectKeysLength = createSortFn.objectKeysLength,
-        arrayLength = createSortFn.arrayLength;
+        firstArrayEntry = createSortFn.firstArrayEntry,
+        arrayLength = createSortFn.arrayLength,
+        version = createSortFn.version;
 
     describe('numeric', function () {
         it('test ascending sort function', function () {
@@ -37,11 +37,12 @@ describe('create-sort-fn', function () {
                     {middle_probability: 0.029267732},
                     {middle_probability: 0.0076508727},
                     {middle_probability: 0.008124595},
-                    {middle_probability: 0},
+                    {middle_probability: undefined},
                     {middle_probability: 0.013642281},
                     {middle_probability: 0.010691774},
                     {middle_probability: 0.012074938},
                     {middle_probability: 0.01073874},
+                    {middle_probability: undefined},
                     {middle_probability: 0.008908265},
                     {middle_probability: 0.007468869}
                 ],
@@ -57,7 +58,8 @@ describe('create-sort-fn', function () {
                 {middle_probability: 0.008124595},
                 {middle_probability: 0.0076508727},
                 {middle_probability: 0.007468869},
-                {middle_probability: 0}
+                {middle_probability: undefined},
+                {middle_probability: undefined}
             ]);
         });
     });
@@ -105,52 +107,79 @@ describe('create-sort-fn', function () {
         });
     });
 
-    describe('firstObjectKeyString', function () {
+    describe('firstArrayEntry', function () {
         it('test ascending sort function', function () {
-            var sortObjs = [{
-                    country: {
-                        de: 1
+            var sortObjs = [
+                    {
+                        country: [
+                            ['de', 1]
+                        ]
+                    },
+                    {
+                        country: [
+                            [null, 20]
+                        ]},
+                    {
+                        country: [
+                            ['en', 22]
+                        ]
                     }
-                },{
-                    country: {
-                        en: 22
-                    }
-                }],
-                sortFn = firstObjectKeyString('country', true);
+                ],
+                sortFn = firstArrayEntry('country', true);
 
             expect(sortObjs.sort(sortFn)).to.eql([
                 {
-                    country: {
-                        de: 1
-                    }
-                },{
-                    country: {
-                        en: 22
-                    }
+                    country: [
+                        [null, 20]
+                    ]
+                },
+                {
+                    country: [
+                        ['de', 1]
+                    ]
+                },
+                {
+                    country: [
+                        ['en', 22]
+                    ]
                 }
             ]);
         });
         it('test descending sort function', function () {
-            var sortObjs = [{
-                    country: {
-                        de: 1
+            var sortObjs = [
+                    {
+                        country: [
+                            ['de', 1]
+                        ]
+                    },
+                    {
+                        country: [
+                            [null, 200]
+                        ]
+                    },
+                    {
+                        country: [
+                            ['en', 22]
+                        ]
                     }
-                },{
-                    country: {
-                        en: 22
-                    }
-                }],
-                sortFn = firstObjectKeyString('country', false);
+                ],
+                sortFn = firstArrayEntry('country', false);
 
             expect(sortObjs.sort(sortFn)).to.eql([
                 {
-                    country: {
-                        en: 22
-                    }
-                },{
-                    country: {
-                        de: 1
-                    }
+                    country: [
+                        ['en', 22]
+                    ]
+                },
+                {
+                    country: [
+                        ['de', 1]
+                    ]
+                },
+                {
+                    country: [
+                        [null, 200]
+                    ]
                 }
             ]);
         });
@@ -158,90 +187,156 @@ describe('create-sort-fn', function () {
 
     describe('objectKeysLength', function () {
         it('test ascending sort function', function () {
-            var sortObjs = [{
-                    country: {
-                        de: 21,
-                        uk: 2
+            var sortObjs = [
+                    {
+                        country: [
+                            ['de', 21],
+                            ['uk', 2]
+                        ]
+                    },
+                    {
+                        country: [
+                            ['uk', 22],
+                            ['it', 1],
+                            ['fr', 2]
+                        ]
                     }
-                },{
-                    country: {
-                        uk: 22,
-                        it: 1,
-                        fr: 2
-                    }
-                }],
-                sortFn = objectKeysLength('country', true);
+                ],
+                sortFn = arrayLength('country', true);
 
-            expect(sortObjs.sort(sortFn)).to.eql([{
-                country: {
-                    de: 21,
-                    uk: 2
+            expect(sortObjs.sort(sortFn)).to.eql([
+                {
+                    country: [
+                        ['de', 21],
+                        ['uk', 2]
+                    ]
+                },
+                {
+                    country: [
+                        ['uk', 22],
+                        ['it', 1],
+                        ['fr', 2]
+                    ]
                 }
-            },{
-                country: {
-                    uk: 22,
-                    it: 1,
-                    fr: 2
-                }
-            }]);
+            ]);
         });
         it('test descending sort function', function () {
-            var sortObjs = [{
-                    country: {
-                        de: 21,
-                        uk: 2
+            var sortObjs = [
+                    {
+                        country: [
+                            ['de', 21],
+                            ['uk', 2]
+                        ]
+                    },
+                    {
+                        country: [
+                            ['uk', 22],
+                            ['it', 1],
+                            ['fr', 2]
+                        ]
                     }
-                },{
-                    country: {
-                        uk: 22,
-                        it: 1,
-                        fr: 2
-                    }
-                }],
-                sortFn = objectKeysLength('country', false);
+                ],
+                sortFn = arrayLength('country', false);
 
-            expect(sortObjs.sort(sortFn)).to.eql([{
-                country: {
-                    uk: 22,
-                    it: 1,
-                    fr: 2
+            expect(sortObjs.sort(sortFn)).to.eql([
+                {
+                    country: [
+                        ['uk', 22],
+                        ['it', 1],
+                        ['fr', 2]
+                    ]
+                },
+                {
+                    country: [
+                        ['de', 21],
+                        ['uk', 2]
+                    ]
                 }
-            },{
-                country: {
-                    de: 21,
-                    uk: 2
-                }
-            }]);
+            ]);
         });
     });
     describe('arrayLength', function () {
         it('test ascending sort function', function () {
-            var sortObjs = [{
-                    fingerprints: [1,2,3]
-                },{
-                    fingerprints: [1]
-                }],
+            var sortObjs = [
+                    {
+                        fingerprints: [1, 2, 3]
+                    },
+                    {
+                        fingerprints: [1]
+                    }
+                ],
                 sortFn = arrayLength('fingerprints', true);
 
-            expect(sortObjs.sort(sortFn)).to.eql([{
-                fingerprints: [1]
-            },{
-                fingerprints: [1,2,3]
-            }]);
+            expect(sortObjs.sort(sortFn)).to.eql([
+                {
+                    fingerprints: [1]
+                },
+                {
+                    fingerprints: [1, 2, 3]
+                }
+            ]);
         });
         it('test descending sort function', function () {
-            var sortObjs = [{
-                    fingerprints: [1,2,3]
-                },{
-                    fingerprints: [1]
-                }],
+            var sortObjs = [
+                    {
+                        fingerprints: [1, 2, 3]
+                    },
+                    {
+                        fingerprints: [1]
+                    }
+                ],
                 sortFn = arrayLength('fingerprints', false);
 
-            expect(sortObjs.sort(sortFn)).to.eql([{
-                fingerprints: [1,2,3]
-            },{
-                fingerprints: [1]
-            }]);
+            expect(sortObjs.sort(sortFn)).to.eql([
+                {
+                    fingerprints: [1, 2, 3]
+                },
+                {
+                    fingerprints: [1]
+                }
+            ]);
+        });
+    });
+    describe('version', function () {
+        it('tests ascending sort function', function () {
+            var sortObjs = [
+                    {
+                        version: '1.1.0.0'
+                    },
+                    {
+                        version: '1.0.0.0'
+                    }
+                ],
+                sortFn = version('version', false);
+
+            expect(sortObjs.sort(sortFn)).to.eql([
+                {
+                    version: '1.1.0.0'
+                },
+                {
+                    version: '1.0.0.0'
+                }
+            ]);
+        });
+        it('tests descending sort function', function () {
+            var sortObjs = [
+                    {
+                        version: '1.1.0.0'
+                    },
+                    {
+                        version: '1.0.0.0'
+                    }
+                ],
+                sortFn = version('version', true);
+
+            expect(sortObjs.sort(sortFn)).to.eql([
+                {
+                    version: '1.0.0.0'
+                },
+                {
+                    version: '1.1.0.0'
+                }
+            ]);
         });
     });
 });

@@ -32,31 +32,25 @@ Sets the port where the application server should listen for requests
 
 __database url__ (`-db mongodb://localhost:27017/onionoo` or `--dburl mongodb://localhost:27017/onionoo`)
 
-*default is `mongodb://localhost:27017/onionoo`* 
+*default is `mongodb://localhost:27017/onionoo`*
 
 Sets the mongodb database url.
 
-##Grunt
+##Gulp
 
-__default__ (`grunt`)
+Gulp is used as the build system for globe. It builds all static assets (compress, concat, ...) and runs some tests.
 
-- runs tests, linting and generates coverage
+__default__ (`gulp`)
 
-__dev__ (`grunt dev`)
+- run tests, lint code, generate code coverage
+- build all assets
 
-like `default`
+__dev__ (`gulp dev`)
 
-- tests using [`dot` reporter](https://visionmedia.github.io/mocha/#dot-matrix-reporter)
-- watches for code changes and reruns linting, tests and uses livereload to refresh the browser
+- watch for code changes and rerun:
+- build all assets
 
-__test__ (`grunt test`)
+__test__ (`gulp test`, `gulp test-no-db`)
 
-like `default`
-
-- tests using [TAP](https://en.wikipedia.org/wiki/Test_Anything_Protocol) reporter
-
-__test (no database)__ (`grunt test-no-db`)
-
-like `test`
-
-- skips test tagged with `@db`
+- run tests, lint code, generate code coverage
+- `test-no-db` won't run tests that are tagged with `@db` (useful if you don't have `mongod` running)

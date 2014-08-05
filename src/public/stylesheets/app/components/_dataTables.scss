@@ -1,0 +1,88 @@
+@import "../colors";
+@import "../vars";
+
+.datatable {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    width: 100%;
+    font-size: 14px;
+    color: #222;
+
+    .d3-col {
+        margin: 0 2px;
+    }
+
+    .nick {
+        font-size: 15px;
+        color: black;
+    }
+
+    th, td {
+        a, p{
+            display: block;
+            padding: 10px 5px;
+            text-decoration: none;
+            color: inherit;
+            margin: 0;
+        }
+    }
+
+    td {
+        padding: 0;
+        // td that doesn't contain an anchor that uses padding
+        &.no-a {
+            padding: 10px 0px;
+        }
+    }
+
+    thead {
+        th {
+            text-align: center;
+            padding: 10px 5px;
+            a{
+            }
+        }
+    }
+    tbody {
+        .hover-display{
+            opacity: 0;
+            transition: opacity .2s;
+        }
+        tr {
+            border-bottom: 1px solid $grey;
+            a{
+                cursor: pointer;
+            }
+            &:hover {
+                .nick, td, .fa {
+                    color: $black-darker;
+                }
+                td {
+                    background: $white-darker;
+                }
+                .hover-display{
+                    opacity: 1;
+                }
+            }
+        }
+    }
+    .fa {
+        margin-right: 4px;
+        color: $black;
+        &.fa-minus{
+            color: $grey-darkest;
+        }
+    }
+
+    .empty {
+        text-align: center;
+        color: $red;
+    }
+}
+
+@media (max-width: 999px) {
+    .datatable{
+        width: 100%;
+        font-size: 13px;
+    }
+}

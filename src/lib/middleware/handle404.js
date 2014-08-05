@@ -6,7 +6,8 @@ module.exports = function () {
         // respond with html page
         if (req.accepts('html')) {
             res.render('error', {
-                title: 404
+                title: 404,
+                msg: 'Resource not found'
             });
             return;
         }
@@ -14,12 +15,12 @@ module.exports = function () {
         // respond with json
         if (req.accepts('json')) {
             res.send({
-                error: 'Not found'
+                error: 'Resource not found'
             });
             return;
         }
 
         // default to plain-text. send()
-        res.type('txt').send('Not found');
+        res.type('txt').send('Resource not found');
     };
 };

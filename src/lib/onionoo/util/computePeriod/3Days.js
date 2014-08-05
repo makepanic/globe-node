@@ -1,4 +1,4 @@
-var historyValuesFromNowUntil = require('../historyValuesFromNowUntil');
+var historyValuesFromNowUntil = require('../history-now-until');
 var DAY = 1000 * 60 * 60 * 24;
 
 module.exports = function(processedHistoryResponse){

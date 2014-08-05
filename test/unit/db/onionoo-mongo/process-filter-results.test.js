@@ -25,7 +25,10 @@ describe('process-filter-results', function () {
                         middle_probability: 0,
                         exit_probability: 0
                     },
-                    bridges: {}
+                    bridges: {
+                        number: 0,
+                        advertised_bandwidth: 0
+                    }
                 },
                 displayed: {
                     relays: [],
@@ -37,6 +40,5 @@ describe('process-filter-results', function () {
             expect(failHandler.called).to.be(false);
             done();
         }, failHandler);
-
     });
 });

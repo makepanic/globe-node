@@ -29,4 +29,16 @@ describe('render-if', function () {
         expect(renderSpy.called).to.be(false);
         expect(nextSpy.called).to.be(true);
     });
+    it('tests that a data function is called', function () {
+        var dataSpy = sinon.spy(),
+            nextSpy = sinon.spy(),
+            renderSpy = sinon.spy(),
+            renderTrue = renderIf(sinon.stub().returns(true), VIEW_NAME, dataSpy);
+
+        renderTrue(null, {
+            render: renderSpy
+        }, nextSpy);
+
+        expect(dataSpy.called).to.be(true);
+    });
 });

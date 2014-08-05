@@ -18,12 +18,12 @@ describe('create-mongo-filter', function () {
         })).to.eql({});
     });
 
-    it('tests with an inactive filter', function () {
+    it('tests with an running filter', function () {
         expect(createMongoFilter({
-            inactive: false
+            running: false
         })).to.eql({
-            running: true
-        });
+                running: false
+            });
     });
 
     describe('exitSpeed', function () {
@@ -31,28 +31,28 @@ describe('create-mongo-filter', function () {
             expect(createMongoFilter({
                 exitSpeed: speed.FAST_EXIT
             })).to.eql({
-                advertised_bandwidth: {
-                    $gt: 5120000
-                },
-                bandwidth_rate: {
-                    $gt: 12160000
-                }
-            });
+                    advertised_bandwidth: {
+                        $gt: 5120000
+                    },
+                    bandwidth_rate: {
+                        $gt: 12160000
+                    }
+                });
         });
 
         it('tests with an exitSpeed ALMOST_FAST_EXIT filter', function () {
             expect(createMongoFilter({
                 exitSpeed: speed.ALMOST_FAST_EXIT
             })).to.eql({
-                advertised_bandwidth: {
-                    $gt: 2048000,
-                    $lt: 5120000
-                },
-                bandwidth_rate: {
-                    $gt: 10240000,
-                    $lt: 12160000
-                }
-            });
+                    advertised_bandwidth: {
+                        $gt: 2048000,
+                        $lt: 5120000
+                    },
+                    bandwidth_rate: {
+                        $gt: 10240000,
+                        $lt: 12160000
+                    }
+                });
         });
     });
 
@@ -60,22 +60,22 @@ describe('create-mongo-filter', function () {
         expect(createMongoFilter({
             country: 'de'
         })).to.eql({
-            country: 'de'
-        });
+                country: 'de'
+            });
 
         expect(createMongoFilter({
             as: '123'
         })).to.eql({
-            as_number: '123'
-        });
+                as_number: '123'
+            });
 
         expect(createMongoFilter({
             exit: true
         })).to.eql({
-            exit_probability: {
-                $gt: 0
-            }
-        });
+                exit_probability: {
+                    $gt: 0
+                }
+            });
 
         expect(createMongoFilter({
             exit: null
@@ -84,7 +84,38 @@ describe('create-mongo-filter', function () {
         expect(createMongoFilter({
             family: '0000000000000000000000000000000000000000'
         })).to.eql({
-            family: '$0000000000000000000000000000000000000000'
+                family: '$0000000000000000000000000000000000000000'
+            });
+    });
+
+    it('tests query', function () {
+        expect(createMongoFilter({
+            query: '$0000000000000000000000000000000000000000'
+        })).to.eql({
+                fingerprint: '0000000000000000000000000000000000000000'
+            });
+    });
+    it('tests non family query', function () {
+        var filter = createMongoFilter({
+            query: 'Some Query'
+        });
+
+        filter.$or.forEach(function (or) {
+            var keyName = Object.keys(or)[0];
+            switch (keyName) {
+                case 'nickname':
+                    expect(or.nickname.$regex.toString()).to.be('/.*some query.*/');
+                    break;
+                case 'fingerprint':
+                    expect(or.fingerprint.$regex.toString()).to.be('/^SOME QUERY/');
+                    break;
+                case 'or_addresses':
+                    expect(or.or_addresses.$elemMatch.$regex.toString()).to.be('/^some query/');
+                    break;
+                case 'exit_addresses':
+                    expect(or.exit_addresses.$elemMatch.$regex.toString()).to.be('/^some query/');
+                    break;
+            }
         });
     });
 });

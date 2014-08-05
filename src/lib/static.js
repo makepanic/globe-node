@@ -277,3 +277,17 @@ exports.countries = {
     'zm' : 'Zambia',
     'zw' : 'Zimbabwe'
 };
+
+exports.tableFields = {
+    COUNTRY: 0,
+    AS_NUMBER: 1,
+    CONSENSUS_WEIGHT_FRACTION: 2,
+    ADVERTISED_BANDWIDTH_FRACTION: 4,
+    GUARD_PROBABILITY: 8,
+    MIDDLE_PROBABILITY: 16,
+    EXIT_PROBABILITY: 32,
+    CONTACT: 64,
+    FAMILY: 128,
+    TOR: 256,
+    OS: 512
+};
