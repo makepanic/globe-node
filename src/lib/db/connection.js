@@ -62,7 +62,6 @@ function unlock() {
  * @return {*} Promise that resolves after all collections are "cleared"
  */
 function clearCollections(collections) {
-    logger.info('clearing collections');
     return RSVP.all([
         RSVP.denodeify(collections.relays.remove.bind(collections.relays))(),
         RSVP.denodeify(collections.bridges.remove.bind(collections.bridges))()
@@ -84,7 +83,6 @@ function createCollections(addTimestamp) {
         relaysName += timestamp;
         bridgesName += timestamp;
     }
-    logger.info('creating collections', relaysName, bridgesName);
     return RSVP.hash({
         relays: RSVP.denodeify(database.createCollection.bind(database))(relaysName),
         bridges: RSVP.denodeify(database.createCollection.bind(database))(bridgesName)
@@ -115,147 +113,145 @@ function reloadData() {
             // set lock flag before sync
             lock();
 
-            setTimeout(function () {
-                createCollections(true).then(function (newCollections) {
-                    // check if any
-                    // remove old collection if exists
-                    var //result = dump,
-                        insertPromises = [],
-                        osMap = {},
-                        versions = {};
+            createCollections(true).then(function (newCollections) {
+                // check if any
+                // remove old collection if exists
+                var //result = dump,
+                    insertPromises = [],
+                    osMap = {},
+                    versions = {};
 
-                    // prepare data for easier later queries
-                    // result.relays.forEach(function(relay){
-                    for (var relayIndex = 0; relayIndex < result.relays.length; relayIndex++) {
-                        /* eslint camelcase:0 */
-                        var relay = result.relays[relayIndex],
-                            target = relay.exit_policy_summary.accept ? 'accept' : 'reject';
+                // prepare data for easier later queries
+                // result.relays.forEach(function(relay){
+                for (var relayIndex = 0; relayIndex < result.relays.length; relayIndex++) {
+                    /* eslint camelcase:0 */
+                    var relay = result.relays[relayIndex],
+                        target = relay.exit_policy_summary.accept ? 'accept' : 'reject';
 
-                        // extract os
-                        if (relay.platform) {
-                            try {
-                                var parsedPlatform = parsePlatform(relay.platform);
-                                relay.tor = parsedPlatform.tor;
-                                relay.git = parsedPlatform.git;
-                                relay.meta = parsedPlatform.meta;
-                                relay.arch = parsedPlatform.arch;
-                                relay.os = parsedPlatform.os;
-                                relay.version = parsedPlatform.version;
-                                relay.client = parsedPlatform.client;
-                                relay.osString = parsedPlatform.osString;
+                    // extract os
+                    if (relay.platform) {
+                        try {
+                            var parsedPlatform = parsePlatform(relay.platform);
+                            relay.tor = parsedPlatform.tor;
+                            relay.git = parsedPlatform.git;
+                            relay.meta = parsedPlatform.meta;
+                            relay.arch = parsedPlatform.arch;
+                            relay.os = parsedPlatform.os;
+                            relay.version = parsedPlatform.version;
+                            relay.client = parsedPlatform.client;
+                            relay.osString = parsedPlatform.osString;
 
-                                // add array with null for group by family
-                                relay.family = relay.family ? relay.family : [null];
-                                // add null if no contact for group by contact
-                                relay.contact = relay.contact ? relay.contact : null;
-                                // add null if no contact for group by contact
-                                relay.country = relay.country ? relay.country : null;
-                                // add null if no contact for group by contact
-                                relay.as_number = relay.as_number ? relay.as_number : null;
+                            // add array with null for group by family
+                            relay.family = relay.family ? relay.family : [null];
+                            // add null if no contact for group by contact
+                            relay.contact = relay.contact ? relay.contact : null;
+                            // add null if no contact for group by contact
+                            relay.country = relay.country ? relay.country : null;
+                            // add null if no contact for group by contact
+                            relay.as_number = relay.as_number ? relay.as_number : null;
 
-                                osMap[relay.os] = osMap[relay.os] >= 0 ? osMap[relay.os] + 1 : 1;
-                                versions[relay.tor] = versions[relay.tor] >= 0 ? versions[relay.tor] + 1 : 1;
-                            } catch (e) {
-                                logger.info(relay.nickname, e.message);
-                            }
-                        }
-
-                        relay.exit_policy_summary['_' + target] = [];
-                        relay.exit_policy_summary['_' + target + '_range'] = [];
-
-                        for (var portRangeIndex = 0; portRangeIndex < relay.exit_policy_summary[target].length; portRangeIndex++) {
-                            var portRange = relay.exit_policy_summary[target][portRangeIndex],
-                                range = portRange.split('-');
-
-                            if (range.length === 2) {
-                                // is port range
-                                var start = parseInt(range[0], 10),
-                                    end = parseInt(range[1], 10);
-
-                                relay.exit_policy_summary['_' + target + '_range'].push({
-                                    start: start,
-                                    end: end
-                                });
-                            } else {
-                                relay.exit_policy_summary['_' + target].push(parseInt(portRange, 10));
-                            }
+                            osMap[relay.os] = osMap[relay.os] >= 0 ? osMap[relay.os] + 1 : 1;
+                            versions[relay.tor] = versions[relay.tor] >= 0 ? versions[relay.tor] + 1 : 1;
+                        } catch (e) {
+                            logger.info(relay.nickname, e.message);
                         }
                     }
 
-                    // result.bridges.forEach(function(bridge)
-                    for (var bridgeIndex = 0; bridgeIndex < result.bridges.length; bridgeIndex++) {
-                        var bridge = result.bridges[bridgeIndex];
-                        if (bridge.platform) {
-                            try {
-                                var parsedBridgePlatform = parsePlatform(bridge.platform);
-                                bridge.tor = parsedBridgePlatform.tor;
-                                bridge.git = parsedBridgePlatform.git;
-                                bridge.meta = parsedBridgePlatform.meta;
-                                bridge.arch = parsedBridgePlatform.arch;
-                                bridge.os = parsedBridgePlatform.os;
-                                bridge.version = parsedBridgePlatform.version;
-                                bridge.client = parsedBridgePlatform.client;
-                                bridge.osString = parsedBridgePlatform.osString;
+                    relay.exit_policy_summary['_' + target] = [];
+                    relay.exit_policy_summary['_' + target + '_range'] = [];
 
-                                osMap[relay.os] = osMap[relay.os] >= 0 ? osMap[relay.os] + 1 : 1;
-                                versions[relay.tor] = versions[relay.tor] >= 0 ? versions[relay.tor] + 1 : 1;
-                            } catch (e) {
-                                logger.warn(e.message);
-                            }
+                    for (var portRangeIndex = 0; portRangeIndex < relay.exit_policy_summary[target].length; portRangeIndex++) {
+                        var portRange = relay.exit_policy_summary[target][portRangeIndex],
+                            range = portRange.split('-');
+
+                        if (range.length === 2) {
+                            // is port range
+                            var start = parseInt(range[0], 10),
+                                end = parseInt(range[1], 10);
+
+                            relay.exit_policy_summary['_' + target + '_range'].push({
+                                start: start,
+                                end: end
+                            });
+                        } else {
+                            relay.exit_policy_summary['_' + target].push(parseInt(portRange, 10));
                         }
-
                     }
+                }
 
-                    var valNumMapFn = function (result, value, key) {
-                            result.push({val: key, num: value});
-                        },
-                        mapFn = function (obj) {
-                            return obj.val;
-                        }, sortFn = function (a, b) {
-                            return b.num - a.num;
-                        };
+                // result.bridges.forEach(function(bridge)
+                for (var bridgeIndex = 0; bridgeIndex < result.bridges.length; bridgeIndex++) {
+                    var bridge = result.bridges[bridgeIndex];
+                    if (bridge.platform) {
+                        try {
+                            var parsedBridgePlatform = parsePlatform(bridge.platform);
+                            bridge.tor = parsedBridgePlatform.tor;
+                            bridge.git = parsedBridgePlatform.git;
+                            bridge.meta = parsedBridgePlatform.meta;
+                            bridge.arch = parsedBridgePlatform.arch;
+                            bridge.os = parsedBridgePlatform.os;
+                            bridge.version = parsedBridgePlatform.version;
+                            bridge.client = parsedBridgePlatform.client;
+                            bridge.osString = parsedBridgePlatform.osString;
 
-                    globalData.search.os = _.transform(osMap, valNumMapFn, []).sort(sortFn).map(mapFn);
-                    globalData.search.tor = _.transform(versions, valNumMapFn, []).sort(sortFn).map(mapFn);
-
-                    logger.info('overwrote available os:', JSON.stringify(globalData.search.os));
-                    logger.info('overwrote available tor versions:', JSON.stringify(globalData.search.tor));
-
-                    if (result.relays.length) {
-                        insertPromises.push(RSVP.denodeify(newCollections.relays.insert.bind(newCollections.relays))(result.relays, {}));
-                    }
-                    if (result.bridges.length) {
-                        insertPromises.push(RSVP.denodeify(newCollections.bridges.insert.bind(newCollections.bridges))(result.bridges, {}));
-                    }
-
-                    RSVP.all(insertPromises).then(function () {
-                        // clear old collections
-                        clearCollections(collections);
-                        // overwrite collections with new collections
-                        collections = newCollections;
-                        // unlock database after sync
-                        unlock();
-                        updateDurations.push(Date.now() - currentUpdateStarted);
-                        if (updateDurations.length > 10) {
-                            // remove oldest value from array if length > 10
-                            updateDurations.splice(0, 1);
+                            osMap[relay.os] = osMap[relay.os] >= 0 ? osMap[relay.os] + 1 : 1;
+                            versions[relay.tor] = versions[relay.tor] >= 0 ? versions[relay.tor] + 1 : 1;
+                        } catch (e) {
+                            logger.warn(e.message);
                         }
-                        currentUpdateStarted = -1;
-                        // log update durations
-                        logger.info('Download finished. Took %s ms', updateDurations[updateDurations.length - 1]);
+                    }
 
-                        // resolve with database and created collection
-                        resolve();
+                }
 
-                    }, function (err) {
-                        logger.error(err.message);
-                        reject(err);
-                    });
+                var valNumMapFn = function (result, value, key) {
+                        result.push({val: key, num: value});
+                    },
+                    mapFn = function (obj) {
+                        return obj.val;
+                    }, sortFn = function (a, b) {
+                        return b.num - a.num;
+                    };
+
+                globalData.search.os = _.transform(osMap, valNumMapFn, []).sort(sortFn).map(mapFn);
+                globalData.search.tor = _.transform(versions, valNumMapFn, []).sort(sortFn).map(mapFn);
+
+                logger.info('overwrote available os:', JSON.stringify(globalData.search.os));
+                logger.info('overwrote available tor versions:', JSON.stringify(globalData.search.tor));
+
+                if (result.relays.length) {
+                    insertPromises.push(RSVP.denodeify(newCollections.relays.insert.bind(newCollections.relays))(result.relays, {}));
+                }
+                if (result.bridges.length) {
+                    insertPromises.push(RSVP.denodeify(newCollections.bridges.insert.bind(newCollections.bridges))(result.bridges, {}));
+                }
+
+                RSVP.all(insertPromises).then(function () {
+                    // clear old collections
+                    clearCollections(collections);
+                    // overwrite collections with new collections
+                    collections = newCollections;
+                    // unlock database after sync
+                    unlock();
+                    updateDurations.push(Date.now() - currentUpdateStarted);
+                    if (updateDurations.length > 10) {
+                        // remove oldest value from array if length > 10
+                        updateDurations.splice(0, 1);
+                    }
+                    currentUpdateStarted = -1;
+                    // log update durations
+                    logger.info('Download finished. Took %s ms', updateDurations[updateDurations.length - 1]);
+
+                    // resolve with database and created collection
+                    resolve();
+
                 }, function (err) {
                     logger.error(err.message);
                     reject(err);
                 });
-            }, 5000);
+            }, function (err) {
+                logger.error(err.message);
+                reject(err);
+            });
         }, function (err) {
             logger.error(err.message);
             reject(err);
