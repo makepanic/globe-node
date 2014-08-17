@@ -8,12 +8,11 @@ var logger = require('../../../logger'),
     parsePlatform = require('../util/parse-platform'),
     conf = require('../../../config'),
     assert = require('assert'),
-    _ = require('lodash-node'),
-    retry = require('qretry');
+    _ = require('lodash-node');
 
 var locked = false,
     database = null,
-    collections = {},
+    collections = {relays: null, bridges: null},
     currentUpdateStarted = -1,
     updateDurations = [];
 
@@ -30,6 +29,9 @@ function remainingUpdateDuration() {
     return avgDuration - (Date.now() - currentUpdateStarted);
 }
 
+function getCollections() {
+    return collections;
+}
 /**
  * Function that indicates if the database is locked for access
  * @return {boolean} True if the database is locked
@@ -56,28 +58,36 @@ function unlock() {
 
 /**
  * Function that removes all documents in all collections
+ * @param {{relays: Object, bridges: Object}} collections Collections to clear
  * @return {*} Promise that resolves after all collections are "cleared"
  */
-function clearCollections() {
+function clearCollections(collections) {
+    logger.info('clearing collections');
     return RSVP.all([
         RSVP.denodeify(collections.relays.remove.bind(collections.relays))(),
         RSVP.denodeify(collections.bridges.remove.bind(collections.bridges))()
     ]);
 }
 
-function isReadyToClearAndInsert() {
-    return new RSVP.Promise(function (resolve, reject) {
-        database.collection('$cmd.sys.inprog').findOne(function (err, data) {
-            if (err) {
-                throw err;
-            }
-            if (data.inprog.length) {
-                // reject if there are any running commands
-                reject();
-            } else {
-                resolve();
-            }
-        });
+/**
+ * Function to create required collections
+ * @param {boolean} [addTimestamp=false] If true, add a timestamp to the collection name
+ * @return {*} Promise that resolves with an Object {relays: *, bridges: *}
+ */
+function createCollections(addTimestamp) {
+    var relaysName = 'relays',
+        bridgesName = 'bridges';
+
+    if (addTimestamp) {
+        var hrTime = process.hrtime(),
+            timestamp = hrTime[0] * 1E9 + hrTime[1];
+        relaysName += timestamp;
+        bridgesName += timestamp;
+    }
+    logger.info('creating collections', relaysName, bridgesName);
+    return RSVP.hash({
+        relays: RSVP.denodeify(database.createCollection.bind(database))(relaysName),
+        bridges: RSVP.denodeify(database.createCollection.bind(database))(bridgesName)
     });
 }
 
@@ -95,6 +105,7 @@ function reloadData() {
 
         // load onionoo data
         getJSON('details').then(function (result) {
+
             // store time before dataset update
             currentUpdateStarted = Date.now();
 
@@ -104,11 +115,10 @@ function reloadData() {
             // set lock flag before sync
             lock();
 
-            retry(isReadyToClearAndInsert).then(function () {
-
-                // check if any
-                // remove old collection if exists
-                clearCollections().then(function () {
+            setTimeout(function () {
+                createCollections(true).then(function (newCollections) {
+                    // check if any
+                    // remove old collection if exists
                     var //result = dump,
                         insertPromises = [],
                         osMap = {},
@@ -196,7 +206,6 @@ function reloadData() {
 
                     }
 
-
                     var valNumMapFn = function (result, value, key) {
                             result.push({val: key, num: value});
                         },
@@ -213,16 +222,19 @@ function reloadData() {
                     logger.info('overwrote available tor versions:', JSON.stringify(globalData.search.tor));
 
                     if (result.relays.length) {
-                        insertPromises.push(RSVP.denodeify(collections.relays.insert.bind(collections.relays))(result.relays, {}));
+                        insertPromises.push(RSVP.denodeify(newCollections.relays.insert.bind(newCollections.relays))(result.relays, {}));
                     }
                     if (result.bridges.length) {
-                        insertPromises.push(RSVP.denodeify(collections.bridges.insert.bind(collections.bridges))(result.bridges, {}));
+                        insertPromises.push(RSVP.denodeify(newCollections.bridges.insert.bind(newCollections.bridges))(result.bridges, {}));
                     }
 
                     RSVP.all(insertPromises).then(function () {
+                        // clear old collections
+                        clearCollections(collections);
+                        // overwrite collections with new collections
+                        collections = newCollections;
                         // unlock database after sync
                         unlock();
-
                         updateDurations.push(Date.now() - currentUpdateStarted);
                         if (updateDurations.length > 10) {
                             // remove oldest value from array if length > 10
@@ -236,18 +248,14 @@ function reloadData() {
                         resolve();
 
                     }, function (err) {
-                        logger.info(err.message);
+                        logger.error(err.message);
                         reject(err);
                     });
                 }, function (err) {
-                    logger.warn(err.message);
+                    logger.error(err.message);
                     reject(err);
                 });
-            }, function (err) {
-                logger.warn(err.message);
-                reject(err);
-            });
-
+            }, 5000);
         }, function (err) {
             logger.error(err.message);
             reject(err);
@@ -280,17 +288,14 @@ function init(opts) {
                 database = db;
 
                 // create collections for relays and bridges
-                RSVP.hash({
-                    relays: RSVP.denodeify(database.createCollection.bind(database))('relays'),
-                    bridges: RSVP.denodeify(database.createCollection.bind(database))('bridges')
-                }).then(function (createdCollections) {
-
+                createCollections().then(function (createdCollections) {
+                    // store created collections
                     collections = createdCollections;
 
                     var resolveData = {
                         database: database,
                         isLocked: isLocked,
-                        collections: createdCollections
+                        collections: collections
                     };
 
                     if (!skipReloadData) {
@@ -327,6 +332,7 @@ function initSyncTask() {
 }
 
 module.exports = {
+    getCollections: getCollections,
     remainingUpdateDuration: remainingUpdateDuration,
     init: init,
     initSyncTask: initSyncTask,

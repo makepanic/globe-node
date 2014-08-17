@@ -115,9 +115,9 @@ if (!fs.existsSync('build')) {
 
         // routes that need db access
         // relay lookup
-        app.get('/relay/:fingerprint', detail.relay(connectionData.collections));
+        app.get('/relay/:fingerprint', detail.relay);
         // bridge lookup
-        app.get('/bridge/:fingerprint', detail.bridge(connectionData.collections));
+        app.get('/bridge/:fingerprint', detail.bridge);
 
         // relay and bridge search
         app.get('/search-compass',
@@ -135,7 +135,7 @@ if (!fs.existsSync('build')) {
                     {param: 'tor', defaultsTo: globals.search.tor}
                 ]
             }),
-            searchCompass.searchCompass(connectionData.collections));
+            searchCompass.searchCompass);
 
         if (!program.nosync) {
             connection.initSyncTask();

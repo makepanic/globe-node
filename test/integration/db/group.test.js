@@ -46,8 +46,8 @@ describe('database group @db', function () {
             waitForReload: true,
             dbUrl: dbUrl
         }).then(function (conn) {
-            expect(conn.collections).to.be.ok();
-            that.collections = conn.collections;
+            expect(connection.getCollections()).to.be.ok();
+            that.collections = connection.getCollections();
             that.database = conn.database;
             done();
         }, function (err) {

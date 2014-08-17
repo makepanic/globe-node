@@ -1,5 +1,6 @@
 var hashFingerprint = require('../../lib/onionoo/util/hash-fingerprint'),
     normalize = require('./../../lib/onionoo/util/normalize'),
+    connection = require('./connection'),
     RSVP = require('rsvp');
 
 /**

@@ -116,8 +116,6 @@ describe('connection tests @db @imp', function () {
          It expects that the filter result is either the valid result or an error
          that is thrown if the database is locked.
          */
-        var collections = this.collections;
-
         /**
          * Function that calls the filter function after a given timeout
          * @param {Object} collections Mongodb collections to pass to filter
@@ -147,16 +145,16 @@ describe('connection tests @db @imp', function () {
         expect(connection.isLocked()).to.be(false);
         RSVP.hash({
             filter: RSVP.all([
-                filter(collections, {}).then(through, through),
-                filterLater(collections, {}, 1).then(through, through),
-                filterLater(collections, {}, 7).then(through, through),
-                filterLater(collections, {}, 14).then(through, through),
-                filterLater(collections, {}, 21).then(through, through),
-                filterLater(collections, {}, 28).then(through, through),
-                filterLater(collections, {}, 35).then(through, through),
-                filterLater(collections, {}, 42).then(through, through),
-                filterLater(collections, {}, 49).then(through, through),
-                filterLater(collections, {}, 56).then(through, through)
+                filter(connection.getCollections(), {}).then(through, through),
+                filterLater(connection.getCollections(), {}, 1).then(through, through),
+                filterLater(connection.getCollections(), {}, 7).then(through, through),
+                filterLater(connection.getCollections(), {}, 14).then(through, through),
+                filterLater(connection.getCollections(), {}, 21).then(through, through),
+                filterLater(connection.getCollections(), {}, 28).then(through, through),
+                filterLater(connection.getCollections(), {}, 35).then(through, through),
+                filterLater(connection.getCollections(), {}, 42).then(through, through),
+                filterLater(connection.getCollections(), {}, 49).then(through, through),
+                filterLater(connection.getCollections(), {}, 56).then(through, through)
             ]),
             reload: connection.reloadData()
         }).then(function (data) {

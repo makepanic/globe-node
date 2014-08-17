@@ -32,7 +32,6 @@
     "moment": "^2.8.1",
     "mongodb": "^1.4.3",
     "morgan": "^1.0.0",
-    "qretry": "^0.2.1",
     "request": "^2.39.0",
     "rsvp": "^3.0.8",
     "serve-favicon": "^2.0.1"
