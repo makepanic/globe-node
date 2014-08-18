@@ -18,7 +18,7 @@ describe('@test formatter.buildSearchQuery', function () {
             .be('/search-compass?limit=10&query=test&family=testFamily');
         expect(buildSearchQuery({hasGroupAS: true}, {as_number: [['1234', 2]]}, 'test')).to
             .be('/search-compass?limit=10&query=test&as=1234');
-        expect(buildSearchQuery({hasCountryFlags: true}, {country: [['de', 2]]}, 'test')).to
+        expect(buildSearchQuery({hasGroupCountry: true}, {country: [['de', 2]]}, 'test')).to
             .be('/search-compass?limit=10&query=test&country=de');
         expect(buildSearchQuery({hasGroupContact: true}, {contact: [['test@example.org', 2]]}, 'test')).to
             .be('/search-compass?limit=10&query=test&contact=test@example.org');

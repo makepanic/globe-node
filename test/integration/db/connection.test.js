@@ -66,7 +66,7 @@ function cleanCloseConnection(database, callback) {
     });
 }
 
-describe('connection tests @db @imp', function () {
+describe('connection tests @db', function () {
     before(function (done) {
         // stub request.get to return the testFixture
         sinon.stub(request, 'get').yieldsAsync(null, {

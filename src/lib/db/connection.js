@@ -61,12 +61,12 @@ function unlock() {
  * @param {{relays: Object, bridges: Object}} collections Collections to clear
  * @return {*} Promise that resolves after all collections are "cleared"
  */
-function clearCollections(collections) {
-    return RSVP.all([
-        RSVP.denodeify(collections.relays.remove.bind(collections.relays))(),
-        RSVP.denodeify(collections.bridges.remove.bind(collections.bridges))()
-    ]);
-}
+//function clearCollections(collections) {
+//    return RSVP.all([
+//        RSVP.denodeify(collections.relays.remove.bind(collections.relays))(),
+//        RSVP.denodeify(collections.bridges.remove.bind(collections.bridges))()
+//    ]);
+//}
 
 /**
  * Function to create required collections
@@ -89,6 +89,15 @@ function createCollections(addTimestamp) {
     });
 }
 
+var dropCollections = function (collections) {
+    var relayName = collections.relays.collectionName,
+        bridgesName = collections.bridges.collectionName;
+
+    return RSVP.hash({
+        relays: RSVP.denodeify(database.dropCollection.bind(database))(relayName),
+        bridges: RSVP.denodeify(database.dropCollection.bind(database))(bridgesName)
+    });
+};
 /**
  * Function that clears all collections, loads the onionoo dump and inserts the result
  * @return {exports.Promise} Promise that resolves after filling the database.
@@ -227,7 +236,7 @@ function reloadData() {
 
                 RSVP.all(insertPromises).then(function () {
                     // clear old collections
-                    clearCollections(collections);
+                    dropCollections(collections);
                     // overwrite collections with new collections
                     collections = newCollections;
                     // unlock database after sync
@@ -284,7 +293,7 @@ function init(opts) {
                 database = db;
 
                 // create collections for relays and bridges
-                createCollections().then(function (createdCollections) {
+                createCollections(true).then(function (createdCollections) {
                     // store created collections
                     collections = createdCollections;
 

@@ -8,7 +8,7 @@ mixin relayCompassGroupTable(relays, notDisplayed, uiFlags)
                     a(href='search-compass?#{format.searchQuery(requestQuery, "country")}', title='sort by country')
                         | Country
                         if requestQuery.sortBy === 'country'
-                            if uiFlags.hasCountryFlags
+                            if uiFlags.hasGroupCountry
                                 != format.sortIndicator('alpha', normRequestQuery.sortAsc)
                             else
                                 != format.sortIndicator('numeric', normRequestQuery.sortAsc)
@@ -83,7 +83,7 @@ mixin relayCompassGroupTable(relays, notDisplayed, uiFlags)
                     tr
                         td.align-center
                             p
-                                if uiFlags.hasCountryFlags
+                                if uiFlags.hasGroupCountry
                                     != format.flaggify(relay.country[0][0])
                                 else
                                     = relay.country.length

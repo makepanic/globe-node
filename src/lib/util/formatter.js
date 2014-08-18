@@ -169,7 +169,7 @@ exports.buildSearchQuery = function (groupedBy, group, query) {
     if (groupedBy.hasGroupAS) {
         searchQuery.push('as=' + group.as_number[0][0]);
     }
-    if (groupedBy.hasCountryFlags) {
+    if (groupedBy.hasGroupCountry) {
         searchQuery.push('country=' + group.country[0][0]);
     }
     if (groupedBy.hasGroupContact) {
@@ -190,7 +190,7 @@ exports.sortIndicator = function (type, asc) {
 
 exports.groupFlagList = function (groupFlags) {
     var list = '';
-    if (groupFlags.hasCountryFlags) {
+    if (groupFlags.hasGroupCountry) {
         list += 'country ';
     }
     if (groupFlags.hasGroupAs) {
@@ -202,5 +202,5 @@ exports.groupFlagList = function (groupFlags) {
     if (groupFlags.hasGroupFamily) {
         list += 'family ';
     }
-    return list;
+    return list.trim();
 };

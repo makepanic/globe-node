@@ -41,4 +41,14 @@ describe('process-filter-results', function () {
             done();
         }, failHandler);
     });
+    it('tests that a 0 or negative displayLimit returns all results', function () {
+        processFilterResults({
+            displayLimit: 0,
+            relays: [{}],
+            bridges: [{}]
+        }).then(function (filterResult) {
+            expect(filterResult.numRelays).to.be(1);
+            expect(filterResult.numBridges).to.be(1);
+        });
+    });
 });

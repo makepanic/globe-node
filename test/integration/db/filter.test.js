@@ -23,7 +23,7 @@ function cleanCloseConnection(database, callback) {
     });
 }
 
-describe('database filter @db @imp', function () {
+describe('database filter @db', function () {
     before(function (done) {
         // stub request.get to return the testFixture
         sinon.stub(request, 'get').yieldsAsync(null, {

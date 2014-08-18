@@ -1,6 +1,7 @@
 /* eslint camelcase:0 */
 
 var speeds = require('./speeds'),
+    escapeRegex = require('../../util/escape-regex'),
     _ = require('lodash-node');
 
 /**
@@ -62,13 +63,16 @@ module.exports = function (filterOptions) {
                 /* Search is for $-prefixed fingerprint. */
                 dbFilterOptions.fingerprint = query.substring(1).toUpperCase();
             } else {
+                var lowerEscapedQuery = escapeRegex(query.toLowerCase()),
+                    upperEscapedQuery = lowerEscapedQuery.toUpperCase();
+
                 dbFilterOptions.$or = [
                     /* Nickname matches. */
-                    {nickname: {$regex: new RegExp('.*' + query.toLowerCase() + '.*') }},
+                    {nickname: {$regex: new RegExp('.*' + lowerEscapedQuery + '.*') }},
                     /* Non-$-prefixed fingerprint matches. */
-                    {fingerprint: {$regex: new RegExp('^' + query.toUpperCase()) }},
-                    {or_addresses: {$elemMatch: {$regex: new RegExp('^' + query.toLowerCase()) }}},
-                    {exit_addresses: {$elemMatch: {$regex: new RegExp('^' + query.toLowerCase()) }}}
+                    {fingerprint: {$regex: new RegExp('^' + upperEscapedQuery) }},
+                    {or_addresses: {$elemMatch: {$regex: new RegExp('^' + lowerEscapedQuery) }}},
+                    {exit_addresses: {$elemMatch: {$regex: new RegExp('^' + lowerEscapedQuery) }}}
                 ];
             }
         }

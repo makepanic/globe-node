@@ -208,7 +208,7 @@ module.exports = function (collections, methodOpts) {
 //                logger.info('group took %d nanoseconds', diff[0] * 1e9 + diff[1]);
 
                 processedResults.uiFlags = {
-                    hasCountryFlags: hasGroupCountry,
+                    hasGroupCountry: hasGroupCountry,
                     hasGroupAS: hasGroupAS,
                     hasGroupContact: hasGroupContact,
                     hasGroupFamily: hasGroupFamily

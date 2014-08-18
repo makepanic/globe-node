@@ -160,7 +160,6 @@ exports.svg = function(opts) {
         .append('g')
         .attr('transform', 'translate(' + legendOffset.x + ',' + legendOffset.y + ')')
         .each(function(d, i) {
-
             var g = d3.select(this);
             g.append('svg:text')
                 .attr('x', legendPos[i].x - padding.left)
