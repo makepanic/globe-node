@@ -79,7 +79,7 @@ function createCollections(addTimestamp) {
 
     if (addTimestamp) {
         var hrTime = process.hrtime(),
-            timestamp = hrTime[0] * 1E9 + hrTime[1];
+            timestamp = Date.now() * 1E6 + hrTime[1];
         relaysName += timestamp;
         bridgesName += timestamp;
     }
@@ -112,7 +112,6 @@ function reloadData() {
 
         // load onionoo data
         getJSON('details').then(function (result) {
-
             // store time before dataset update
             currentUpdateStarted = Date.now();
 

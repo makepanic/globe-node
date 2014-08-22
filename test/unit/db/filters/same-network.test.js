@@ -3,7 +3,7 @@
 
 var expect = require('expect.js');
 
-describe('same-network @perf', function () {
+describe('same-network', function () {
     var sameNetwork = require('../../../../src/lib/db/filters/same-network');
 
     it('tests with empty values', function () {

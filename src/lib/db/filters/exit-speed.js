@@ -5,6 +5,7 @@ module.exports = function (items, requiredPorts) {
     assert(_.isArray(items), 'ExitSpeedFilter needs items array');
 
     return items.filter(function (relay) {
+        /* eslint no-loop-func: 0 */
         assert(relay.exit_policy_summary.hasOwnProperty('accept') || relay.exit_policy_summary.hasOwnProperty('reject'),
             'Exit policy summary has either accept or reject');
 
@@ -16,14 +17,16 @@ module.exports = function (items, requiredPorts) {
 
         // create array with all ports
         for (var prI = 0, prLength = portRanges.length; prI < prLength; prI++) {
-            ports = ports.concat(_.range(portRanges[prI].start, portRanges[prI].end + 1));
+            // create "hashmap" from port ranges
+            _.range(portRanges[prI].start, portRanges[prI].end + 1).forEach(function (port) {
+                portsObj[port] = true;
+            });
         }
 
         // create "hashmap" for easier issubset equivalent
-        portsObj = ports.reduce(function (acc, key) {
-            acc[key] = true;
-            return acc;
-        }, {});
+        for (var pId = 0, pLength = ports.length; pId < pLength; pId++) {
+            portsObj[ports[pId]] = true;
+        }
 
         if (target === 'accept') {
             // accept: check if request ports are in stored object
