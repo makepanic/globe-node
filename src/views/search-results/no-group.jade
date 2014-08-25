@@ -6,6 +6,14 @@ block content
     .pure-g
         .pure-u-1
             .text-content
+                if result.uiFlags.informHashFingerprint
+                    h4.c-red
+                        | It looks like you tried to search for a bridge using an unhashed fingerprint.
+                        | See <a href="/help#how-to-search">How do I search for my bridge</a> for more information why this is a bad idea.
+                        | In the future try to use the <a href="#{result.correctSearchUrl}">hashed fingerprint of the bridge</a> instead.
+                if result.uiFlags.informEmptySortNotRunning
+                    h4.c-red
+                        | Sorting by consensus weight, advertised bandwidth, guard prob., middle prob. or exit prob., while filtering by not running relays and bridges does nothing because the required fields aren't set on the descriptors.
                 h3 Relays
                 +relayCompassTable(result.displayed.relays, result.notDisplayed.relays)
                 h3 Bridges

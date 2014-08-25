@@ -3,7 +3,8 @@
 var logger = require('../../../logger'),
     MongoClient = require('mongodb').MongoClient,
     RSVP = require('rsvp'),
-    globalData = require('../global-data'),
+    globals = require('../global-data'),
+    hashFingerprint = require('../onionoo/util/hash-fingerprint'),
     getJSON = require('../onionoo/util/get-JSON'),
     parsePlatform = require('../util/parse-platform'),
     conf = require('../../../config'),
@@ -89,15 +90,56 @@ function createCollections(addTimestamp) {
     });
 }
 
-var dropCollections = function (collections) {
-    var relayName = collections.relays.collectionName,
-        bridgesName = collections.bridges.collectionName;
+var dropOldCollections = function () {
+    return new RSVP.Promise(function (resolve, reject) {
+        if (conf.DB.STORE_HISTORY >= 0) {
+            database.collectionNames(function (err, collectionNames) {
+                if (err) {
+                    reject(err);
+                }
+                var bridges = [],
+                    relays = [];
 
-    return RSVP.hash({
-        relays: RSVP.denodeify(database.dropCollection.bind(database))(relayName),
-        bridges: RSVP.denodeify(database.dropCollection.bind(database))(bridgesName)
+                _.each(collectionNames, function (collection) {
+                    var split = collection.name.split('.');
+
+                    if (split.length === 2) {
+                        var name = split[1];
+                        if (name.indexOf('relays') === 0) {
+                            // relay collection
+                            relays.push({
+                                name: name,
+                                time: name.substring('relays'.length, name.length)
+                            });
+                        } else if (name.indexOf('bridges') === 0) {
+                            // bridge collection
+                            bridges.push({
+                                name: name,
+                                time: name.substring('bridges'.length, name.length)
+                            });
+                        }
+                    }
+                });
+
+                if (relays.length - conf.DB.STORE_HISTORY > 0 &&
+                    bridges.length - conf.DB.STORE_HISTORY > 0) {
+                    _.each(_.take(_.sortBy(relays, 'time'), relays.length - conf.DB.STORE_HISTORY), function (collection) {
+                        logger.info('dropping ' + collection.name);
+                        database.dropCollection(collection.name);
+                    });
+                    _.each(_.take(_.sortBy(bridges, 'time'), bridges.length - conf.DB.STORE_HISTORY), function (collection) {
+                        logger.info('dropping ' + collection.name);
+                        database.dropCollection(collection.name);
+                    });
+                }
+            });
+        } else {
+            // no cleanup required
+            resolve();
+        }
     });
 };
+
 /**
  * Function that clears all collections, loads the onionoo dump and inserts the result
  * @return {exports.Promise} Promise that resolves after filling the database.
@@ -136,6 +178,13 @@ function reloadData() {
                     var relay = result.relays[relayIndex],
                         target = relay.exit_policy_summary.accept ? 'accept' : 'reject';
 
+                    try {
+                        relay.hashed_fingerprint = hashFingerprint(relay.fingerprint);
+                    } catch (e) {
+                        logger.error('Skipping relay. Can\'t hash the fingerprint for ' + relay.nickname, e);
+                        continue;
+                    }
+
                     // extract os
                     if (relay.platform) {
                         try {
@@ -149,21 +198,20 @@ function reloadData() {
                             relay.client = parsedPlatform.client;
                             relay.osString = parsedPlatform.osString;
 
-                            // add array with null for group by family
-                            relay.family = relay.family ? relay.family : [null];
-                            // add null if no contact for group by contact
-                            relay.contact = relay.contact ? relay.contact : null;
-                            // add null if no contact for group by contact
-                            relay.country = relay.country ? relay.country : null;
-                            // add null if no contact for group by contact
-                            relay.as_number = relay.as_number ? relay.as_number : null;
-
                             osMap[relay.os] = osMap[relay.os] >= 0 ? osMap[relay.os] + 1 : 1;
                             versions[relay.tor] = versions[relay.tor] >= 0 ? versions[relay.tor] + 1 : 1;
                         } catch (e) {
                             logger.info(relay.nickname, e.message);
                         }
                     }
+                    // add array with null for group by family
+                    relay.family = relay.family ? relay.family : [null];
+                    // add null if no contact for group by contact
+                    relay.contact = relay.contact ? relay.contact : null;
+                    // add null if no contact for group by contact
+                    relay.country = relay.country ? relay.country : null;
+                    // add null if no contact for group by contact
+                    relay.as_number = relay.as_number ? relay.as_number : null;
 
                     relay.exit_policy_summary['_' + target] = [];
                     relay.exit_policy_summary['_' + target + '_range'] = [];
@@ -190,6 +238,14 @@ function reloadData() {
                 // result.bridges.forEach(function(bridge)
                 for (var bridgeIndex = 0; bridgeIndex < result.bridges.length; bridgeIndex++) {
                     var bridge = result.bridges[bridgeIndex];
+
+                    try {
+                        bridge.hashed_hashed_fingerprint = hashFingerprint(bridge.hashed_fingerprint);
+                    } catch (e) {
+                        logger.error('Skipping bridge. Can\'t hash the fingerprint for ' + bridge.nickname, e);
+                        continue;
+                    }
+
                     if (bridge.platform) {
                         try {
                             var parsedBridgePlatform = parsePlatform(bridge.platform);
@@ -220,11 +276,11 @@ function reloadData() {
                         return b.num - a.num;
                     };
 
-                globalData.search.os = _.transform(osMap, valNumMapFn, []).sort(sortFn).map(mapFn);
-                globalData.search.tor = _.transform(versions, valNumMapFn, []).sort(sortFn).map(mapFn);
+                globals.search.os = _.transform(osMap, valNumMapFn, []).sort(sortFn).map(mapFn);
+                globals.search.tor = _.transform(versions, valNumMapFn, []).sort(sortFn).map(mapFn);
 
-                logger.info('overwrote available os:', JSON.stringify(globalData.search.os));
-                logger.info('overwrote available tor versions:', JSON.stringify(globalData.search.tor));
+                logger.info('overwrote available os:', JSON.stringify(globals.search.os));
+                logger.info('overwrote available tor versions:', JSON.stringify(globals.search.tor));
 
                 if (result.relays.length) {
                     insertPromises.push(RSVP.denodeify(newCollections.relays.insert.bind(newCollections.relays))(result.relays, {}));
@@ -235,7 +291,7 @@ function reloadData() {
 
                 RSVP.all(insertPromises).then(function () {
                     // clear old collections
-                    dropCollections(collections);
+                    dropOldCollections();
                     // overwrite collections with new collections
                     collections = newCollections;
                     // unlock database after sync

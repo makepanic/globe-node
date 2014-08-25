@@ -7,31 +7,42 @@ mixin relaySummaryTable(relays)
                 th.align-left Uptime
                 th.align-left Advertised Bandwidth
                 th Country
+                th.align-left Tor version
+                th OS
                 th.align-left Flags
         tbody
             if relays.length
                 each relay in relays
+                    - var relayUrl = '/relay/' + relay.fingerprint;
                     tr
                         td
-                            a.align-center(href='/relay/' + relay.fingerprint)
+                            a.align-center(href=relayUrl)
                                 if relay.running
                                     .d3-col.block-2
                                 else
                                     .d3-col.block-3
                         td
-                            a.nick(href='/relay/'+relay.fingerprint)
+                            a.nick(href=relayUrl)
                                 = relay.nickname
                         td
                             if relay.running
-                                a(href='/relay/'+relay.fingerprint) !{format.uptimeShort(relay.last_restarted)}
+                                a(href=relayUrl) !{format.uptimeShort(relay.last_restarted)}
                             else
-                                a(href='/relay/'+relay.fingerprint, title='Offline') n/a
+                                a(href=relayUrl, title='Offline') n/a
                         td
-                            a(href='/relay/'+relay.fingerprint) #{format.bandwidth(relay.advertised_bandwidth)}
+                            a(href=relayUrl)
+                                if relay.running
+                                    | #{format.percent(relay.advertised_bandwidth_fraction, 4)}
+                                | (#{format.bandwidth(relay.advertised_bandwidth)})
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) !{format.flaggify(relay.country)}
+                            a(href=relayUrl) !{format.flaggify(relay.country)}
                         td
-                            a(href='/relay/'+relay.fingerprint) !{format.onionFlags(relay.flags)}
+                            a(href=relayUrl) #{relay.tor}
+                        td.align-center
+                            if relay.osString
+                                a(href=relayUrl, title=relay.meta ? relay.meta : undefined) #{relay.osString}
+                        td
+                            a(href=relayUrl) !{format.onionFlags(relay.flags)}
             else
                 tr
                     td(colspan='7', class='empty no-a') No relays found :(

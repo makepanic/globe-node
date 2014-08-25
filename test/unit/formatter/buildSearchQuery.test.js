@@ -2,7 +2,7 @@
 
 var expect = require('expect.js');
 
-describe('@test formatter.buildSearchQuery', function () {
+describe('formatter.buildSearchQuery', function () {
     var buildSearchQuery = require('../../../src/lib/util/formatter').buildSearchQuery;
     it('tests with empty params', function () {
         expect(buildSearchQuery({}, {})).to

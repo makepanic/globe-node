@@ -10,7 +10,6 @@ var program = require('commander'),
     path = require('path'),
     fs = require('fs'),
     logger = require('./logger'),
-
     globals = require('./src/lib/global-data'),
     connection = require('./src/lib/db/connection'),
     format = require('./src/lib/util/formatter'),
@@ -31,7 +30,6 @@ var program = require('commander'),
 // routes
     routes = require('./src/routes'),
     detail = require('./src/routes/detail'),
-    search = require('./src/routes/search'),
     top10 = require('./src/routes/top10'),
     searchCompass = require('./src/routes/search-compass'),
     graphs = require('./src/routes/graphs');
@@ -67,22 +65,15 @@ if (!fs.existsSync('build')) {
     app.set('views', path.join(__dirname, 'src/views'));
     app.set('view engine', 'jade');
     app.use(favicon(path.join(__dirname, 'src/public/images/favicon.ico')));
-    app.use(morgan());
+    app.use(morgan('tiny'));
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json());
     app.use(express.static(path.join(__dirname, 'build')));
     app.use(featureFlags(conf.FEATURES));
 
-// development only
-// static urls
     app.get('/', routes.index);
     app.get('/help', routes.help);
     app.get('/code', routes.code);
-    app.get('/search', search.searchNotAlreadyHashed);
-    app.get('/search2', search.searchAlreadyHashed);
-    app.get('/top10', top10);
-
-// dynamic urls
 
 // graphs
     app.get('/relay/bandwidth/:fingerprint.svg', graphs.relay.bandwidth);
@@ -92,17 +83,8 @@ if (!fs.existsSync('build')) {
     app.get('/bridge/bandwidth/:fingerprint.svg', graphs.bridge.bandwidth);
     app.get('/bridge/client/:fingerprint.svg', graphs.bridge.clients);
 
-// some global variables for the search form
-    globals.advSearch = {
-        actions: {},
-        group: {},
-        filter: {}
-    };
-    globals.version = pkg.version;
-    globals.format = format;
-    globals.userAgent = pkg.name + '/' + pkg.version + ' (+' + pkg.bugs.url + ')';
     globals.DEV = !!program.dev;
-
+    globals.format = format;
 // make the globals object accessible for every template
     app.locals = globals;
 
@@ -114,11 +96,12 @@ if (!fs.existsSync('build')) {
         logger.info('connection ready');
 
         // routes that need db access
+        // top 10 relays
+        app.get('/top10', top10);
         // relay lookup
         app.get('/relay/:fingerprint', detail.relay);
         // bridge lookup
         app.get('/bridge/:fingerprint', detail.bridge);
-
         // relay and bridge search
         app.get('/search-compass',
             renderIf(connectionData.isLocked, 'locked', function () {
@@ -129,10 +112,10 @@ if (!fs.existsSync('build')) {
                 integer: ['limit'],
                 checkbox: ['exit', 'groupAS', 'groupCountry', 'groupFamily', 'groupContact'],
                 empty: ['exitSpeed', 'as', 'family', 'country', 'flag', 'type', 'query'],
-                boolean: ['sortAsc', 'running'],
+                boolean: ['wasHashed', 'sortAsc', 'running'],
                 array: [
-                    {param: 'os', defaultsTo: globals.search.os},
-                    {param: 'tor', defaultsTo: globals.search.tor}
+                    {param: 'os', defaultsTo: function(g /* globals */){return g.search.os; }},
+                    {param: 'tor', defaultsTo: function(g /* globals */){ return g.search.tor; }}
                 ]
             }),
             searchCompass.searchCompass);

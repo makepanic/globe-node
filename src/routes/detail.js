@@ -8,8 +8,7 @@ var errors = require('../lib/errors'),
     uptime = require('../lib/onionoo/api/uptime'),
     clients = require('../lib/onionoo/api/clients'),
     weights = require('../lib/onionoo/api/weights'),
-    uniquePeriods = require('../lib/onionoo/util/unique-periods'),
-    formatter = require('../lib/util/formatter');
+    uniquePeriods = require('../lib/onionoo/util/unique-periods');
 
 exports.bridge = function (req, res) {
     var fingerprint = req.params.fingerprint,
@@ -49,7 +48,6 @@ exports.bridge = function (req, res) {
                     // set view model
                     data.model = bridge;
 
-                    // apply formatter
                     data.model.bandwidthGraphUrl = '/bridge/bandwidth/' + bridge.hashed_fingerprint + '.svg';
                     data.model.uptimeGraphUrl = '/bridge/uptime/' + bridge.hashed_fingerprint + '.svg';
                     data.model.clientGraphUrl = '/bridge/client/' + bridge.hashed_fingerprint + '.svg';
@@ -107,15 +105,12 @@ exports.relay = function (req, res) {
                 weights: weights(fingerprint),
                 uptime: uptime(fingerprint)
             }).then(function (results) {
-                data.format = formatter;
-
                 // fill title
                 data.title = ['Details for ' + relay.nickname].concat(data.title);
 
                 // set view model
                 data.model = relay;
 
-                // apply formatter
                 data.model.bandwidthGraphUrl = '/relay/bandwidth/' + relay.fingerprint + '.svg';
                 data.model.weightGraphUrl = '/relay/weight/' + relay.fingerprint + '.svg';
                 data.model.uptimeGraphUrl = '/relay/uptime/' + relay.fingerprint + '.svg';

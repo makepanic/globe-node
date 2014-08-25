@@ -3,13 +3,11 @@
 var expect = require('expect.js');
 
 describe('compare version', function () {
-    var compareVersions = require('../../../src/lib/util/compare-version'),
-        handleSortUndefined = require('../../../src/lib/util/handle-sort-undefined');
+    var compareVersions = require('../../../src/lib/util/compare-version');
 
     it('comparison with non string arguments', function () {
         expect([null, '2.0.0.0'].sort(compareVersions)).to.eql([null, '2.0.0.0']);
         expect([undefined, '1.1.0.0'].sort(compareVersions)).to.eql(['1.1.0.0', undefined]);
-        expect(handleSortUndefined([undefined, '1.1.0.0'].sort(compareVersions))).to.eql([ undefined, '1.1.0.0']);
         expect(compareVersions(undefined, '1.1.0.0')).to.eql(-1);
         expect(compareVersions('1.1.0.0', undefined)).to.eql(-1);
     });

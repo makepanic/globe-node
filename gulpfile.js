@@ -2,13 +2,13 @@ var gulp = require('gulp');
 
 var concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
-    imagemin = require('gulp-imagemin'),
+//    imagemin = require('gulp-imagemin'),
     sourcemaps = require('gulp-sourcemaps'),
     livereload = require('gulp-livereload'),
     sass = require('gulp-sass'),
     prefix = require('gulp-autoprefixer'),
     del = require('del'),
-    cover = require('gulp-coverage'),
+    istanbul = require('gulp-istanbul'),
     mocha = require('gulp-mocha'),
     eslint = require('gulp-eslint'),
     minifyCSS = require('gulp-minify-css');
@@ -24,7 +24,7 @@ gulp.task('clean', function (cb) {
 });
 
 // lint code
-gulp.task('lint', function(){
+gulp.task('lint', function () {
     return gulp.src(['src/**/*.js', '!src/**/vendor/*.js', 'test/**/*.js', 'app.js'])
         .pipe(eslint(require('./eslint.json')))
         .pipe(eslint.format());
@@ -32,52 +32,51 @@ gulp.task('lint', function(){
 
 // copy fonts
 gulp.task('copy', ['clean'], function () {
-   return gulp.src('src/public/fonts/*')
-       .pipe(gulp.dest('build/fonts'));
+    return gulp.src('src/public/fonts/*')
+        .pipe(gulp.dest('build/fonts'));
 });
 
 // test using mocha and generate coverage
-gulp.task('cover', function () {
-    return gulp.src(['test/**/*.test.js'], {read: false})
-        .pipe(cover.instrument({
-            pattern: ['src/lib/**/*.js'],
-            debugDirectory: 'debug'
-        }))
-        .pipe(mocha({
-            // 5 min (in the vagrant image it can take a long time)
-            timeout: 5 * 60 * 1000,
-            ui: 'bdd',
-            bail: true,
-            reporter: 'spec'
-        }))
-        .pipe(cover.gather())
-        .pipe(cover.format({
-            outFile: 'coverage.html'
-        }))
-        .pipe(gulp.dest('build'));
+gulp.task('cover', function (cb) {
+    gulp.src(['app.js', 'src/**/*.js'])
+        .pipe(istanbul())
+        .on('finish', function () {
+            gulp.src(['test/**/*.test.js'])
+                .pipe(mocha({
+                    // 5 min (in the vagrant image it can take a long time)
+                    timeout: 5 * 60 * 1000,
+                    ui: 'bdd',
+                    bail: true,
+                    reporter: 'spec'
+                }))
+                .pipe(istanbul.writeReports({
+                    dir: 'build'
+                }))
+                .on('end', cb);
+        });
 });
 
+
 // test using mocha and generate coverage
-gulp.task('cover-no-db', function () {
-    return gulp.src(['test/**/*.test.js'], {read: false})
-        .pipe(cover.instrument({
-            pattern: ['src/lib/**/*.js'],
-            debugDirectory: 'debug'
-        }))
-        .pipe(mocha({
-            // 5 min (in the vagrant image it can take a long time)
-            timeout: 5 * 60 * 1000,
-            ui: 'bdd',
-            bail: true,
-            reporter: 'spec',
-            grep: '@db',
-            invert: true
-        }))
-        .pipe(cover.gather())
-        .pipe(cover.format({
-            outFile: 'coverage.html'
-        }))
-        .pipe(gulp.dest('build'));
+gulp.task('cover-no-db', function (cb) {
+    gulp.src(['app.js', 'src/**/*.js'])
+        .pipe(istanbul())
+        .on('finish', function () {
+            gulp.src(['test/**/*.test.js'])
+                .pipe(mocha({
+                    // 5 min (in the vagrant image it can take a long time)
+                    timeout: 5 * 60 * 1000,
+                    ui: 'bdd',
+                    bail: true,
+                    reporter: 'spec',
+                    grep: '@db',
+                    invert: true
+                }))
+                .pipe(istanbul.writeReports({
+                    dir: 'build'
+                }))
+                .on('end', cb);
+        });
 });
 
 // minify scripts
@@ -95,7 +94,7 @@ gulp.task('scripts', ['clean'], function () {
 gulp.task('images', ['clean'], function () {
     return gulp.src(paths.images)
         // Pass in options to the task
-        .pipe(imagemin({optimizationLevel: 5}))
+//        .pipe(imagemin({optimizationLevel: 5}))
         .pipe(gulp.dest('build/img'));
 });
 
@@ -123,4 +122,4 @@ gulp.task('watch', function () {
 gulp.task('default', ['lint', 'cover', 'copy', 'sass', 'scripts', 'images']);
 gulp.task('test', ['lint', 'cover']);
 gulp.task('test-no-db', ['lint', 'cover-no-db']);
-gulp.task('dev', ['watch', 'copy', 'sass', 'scripts', 'images']);
+gulp.task('dev', ['copy', 'sass', 'scripts', 'images', 'watch']);

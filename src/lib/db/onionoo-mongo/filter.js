@@ -7,28 +7,32 @@ var RSVP = require('rsvp'),
     getSortType = require('../../util/get-sort-type'),
     processFilterResults = require('./process-filter-results'),
     createMongoFilter = require('./create-mongo-filter'),
+    isFingerprint = require('../../onionoo/util/is-fingerprint'),
+    hashFingerprint = require('../../onionoo/util/hash-fingerprint'),
 // filters
     speeds = require('./speeds'),
     exitSpeedFilter = require('../filters/exit-speed'),
     sameNetworkFilter = require('../filters/same-network'),
     createSortFn = require('../../util/create-sort-fn');
 
-var defaultOpts = {
-    sortBy: 'consensus_weight_fraction',
-    sortAsc: false,
-    displayAmount: 10,
-    filter: {
-        os: null,
-        exitSpeed: null,
-        running: null,
-        guards: null,
-        exit: null,
-        family: null,
-        as: null,
-        country: null,
-        speed: null
-    }
-};
+var returnEmptyArray = function () { return []; },
+    defaultOpts = {
+        sortBy: 'consensus_weight_fraction',
+        sortAsc: false,
+        displayAmount: 10,
+        wasHashed: false,
+        filter: {
+            os: null,
+            exitSpeed: null,
+            running: null,
+            guards: null,
+            exit: null,
+            family: null,
+            as: null,
+            country: null,
+            speed: null
+        }
+    };
 /**
  * Calls mongodb filter
  * @throws throws an error if the database is locked
@@ -39,6 +43,7 @@ var defaultOpts = {
 module.exports = function (collections, methodOpts) {
     var opts = _.merge({}, defaultOpts, methodOpts),
         filterOpts = opts.filter,
+        filterPromise,
         sortObj = {},
         relays = collections.relays,
         bridges = collections.bridges,
@@ -55,78 +60,89 @@ module.exports = function (collections, methodOpts) {
         filterOpts.exitSpeed = speeds[filterOpts.exitSpeed];
     }
 
+    if (!opts.wasHashed && filterOpts.query && filterOpts.query.length && isFingerprint(filterOpts.query)) {
+        filterOpts.query = hashFingerprint(filterOpts.query);
+    }
+
     dbOpts = createMongoFilter(filterOpts);
 
     hasExitSpeedFilter = filterOpts.exitSpeed !== null;
     hasSameNetworkFilter = hasExitSpeedFilter && filterOpts.exitSpeed.MAX_PER_NETWORK;
 
-    return new RSVP.Promise(function (resolve, reject) {
-        var relayFilterFn = RSVP.denodeify(
-                relays
-                    .find(dbOpts)
-                    .sort(sortObj)
-                    .toArray.bind(relays)),
-            bridgeFilterFn = RSVP.denodeify(
-                bridges
-                    .find(dbOpts)
-                    .sort(sortObj)
-                    .toArray.bind(bridges));
+    // prepare cursors
+    var relaysCursor = relays.find(dbOpts).sort(sortObj),
+        bridgeCursor = bridges.find(dbOpts).sort(sortObj),
+    // create query promises
+        relayFilterFn = RSVP.denodeify(relaysCursor.toArray.bind(relaysCursor)),
+        bridgeFilterFn = RSVP.denodeify(bridgeCursor.toArray.bind(bridgeCursor));
 
-        if (typeof filterOpts.type === 'string') {
-            // has filter type specified
-            var returnEmptyArray = function () {
-                return [];
-            };
-            switch (filterOpts.type) {
-                case 'relay':
-                    // relay filter, replace bridge filter function
-                    bridgeFilterFn = returnEmptyArray;
-                    break;
-                case 'bridge':
-                    // bridge filter, replace relay filter function
-                    relayFilterFn = returnEmptyArray;
-                    break;
+    if (typeof filterOpts.type === 'string') {
+        // has filter type specified
+        switch (filterOpts.type) {
+            case 'relay':
+                // relay filter, replace bridge filter function
+                bridgeFilterFn = returnEmptyArray;
+                break;
+            case 'bridge':
+                // bridge filter, replace relay filter function
+                relayFilterFn = returnEmptyArray;
+                break;
+        }
+    }
+
+    if (connection.isLocked()) {
+        filterPromise = new RSVP.Promise(function (resolve, reject) {
+            reject({dbLocked: true});
+        });
+    } else {
+        filterPromise = RSVP.hash({
+            relays: relayFilterFn(),
+            bridges: bridgeFilterFn()
+        }).then(function (results) {
+            // manually filtering :(
+            var filteredRelays = results.relays,
+                informHashFingerprint = false,
+                correctSearchUrl = '';
+
+            if (hasExitSpeedFilter) {
+                filteredRelays = exitSpeedFilter(filteredRelays, filterOpts.exitSpeed.PORTS);
             }
-        }
 
-        if (connection.isLocked()) {
-            reject({
-                dbLocked: true
+            if (hasSameNetworkFilter) {
+                filteredRelays = sameNetworkFilter(filteredRelays, filterOpts.exitSpeed.MAX_PER_NETWORK);
+            }
+
+            // detect if user searched using a non hashed bridge fingerprint
+            if (opts.wasHashed &&
+                results.bridges.length === 1 &&
+                results.relays.length === 0 &&
+                results.bridges[0].hashed_fingerprint === filterOpts.query) {
+                informHashFingerprint = true;
+                correctSearchUrl = '/search?query=' + results.bridges[0].hashed_hashed_fingerprint;
+            }
+
+            return processFilterResults({
+                sortFn: sortFn,
+                displayLimit: opts.displayAmount,
+                relays: filteredRelays,
+                bridges: results.bridges
+            }).then(function (processedResults) {
+                processedResults.uiFlags = {
+                    informHashFingerprint: informHashFingerprint,
+                    informEmptySortNotRunning: opts.filter.running === false &&
+                        (   opts.sortBy === 'consensus_weight_fraction' ||
+                            opts.sortBy === 'advertised_bandwidth_fraction' ||
+                            opts.sortBy === 'guard_probability' ||
+                            opts.sortBy === 'middle_probability' ||
+                            opts.sortBy === 'exit_probability' )
+                };
+                if (informHashFingerprint) {
+                    processedResults.correctSearchUrl = correctSearchUrl;
+                }
+
+                return processedResults;
             });
-        } else {
-            resolve(RSVP.hash({
-                relays: relayFilterFn(),
-                bridges: bridgeFilterFn()
-            }).then(function (results) {
-                // manually filtering :(
-                var filteredRelays = results.relays;
-
-                if (hasExitSpeedFilter) {
-                    filteredRelays = exitSpeedFilter(filteredRelays, filterOpts.exitSpeed.PORTS);
-                }
-
-                if (hasSameNetworkFilter) {
-                    filteredRelays = sameNetworkFilter(filteredRelays, filterOpts.exitSpeed.MAX_PER_NETWORK);
-                }
-
-                return processFilterResults({
-                    sortFn: sortFn,
-                    displayLimit: opts.displayAmount,
-                    relays: filteredRelays,
-                    bridges: results.bridges
-                }).then(function (processedResults) {
-                    // TODO: add flags if special UI is needed
-                    processedResults.uiFlags = {};
-                    return processedResults;
-                }).catch(function (err) {
-                    logger.error(err.message);
-                    reject(err);
-                });
-
-            }, function (err) {
-                logger.err('filter', err);
-                reject(err);
-            }));
-        }
-    });
+        });
+    }
+    return filterPromise;
 };

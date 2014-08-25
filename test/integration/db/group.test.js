@@ -28,7 +28,7 @@ describe('database group @db', function () {
         // stub request.get to return the testFixture
         sinon.stub(request, 'get').yieldsAsync(null, {
             statusCode: 200
-        }, JSON.stringify(testFixture));
+        }, testFixture);
         done();
     });
     after(function (done) {

@@ -19,11 +19,17 @@ describe('exit-speed', function () {
     });
 
     describe('accept', function () {
-        it('tests using a port array', function () {
+        it('tests using a port array (filters out one exit_policy_summary)', function () {
             expect(exitSpeedFilter([{
                 exit_policy_summary: {
                     accept: ['80', '443'],
                     _accept: [80, 443],
+                    _accept_range: []
+                }
+            }, {
+                exit_policy_summary: {
+                    accept: ['22'],
+                    _accept: [22],
                     _accept_range: []
                 }
             }], speeds.ALMOST_FAST_EXIT.PORTS)).to.eql([{
@@ -34,7 +40,7 @@ describe('exit-speed', function () {
                 }
             }]);
         });
-        it('tests using a port range', function () {
+        it('tests using a port range (filters out one exit_policy_summary)', function () {
             expect(exitSpeedFilter([{
                 exit_policy_summary: {
                     accept: ['80-443'],
@@ -42,6 +48,15 @@ describe('exit-speed', function () {
                     _accept_range: [{
                         start: 80,
                         end: 443
+                    }]
+                }
+            }, {
+                exit_policy_summary: {
+                    accept: ['20-22'],
+                    _accept: [],
+                    _accept_range: [{
+                        start: 20,
+                        end: 22
                     }]
                 }
             }], speeds.ALMOST_FAST_EXIT.PORTS)).to.eql([{

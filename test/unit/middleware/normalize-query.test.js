@@ -19,8 +19,8 @@ describe('normalize-query', function () {
                 empty: ['filledField', 'emptyField', 'miscField'],
                 integer: ['int1', 'int2', 'intStr', 'intMisc'],
                 array: [
-                    {param: 'arr1', defaultsTo: empties.arr1},
-                    {param: 'arr2', defaultsTo: empties.arr2}
+                    {param: 'arr1', defaultsTo: function(){ return empties.arr1; }},
+                    {param: 'arr2', defaultsTo: function(){ return empties.arr2; }}
                 ]
             }),
             req = {

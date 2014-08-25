@@ -71,6 +71,8 @@ module.exports = function (filterOptions) {
                     {nickname: {$regex: new RegExp('.*' + lowerEscapedQuery + '.*') }},
                     /* Non-$-prefixed fingerprint matches. */
                     {fingerprint: {$regex: new RegExp('^' + upperEscapedQuery) }},
+                    {hashed_fingerprint: {$regex: new RegExp('^' + upperEscapedQuery) }},
+                    {hashed_hashed_fingerprint: {$regex: new RegExp('^' + upperEscapedQuery) }},
                     {or_addresses: {$elemMatch: {$regex: new RegExp('^' + lowerEscapedQuery) }}},
                     {exit_addresses: {$elemMatch: {$regex: new RegExp('^' + lowerEscapedQuery) }}}
                 ];

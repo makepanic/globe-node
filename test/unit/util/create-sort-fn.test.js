@@ -14,22 +14,18 @@ describe('create-sort-fn', function () {
     describe('numeric', function () {
         it('test ascending sort function', function () {
             var sortObjs = [
-                    {
-                        middle_probability: 0
-                    },
-                    {
-                        middle_probability: 0.012074938
-                    }
+                    { middle_probability: 0.1 },
+                    { middle_probability: 0 },
+                    {middle_probability: undefined},
+                    { middle_probability: 0.012074938 }
                 ],
                 sortFn = numeric('middle_probability', true);
 
             expect(sortObjs.sort(sortFn)).to.eql([
-                {
-                    middle_probability: 0
-                },
-                {
-                    middle_probability: 0.012074938
-                }
+                { middle_probability: undefined },
+                { middle_probability: 0 },
+                { middle_probability: 0.012074938 },
+                { middle_probability: 0.1 }
             ]);
         });
         it('test descending sort function', function () {
@@ -67,42 +63,26 @@ describe('create-sort-fn', function () {
     describe('string', function () {
         it('test ascending sort function', function () {
             var sortObjs = [
-                    {
-                        name: 'a'
-                    },
-                    {
-                        name: 'b'
-                    }
+                    { name: 'a' },
+                    { name: 'b' }
                 ],
                 sortFn = string('name', true);
 
             expect(sortObjs.sort(sortFn)).to.eql([
-                {
-                    name: 'a'
-                },
-                {
-                    name: 'b'
-                }
+                { name: 'a' },
+                { name: 'b' }
             ]);
         });
         it('test descending sort function', function () {
             var sortObjs = [
-                    {
-                        name: 'a'
-                    },
-                    {
-                        name: 'b'
-                    }
+                    { name: 'a' },
+                    { name: 'b' }
                 ],
                 sortFn = string('name', false);
 
             expect(sortObjs.sort(sortFn)).to.eql([
-                {
-                    name: 'b'
-                },
-                {
-                    name: 'a'
-                }
+                { name: 'b' },
+                { name: 'a' }
             ]);
         });
     });
@@ -110,39 +90,16 @@ describe('create-sort-fn', function () {
     describe('firstArrayEntry', function () {
         it('test ascending sort function', function () {
             var sortObjs = [
-                    {
-                        country: [
-                            ['de', 1]
-                        ]
-                    },
-                    {
-                        country: [
-                            [null, 20]
-                        ]},
-                    {
-                        country: [
-                            ['en', 22]
-                        ]
-                    }
+                    { country: [['de', 1]] },
+                    { country: [[null, 20]] },
+                    { country: [['en', 22]] }
                 ],
                 sortFn = firstArrayEntry('country', true);
 
             expect(sortObjs.sort(sortFn)).to.eql([
-                {
-                    country: [
-                        [null, 20]
-                    ]
-                },
-                {
-                    country: [
-                        ['de', 1]
-                    ]
-                },
-                {
-                    country: [
-                        ['en', 22]
-                    ]
-                }
+                { country: [[null, 20]] },
+                { country: [['de', 1]] },
+                { country: [['en', 22]] }
             ]);
         });
         it('test descending sort function', function () {
@@ -181,6 +138,20 @@ describe('create-sort-fn', function () {
                         [null, 200]
                     ]
                 }
+            ]);
+        });
+        it('tests with some special cases', function () {
+            var sortObj = [
+                    {country: []},
+                    {country: [['de', 2]]},
+                    {country: [[null, 1]]}
+                ],
+                sortFn = firstArrayEntry('country', true);
+
+            expect(sortObj.sort(sortFn)).to.eql([
+                {country: []},
+                {country: [[null, 1]]},
+                {country: [['de', 2]]}
             ]);
         });
     });

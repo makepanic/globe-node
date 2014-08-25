@@ -1,9 +1,9 @@
 var countries = require('./static').countries,
+    pkg = require('../../package.json'),
     _ = require('lodash-node');
 
-var countriesArray = [];
-
-var flags = {
+var globals = {},
+    flags = {
         'Fast': 'fa-bolt',
         'Running': 'fa-code-fork',
         'BadExit': 'fa-warning',
@@ -17,50 +17,46 @@ var flags = {
         'Unnamed': 'fa-question',
         'Exit': 'fa-sign-out'
     },
-    flagsArray = [];
+    icons = {
+        // map to convert given string to a character
+        'Fast': 'fa-bolt',
+        'Running': 'fa-code-fork',
+        'BadExit': 'fa-warning',
+        'Authority': 'fa-user-md',
+        'Guard': 'fa-shield',
+        'HSDir': 'fa-book',
+        'Named': 'fa-info',
+        'Stable': 'fa-anchor',
+        'V2Dir': 'fa-folder',
+        'Valid': 'fa-check',
+        'Unnamed': 'fa-question',
+        'Exit': 'fa-sign-out'
+    },
+    transformKeyValue = function (result, value, key) {
+        return result.push({
+            key: key,
+            value: value
+        });
+    },
+    countriesArray = _.transform(countries, transformKeyValue, []),
+    flagsArray = _.transform(flags, transformKeyValue, []);
 
-var icons = {
-    // map to convert given string to a character
-    'Fast': 'fa-bolt',
-    'Running': 'fa-code-fork',
-    'BadExit': 'fa-warning',
-    'Authority': 'fa-user-md',
-    'Guard': 'fa-shield',
-    'HSDir': 'fa-book',
-    'Named': 'fa-info',
-    'Stable': 'fa-anchor',
-    'V2Dir': 'fa-folder',
-    'Valid': 'fa-check',
-    'Unnamed': 'fa-question',
-    'Exit': 'fa-sign-out'
-};
-
-// fill countries array
-_.forIn(countries, function (value, key) {
-    countriesArray.push({
-        key: key,
-        value: value
-    });
-});
-
-// fill flags array
-_.forIn(flags, function (value, key) {
-    flagsArray.push({
-        key: key,
-        value: value
-    });
-});
-
-module.exports = {
-    version: '',
-    userAgent: '',
+// write data to global object (see http://nodejs.org/api/globals.html#globals_global )
+globals = {
+    version: pkg.version,
+    userAgent: pkg.name + '/' + pkg.version + ' (+' + pkg.bugs.url + ')',
     title: [],
     buildTitle: function (title, version) {
-        // join title segments
+        // join title smgments
         return (title.length ? title.join(' | ') + ' | Globe' : 'Globe') + ' ' + version;
     },
     query: '',
     path: 'index',
+    advSearch: {
+        actions: {},
+        group: {},
+        filter: {}
+    },
     search: {
         // Note: os, tor will be overwritten if the database is synced.
         // I filled the array here to get it to work if the app is run with `-n`
@@ -90,3 +86,5 @@ module.exports = {
         flag: ''
     }
 };
+
+module.exports = globals;

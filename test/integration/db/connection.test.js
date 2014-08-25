@@ -2,6 +2,7 @@
 
 var logger = require('../../../logger'),
     expect = require('expect.js'),
+    Chance = require('chance'),
     connection = require('../../../src/lib/db/connection'),
     filter = require('../../../src/lib/db/onionoo-mongo/filter'),
     testConfig = require('../config'),
@@ -10,6 +11,8 @@ var logger = require('../../../logger'),
     _ = require('lodash-node'),
     RSVP = require('rsvp');
 
+var chance = new Chance();
+
 var testFixture = {
     'bridges_published': '2012-11-16 21:00:00',
     'bridges': [],
@@ -17,7 +20,7 @@ var testFixture = {
     'relays': _.range(1200).map(function (e, i) {
         return {
             'nickname': 'nick' + i,
-            'fingerprint': 'fp' + i,
+            'fingerprint': chance.hash(),
             'or_addresses': ['1.2.3.4:443'],
             'dir_address': '1.2.3.4:9030',
             'running': true,
@@ -71,7 +74,7 @@ describe('connection tests @db', function () {
         // stub request.get to return the testFixture
         sinon.stub(request, 'get').yieldsAsync(null, {
             statusCode: 200
-        }, JSON.stringify(testFixture));
+        }, testFixture);
         done();
     });
     after(function (done) {
@@ -116,17 +119,10 @@ describe('connection tests @db', function () {
          It expects that the filter result is either the valid result or an error
          that is thrown if the database is locked.
          */
-        /**
-         * Function that calls the filter function after a given timeout
-         * @param {Object} collections Mongodb collections to pass to filter
-         * @param {Object} opts Filter options
-         * @param {Number} timeout Timeout
-         * @return {exports.Promise} Promise that resolves after the given timeout by calling filter
-         */
-        function filterLater(collections, opts, timeout) {
+        function filterLater(connection, opts, timeout) {
             return new RSVP.Promise(function (resolve) {
                 setTimeout(function () {
-                    resolve(filter(collections, opts));
+                    resolve(filter(connection.getCollections(), opts));
                 }, timeout);
             });
         }
@@ -142,19 +138,22 @@ describe('connection tests @db', function () {
         }
 
 
+        var collections = connection.getCollections();
         expect(connection.isLocked()).to.be(false);
+        expect(collections.relays !== null).to.be.ok();
+        expect(collections.bridges !== null).to.be.ok();
         RSVP.hash({
             filter: RSVP.all([
-                filter(connection.getCollections(), {}).then(through, through),
-                filterLater(connection.getCollections(), {}, 1).then(through, through),
-                filterLater(connection.getCollections(), {}, 7).then(through, through),
-                filterLater(connection.getCollections(), {}, 14).then(through, through),
-                filterLater(connection.getCollections(), {}, 21).then(through, through),
-                filterLater(connection.getCollections(), {}, 28).then(through, through),
-                filterLater(connection.getCollections(), {}, 35).then(through, through),
-                filterLater(connection.getCollections(), {}, 42).then(through, through),
-                filterLater(connection.getCollections(), {}, 49).then(through, through),
-                filterLater(connection.getCollections(), {}, 56).then(through, through)
+                filterLater(connection, {}, 0).then(through, through),
+                filterLater(connection, {}, 1).then(through, through),
+                filterLater(connection, {}, 7).then(through, through),
+                filterLater(connection, {}, 14).then(through, through),
+                filterLater(connection, {}, 21).then(through, through),
+                filterLater(connection, {}, 28).then(through, through),
+                filterLater(connection, {}, 35).then(through, through),
+                filterLater(connection, {}, 42).then(through, through),
+                filterLater(connection, {}, 49).then(through, through),
+                filterLater(connection, {}, 56).then(through, through)
             ]),
             reload: connection.reloadData()
         }).then(function (data) {
@@ -169,6 +168,9 @@ describe('connection tests @db', function () {
             });
             done();
         }, function (err) {
+            expect().fail(err);
+            done();
+        }).catch(function (err) {
             expect().fail(err);
             done();
         });

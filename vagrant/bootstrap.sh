@@ -24,7 +24,10 @@ npm install -g gulp
 cd /vagrant/
 
 # install app dependencies
-npm install
+npm install --production
+
+# OR install app with dev dependencies
+#npm install
 
 # start app via nodemon
 #nodemon --watch /vagrant app.js

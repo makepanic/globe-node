@@ -55,38 +55,39 @@ mixin relayCompassTable(relays, notDisplayed)
         if relays.length
             tbody
                 each relay in relays
+                    - relayUrl = '/relay/' + relay.hashed_fingerprint;
                     tr
                         td
-                            a(href='/relay/'+relay.fingerprint)
+                            a(href=relayUrl)
                                 if relay.running
                                     .d3-col.block-2(title='This relay is listed in the current Tor directory.')
                                 else
                                     .d3-col.block-3(title="This relay isn't listed in the current Tor directory.")
                         td
-                            a.nick(href='/relay/'+relay.fingerprint) #{relay.nickname}
+                            a.nick(href=relayUrl) #{relay.nickname}
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.consensus_weight_fraction, 4)}
+                            a(href=relayUrl) #{format.percent(relay.consensus_weight_fraction, 4)}
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.advertised_bandwidth_fraction, 4)}
+                            a(href=relayUrl) #{format.percent(relay.advertised_bandwidth_fraction, 4)}
                                 | (#{format.bandwidth(relay.advertised_bandwidth)})
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.guard_probability, 4)}
+                            a(href=relayUrl) #{format.percent(relay.guard_probability, 4)}
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.middle_probability, 4)}
+                            a(href=relayUrl) #{format.percent(relay.middle_probability, 4)}
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) #{format.percent(relay.exit_probability, 4)}
+                            a(href=relayUrl) #{format.percent(relay.exit_probability, 4)}
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint) !{format.flaggify(relay.country, 4)}
+                            a(href=relayUrl) !{format.flaggify(relay.country, 4)}
                         td.align-left
-                            a(href='/relay/'+relay.fingerprint, title='using #{relay.client}') #{relay.tor}
+                            a(href=relayUrl, title='using #{relay.client}') #{relay.tor}
                         td.align-center
                             if relay.osString
-                                a(href='/relay/' + relay.fingerprint, title=relay.meta ? relay.meta : undefined) #{relay.osString}
+                                a(href=relayUrl, title=relay.meta ? relay.meta : undefined) #{relay.osString}
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint)
+                            a(href=relayUrl)
                                 i(class="fa fa-#{~relay.flags.indexOf('Exit') ? 'check' : 'minus'}")
                         td.align-center
-                            a(href='/relay/'+relay.fingerprint)
+                            a(href=relayUrl)
                                 i(class="fa fa-#{~relay.flags.indexOf('Guard') ? 'check' : 'minus'}")
             tfoot
                 tr
@@ -106,4 +107,4 @@ mixin relayCompassTable(relays, notDisplayed)
         else
             tbody
                 tr
-                    td(colspan='7', class='empty no-a') No relays found :(
+                    td(colspan='12', class='empty no-a') No relays found :(

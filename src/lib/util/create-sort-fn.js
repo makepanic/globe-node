@@ -44,29 +44,28 @@ exports.firstArrayEntry = function (property, asc) {
         var firstKeyA = a[property],
             firstKeyB = b[property];
 
-        if (!firstKeyA && !firstKeyB || !firstKeyA.length && !firstKeyB.length || firstKeyA[0][0] === null && firstKeyB[0][0] === null) {
-            return 0;
-        }
         if (!firstKeyA && firstKeyB || !firstKeyA.length && firstKeyB.length || firstKeyA[0][0] === null && firstKeyB[0][0] !== null) {
             return -1;
         }
         if (firstKeyB && !firstKeyB || firstKeyA.length && !firstKeyB.length || firstKeyA[0][0] !== null && firstKeyB[0][0] === null) {
             return 1;
+        }
+        if (!firstKeyA && !firstKeyB || !firstKeyA.length && !firstKeyB.length || firstKeyA[0][0] === null && firstKeyB[0][0] === null) {
+            return 0;
         }
         return firstKeyA[0][0].localeCompare(firstKeyB[0][0]);
     } : function (a, b) {
         var firstKeyA = a[property],
             firstKeyB = b[property];
 
-
-        if (!firstKeyA && !firstKeyB || !firstKeyA.length && !firstKeyB.length || firstKeyA[0][0] === null && firstKeyB[0][0] === null) {
-            return 0;
-        }
         if (!firstKeyA && firstKeyB || !firstKeyA.length && firstKeyB.length || firstKeyA[0][0] === null && firstKeyB[0][0] !== null) {
             return 1;
         }
         if (firstKeyB && !firstKeyB || firstKeyA.length && !firstKeyB.length || firstKeyA[0][0] !== null && firstKeyB[0][0] === null) {
             return -1;
+        }
+        if (!firstKeyA && !firstKeyB || !firstKeyA.length && !firstKeyB.length || firstKeyA[0][0] === null && firstKeyB[0][0] === null) {
+            return 0;
         }
 
         return firstKeyB[0][0].localeCompare(firstKeyA[0][0]);

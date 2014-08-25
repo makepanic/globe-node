@@ -28,7 +28,7 @@ mixin bridgeCompassTable(bridges, notDisplayed)
         if bridges.length
             tbody
                 each bridge in bridges
-                    - var bridgeUrl = '/bridge/' + bridge.hashed_fingerprint;
+                    - var bridgeUrl = '/bridge/' + bridge.hashed_hashed_fingerprint;
                     tr
                         td
                             a(href=bridgeUrl)

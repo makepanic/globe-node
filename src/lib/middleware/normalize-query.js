@@ -1,4 +1,5 @@
-var _ = require('lodash-node');
+var _ = require('lodash-node'),
+    globals = require('../global-data');
 
 var checkbox = function (value) {
         var normalized = null;
@@ -30,9 +31,9 @@ var checkbox = function (value) {
     array = function (param, data) {
         var array;
         if (!_.isArray(param)) {
-            array = data.defaultsTo;
+            array = data.defaultsTo(globals);
         } else {
-            array = param.length ? param : data.defaultsTo;
+            array = param.length ? param : data.defaultsTo(globals);
         }
         return array;
     },

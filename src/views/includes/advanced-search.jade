@@ -3,6 +3,7 @@
         .pure-g-r.search-filters
             .pure-u-1-12
                 strong Filters
+                input(id='was-hashed',type='hidden', value='false', name='wasHashed')
             .pure-u-11-12
                 .pure-g
                     .pure-u-1-3
@@ -10,7 +11,7 @@
                         select#s-type(name='type')
                             option(value='')
                             each type in search.type
-                                option(value=type, selected=advSearch.filter.type == type)
+                               option(value=type, selected=advSearch.filter.type == type)
                                     = type
                     .pure-u-1-3
                         label(for='s-running') Running
@@ -91,12 +92,3 @@
             .pure-u-11-12
                 input#limit(name='limit', type='text', pattern='[0-9]+', value=advSearch.actions.limit >= 0 ? advSearch.actions.limit : '10')
                 label(for='limit')  (0 for all results)
-        //hr
-        //.pure-g-r.search-filters
-        //    .pure-u-12
-        //        strong Fields
-        //    .pure-u-11-12
-        //        each field in search.tor
-        //            .pure-u-1-6
-        //                input(id='field-' + field, type='checkbox', name='field[]', value=field)
-        //                label(for='field-' + field) #{field}

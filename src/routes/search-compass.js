@@ -36,7 +36,7 @@ exports.searchCompass = function (req, res) {
     if (cfg.family && typeof cfg.family === 'string' && cfg.family[0] === '$' && cfg.family.length > 1) {
         cfg.family = cfg.family.substring(1);
     }
-    // add AS to as filter
+    // add 'AS' to as filter
     if (cfg.as && cfg.as.substring(0, 2) !== 'AS') {
         cfg.as = 'AS' + cfg.as.substring(2);
     }
@@ -80,7 +80,8 @@ exports.searchCompass = function (req, res) {
             sortBy: cfg.sortBy,
             sortAsc: cfg.sortAsc,
             displayAmount: cfg.limit,
-            filter: requestFilter
+            filter: requestFilter,
+            wasHashed: cfg.wasHashed
         }).then(function (result) {
             data.result = result;
             res.render('search-results/no-group', data);

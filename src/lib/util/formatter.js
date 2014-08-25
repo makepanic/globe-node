@@ -189,18 +189,18 @@ exports.sortIndicator = function (type, asc) {
 };
 
 exports.groupFlagList = function (groupFlags) {
-    var list = '';
+    var list = [];
     if (groupFlags.hasGroupCountry) {
-        list += 'country ';
+        list.push('country');
     }
-    if (groupFlags.hasGroupAs) {
-        list += 'as number ';
+    if (groupFlags.hasGroupAS) {
+        list.push('as number');
     }
     if (groupFlags.hasGroupContact) {
-        list += 'contact ';
+        list.push('contact');
     }
     if (groupFlags.hasGroupFamily) {
-        list += 'family ';
+        list.push('family');
     }
-    return list.trim();
+    return list.join(', ');
 };

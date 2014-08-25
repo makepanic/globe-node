@@ -12,7 +12,10 @@ var hashFingerprint = require('../../lib/onionoo/util/hash-fingerprint'),
  */
 module.exports = function (collections, fingerprint, isHashed) {
     return new RSVP.Promise(function (resolve, reject) {
-        var hashedFingerprint = fingerprint;
+        var hashedFingerprint = fingerprint,
+            relayCursor,
+            bridgeCursor;
+
         if (!isHashed) {
             try {
                 hashedFingerprint = hashFingerprint(fingerprint);
@@ -21,21 +24,28 @@ module.exports = function (collections, fingerprint, isHashed) {
             }
         }
 
+        relayCursor = collections.relays.find({
+            $or: [
+                {fingerprint: hashedFingerprint},
+                {fingerprint: fingerprint},
+                {hashed_fingerprint: hashedFingerprint},
+                {hashed_fingerprint: fingerprint}
+            ]
+        });
+        bridgeCursor = collections.bridges.find({
+            $or : [
+                {hashed_fingerprint: hashedFingerprint},
+                {hashed_fingerprint: fingerprint},
+                {hashed_hashed_fingerprint: hashedFingerprint},
+                {hashed_hashed_fingerprint: fingerprint}
+            ]
+        });
+
         /* eslint camelcase: 0 */
         resolve(
             RSVP.hash({
-                relays: RSVP.denodeify(collections.relays.find({
-                    $or: [
-                        {fingerprint: hashedFingerprint},
-                        {fingerprint: fingerprint}
-                    ]
-                }).toArray.bind(collections.relays))(),
-                bridges: RSVP.denodeify(collections.bridges.find({
-                    $or : [
-                        {hashed_fingerprint: hashedFingerprint},
-                        {hashed_fingerprint: fingerprint}
-                    ]
-                }).toArray.bind(collections.bridges))()
+                relays: RSVP.denodeify(relayCursor.toArray.bind(relayCursor))(),
+                bridges: RSVP.denodeify(bridgeCursor.toArray.bind(bridgeCursor))()
             }).then(function (result) {
                 var detailsObj = normalize.details(result);
 

@@ -3,7 +3,6 @@
  * Do not use an array with anything other than string or null elements with this function.
  * It is only works correctly with strings and null.
  *
- *
  * Note:
  * This function will be replaced (when it's done) with an ES6 Map implementation.
  * @example:

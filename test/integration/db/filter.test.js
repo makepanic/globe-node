@@ -28,7 +28,7 @@ describe('database filter @db', function () {
         // stub request.get to return the testFixture
         sinon.stub(request, 'get').yieldsAsync(null, {
             statusCode: 200
-        }, JSON.stringify(testFixture));
+        }, testFixture);
         done();
     });
     after(function (done) {
@@ -58,7 +58,7 @@ describe('database filter @db', function () {
     });
 
     it('tests with an unknown as', function (done) {
-        filter(this.collections, {
+        filter(connection.getCollections(), {
             filter: {
                 as: 'AS3320'
             }
@@ -73,7 +73,7 @@ describe('database filter @db', function () {
     });
 
     it('tests with an os filter (windows)', function (done) {
-        filter(this.collections, {
+        filter(connection.getCollections(), {
             filter: {
                 os: ['Windows']
             }
@@ -90,7 +90,7 @@ describe('database filter @db', function () {
     });
 
     it('tests with an os filter (linux)', function (done) {
-        filter(this.collections, {
+        filter(connection.getCollections(), {
             filter: {
                 os: ['Linux']
             }
@@ -107,7 +107,7 @@ describe('database filter @db', function () {
     });
 
     it('tests with no filter fields', function (done) {
-        filter(this.collections).then(function (result) {
+        filter(connection.getCollections()).then(function (result) {
             expect(result.displayed.relays.length).to.be(10);
             done();
         }, function (err) {
@@ -118,7 +118,7 @@ describe('database filter @db', function () {
     });
 
     it('tests with display limit', function (done) {
-        filter(this.collections, {
+        filter(connection.getCollections(), {
             displayAmount: 5
         }).then(function (result) {
             expect(result.displayed.relays.length).to.be(5);
@@ -132,7 +132,7 @@ describe('database filter @db', function () {
     });
 
     it('tests with an known as (AS7922)', function (done) {
-        filter(this.collections, {
+        filter(connection.getCollections(), {
             filter: {
                 as: 'AS7922'
             }
@@ -146,7 +146,7 @@ describe('database filter @db', function () {
     });
 
     it('tests with filter limit=3', function (done) {
-        filter(this.collections, {
+        filter(connection.getCollections(), {
             displayAmount: 3
         }).then(function (result) {
             expect(result.displayed.relays.length).to.be(3);
@@ -157,7 +157,7 @@ describe('database filter @db', function () {
     });
 
     it('tests with filter exitspeed FAST_EXIT', function (done) {
-        filter(this.collections, {
+        filter(connection.getCollections(), {
             filter: {
                 exitSpeed: 'FAST_EXIT'
             }

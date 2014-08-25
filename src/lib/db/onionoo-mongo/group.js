@@ -158,11 +158,31 @@ module.exports = function (collections, methodOpts) {
             _id: groupFields,
 //            fingerprints: { $push: '$$ROOT' },
             fingerprints: {$push: '$fingerprint'},
-            consensus_weight_fraction: {$sum: '$consensus_weight_fraction'},
-            advertised_bandwidth_fraction: {$sum: '$advertised_bandwidth_fraction'},
-            guard_probability: {$sum: '$guard_probability'},
-            middle_probability: {$sum: '$middle_probability'},
-            exit_probability: {$sum: '$exit_probability'},
+            consensus_weight_fraction: {$sum: {$cond: [
+                {$gte: ['$consensus_weight_fraction', 0]},
+                '$consensus_weight_fraction',
+                0
+            ]}},
+            advertised_bandwidth_fraction: {$sum: {$cond: [
+                {$gte: ['$advertised_bandwidth_fraction', 0]},
+                '$advertised_bandwidth_fraction',
+                0
+            ]}},
+            guard_probability: {$sum: {$cond: [
+                {$gte: ['$guard_probability', 0]},
+                '$guard_probability',
+                0
+            ]}},
+            middle_probability: {$sum: {$cond: [
+                {$gte: ['$middle_probability', 0]},
+                '$middle_probability',
+                0
+            ]}},
+            exit_probability: {$sum: {$cond: [
+                {$gte: ['$exit_probability', 0]},
+                '$exit_probability',
+                0
+            ]}},
             as_number: { $push: '$as_number' },
             as_name: { $push: '$as_name' },
             country: { $push: '$country' },

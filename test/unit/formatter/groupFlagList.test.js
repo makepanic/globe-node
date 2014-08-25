@@ -7,10 +7,10 @@ describe('familyToFingerprint', function () {
     it('tests with valid values', function () {
         expect(groupFlagList({
             hasGroupCountry: true,
-            hasGroupAs: true,
+            hasGroupAS: true,
             hasGroupContact: true,
             hasGroupFamily: true
-        })).to.be('country as number contact family');
+        })).to.be('country, as number, contact, family');
     });
     it('tests with invalid values', function () {
         expect(groupFlagList(false)).to.be('');
